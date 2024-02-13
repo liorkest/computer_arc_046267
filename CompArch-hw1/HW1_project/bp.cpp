@@ -17,11 +17,28 @@ struct btb_record
 };
 
 enum share_use_method { not_using_share = 0, using_share_lsb = 1, using_share_mid = 2 };
+enum bimodal_state { SNT = 0, WNT = 1, WT = 2, WNT = 3};
+
+class bimodal_FSM
+{
+	/*
+		This class represents a single bimodal FSM
+	*/
+	private:
+		int _s;
+	public:
+		void set_state(bimodal_state s){
+			_s = (int)s;
+		}
+		void change_state_NT() { _s--; if (_s < 0) _s = 0; }
+		void change_state_T() { _s++; if (_s > 3) _s = 3; }
+		bool get_decision() { return (_s >= 2); }
+};
 
 class branch_predictor
 {
 	private:
-		btb_record *BTB_table; 
+		btb_record *BTB_table; // TBD: changr to <vector> OR <list>
 		unsigned *history;
 		short **bimodal_counters; 
 		unsigned btbSize, historySize, tagSize;
