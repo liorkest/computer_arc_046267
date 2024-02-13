@@ -4,6 +4,12 @@
 #include "bp_api.h" 
 #include <stdio.h>
 
+struct btb_record{
+	int tag;
+	uint32_t dst_addr;
+	int * history;
+};
+
 
 class branch_predictor {
 	private:
@@ -20,16 +26,11 @@ class branch_predictor {
 int branch_predictor::init(unsigned btbSize, unsigned historySize, unsigned tagSize, unsigned fsmState,
 			bool isGlobalHist, bool isGlobalTable, int Shared)
 {
-	BTB_table = new unsigned[btbSize];
+	unsigned *BTB_table = new unsigned[btbSize];
 	printf("Hello");
 	return 0;
 }
 
-struct btb_record{
-	int tag;
-	uint32_t dst_addr;
-	int * history;
-};
 
 
 branch_predictor bp;
