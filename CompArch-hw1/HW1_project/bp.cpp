@@ -2,6 +2,8 @@
 /* This file should hold your implementation of the predictor simulator */
 
 #include "bp_api.h" 
+#include <stdio.h>
+
 
 class branch_predictor {
 	private:
@@ -12,12 +14,15 @@ class branch_predictor {
 		branch_predictor()	{}
 		int init(unsigned btbSize, unsigned historySize, unsigned tagSize, unsigned fsmState,
 			bool isGlobalHist, bool isGlobalTable, int Shared);
+		
 };
 
 int branch_predictor::init(unsigned btbSize, unsigned historySize, unsigned tagSize, unsigned fsmState,
 			bool isGlobalHist, bool isGlobalTable, int Shared)
 {
-
+	BTB_table = new unsigned[btbSize];
+	printf("Hello");
+	return 0;
 }
 
 struct btb_record{
@@ -31,7 +36,7 @@ branch_predictor bp;
 
 int BP_init(unsigned btbSize, unsigned historySize, unsigned tagSize, unsigned fsmState,
 			bool isGlobalHist, bool isGlobalTable, int Shared){
-	bp.init();
+	bp.init( btbSize,  historySize,  tagSize,  fsmState,isGlobalHist,  isGlobalTable,  Shared);
 	return -1;
 }
 
