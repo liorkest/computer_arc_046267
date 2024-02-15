@@ -19,6 +19,7 @@ struct btb_record
 enum share_use_method { not_using_share = 0, using_share_lsb = 1, using_share_mid = 2 };
 enum bimodal_state { SNT = 0, WNT = 1, WT = 2, WNT = 3};
 
+
 class bimodal_FSM
 {
 	/*
@@ -73,7 +74,8 @@ int branch_predictor::init(unsigned btbSize, unsigned historySize, unsigned tagS
 
 bool branch_predictor::BP_predict(uint32_t pc, uint32_t *dst)
 {
-
+	bool prediction = false; 
+	dst = new uint32_t(0x32);
 }
 
 void branch_predictor::BP_update(uint32_t pc, uint32_t targetPc, bool taken, uint32_t pred_dst)
@@ -98,7 +100,7 @@ bool BP_predict(uint32_t pc, uint32_t *dst){
 	return false;
 }
 
-void BP_update(uint32_t pc, uint32_t targetPc, bool taken, uint32_t pred_dst){
+void BP_update(uint32_t pc, uint32_t targetPc, bool taken, uint32_t S){
 	return;
 }
 
