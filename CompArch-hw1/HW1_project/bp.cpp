@@ -176,6 +176,35 @@ int branch_predictor::init(unsigned btbSize, unsigned historySize, unsigned tagS
 
 bool branch_predictor::BP_predict(uint32_t pc, uint32_t *dst)
 {
+		//find btb index using mask
+	unsigned int num_btb_bits = log2(btbSize);
+	uint32_t btb_mask = (1u << num_bits) - 1;	// Create a mask with 1s in the relevant bits
+	uint32_t btbBits = (pc >> 2) & btb_mask; // Apply the mask to pc after shifting to skip the 2 least significant bits
+	//find tag index using mask
+	uint32_t tag_mask = ((1u << num_tag_bits) - 1) << num_btb_bits;
+	uint32_t tag_bits = (pc >> 2) & tag_mask;
+
+	// Convert into numbers
+	uint32_t btb_index = btbBits;
+	uint32_t tag_index = tag_bits;
+
+	//search for btb row 
+    btb_record *entry = nullptr;
+    for (auto &btb_record : BTB_table) {
+        if (btb_record.tag == tag_index) {
+            entry = &btb_record;
+            break;
+        }
+    }
+
+    // If entry is found and it's taken, predict taken
+    if (entry != nullptr && entry->dst_addr != 0x0) {
+        *dst = entry->dst_addr;
+        return true;
+    }
+
+
+
 	bool prediction = false; 
 	dst = new uint32_t(0x32);
 	return prediction;
@@ -203,8 +232,8 @@ int BP_init(unsigned btbSize, unsigned historySize, unsigned tagSize, unsigned f
 }
 
 bool BP_predict(uint32_t pc, uint32_t *dst){
-	// TBD
-	return false;
+	//TBD
+	return bp.BP_predict(pc, dst);
 }
 
 void BP_update(uint32_t pc, uint32_t targetPc, bool taken, uint32_t S){
