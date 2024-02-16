@@ -84,16 +84,16 @@ class history_record
 struct btb_record
 {
 	/* This is a data structure for a single record in the BTB */
-	uint32_t tag;
+	uint32_t tag; // tag associated with the branch instruction's address.
 	unsigned tag_size; // tag field size in bits
-	uint32_t dst_addr;
-	history_record * history_record_ptr;
+	uint32_t dst_addr; // the target address of the branch instruction.
+	history_record * history_record_ptr; // pointer to object which contains information about the branch history.
 };
 
 class branch_predictor
 {
 	private:
-		std::vector<btb_record> BTB_table; 
+		std::vector<btb_record> BTB_table;  
 		short **bimodal_counters; 
 		unsigned btbSize, historySize, tagSize;
 		bool isGlobalHist, isGlobalTable;
@@ -111,11 +111,26 @@ class branch_predictor
 int branch_predictor::init(unsigned btbSize, unsigned historySize, unsigned tagSize, unsigned fsmState,
 			bool isGlobalHist, bool isGlobalTable, int Shared)
 {
-	/*
-	*
-		< - TBD here : check if all the parameters have valid values
-	*
-	*/
+	// Parameter validation
+    if (btbSize != 1 && btbSize != 2 && btbSize != 4 && btbSize != 8 && btbSize != 16 && btbSize != 32) {
+        printf("Error: Invalid BTB size. BTB size must be 1, 2, 4, 8, 16, or 32.\n");
+        return -1;
+    }
+    if (historySize < 1 || historySize > 8) {
+        printf("Error: Invalid history size. History size must be between 1 and 8 (inclusive).\n");
+        return -1;
+    }
+	unsigned maxTagSize = 30 - log2(btbSize);
+	if (tagSize > maxTagSize) {
+		printf("Error: Invalid tag size. Tag size cannot exceed 30 - log2(btbSize).\n");
+		return -1;
+	}
+	 if (fsmState > 3 || fsmState < 0) {
+        printf("Error: Invalid FSM state. FSM state must be between 0 and 3.\n");
+        return -1;
+    }
+
+
 	share_use = (share_use_method)Shared;
 
 	// BTB init:
