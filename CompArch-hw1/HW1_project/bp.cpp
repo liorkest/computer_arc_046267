@@ -75,6 +75,10 @@ class history_record
 		bool predict (uint32_t pc, share_use_method share_use)
 		{
 			/* need to implement forr all share method options*/
+			//in case of local hist, local 
+
+
+
 			return true;
 		}
 
@@ -114,20 +118,20 @@ int branch_predictor::init(unsigned btbSize, unsigned historySize, unsigned tagS
 	// Parameter validation
     if (btbSize != 1 && btbSize != 2 && btbSize != 4 && btbSize != 8 && btbSize != 16 && btbSize != 32) {
         printf("Error: Invalid BTB size. BTB size must be 1, 2, 4, 8, 16, or 32.\n");
-        return -1;
+        return 0;
     }
     if (historySize < 1 || historySize > 8) {
         printf("Error: Invalid history size. History size must be between 1 and 8 (inclusive).\n");
-        return -1;
+        return 0;
     }
 	unsigned maxTagSize = 30 - log2(btbSize);
 	if (tagSize > maxTagSize) {
 		printf("Error: Invalid tag size. Tag size cannot exceed 30 - log2(btbSize).\n");
-		return -1;
+		return 0;
 	}
 	 if (fsmState > 3 || fsmState < 0) {
         printf("Error: Invalid FSM state. FSM state must be between 0 and 3.\n");
-        return -1;
+        return 0;
     }
 
 
@@ -174,39 +178,45 @@ int branch_predictor::init(unsigned btbSize, unsigned historySize, unsigned tagS
 	return 0;
 }
 
-bool branch_predictor::BP_predict(uint32_t pc, uint32_t *dst)
-{
-		//find btb index using mask
+//function recives pc, returns the BTB idx in that adress
+uint32_t branch_predictor::find_btb_idx(uint32_t pc){
+	//find btb index using mask
 	unsigned int num_btb_bits = log2(btbSize);
 	uint32_t btb_mask = (1u << num_bits) - 1;	// Create a mask with 1s in the relevant bits
 	uint32_t btbBits = (pc >> 2) & btb_mask; // Apply the mask to pc after shifting to skip the 2 least significant bits
+	uint32_t btb_index = btbBits;
+	return btb_index;
+}
+
+//function recives pc, returns the BTB idx in that adress
+uint32_t branch_predictor::find_tag_idx(uint32_t pc){
 	//find tag index using mask
 	uint32_t tag_mask = ((1u << num_tag_bits) - 1) << num_btb_bits;
 	uint32_t tag_bits = (pc >> 2) & tag_mask;
+	int32_t tag_index = tag_bits; // Convert into numbers
+	return tag_index;
+}
 
-	// Convert into numbers
-	uint32_t btb_index = btbBits;
-	uint32_t tag_index = tag_bits;
-
-	//search for btb row 
-    btb_record *entry = nullptr;
-    for (auto &btb_record : BTB_table) {
-        if (btb_record.tag == tag_index) {
-            entry = &btb_record;
-            break;
-        }
-    }
-
-    // If entry is found and it's taken, predict taken
-    if (entry != nullptr && entry->dst_addr != 0x0) {
-        *dst = entry->dst_addr;
-        return true;
-    }
-
-
-
-	bool prediction = false; 
-	dst = new uint32_t(0x32);
+bool branch_predictor::BP_predict(uint32_t pc, uint32_t *dst)
+{
+	uint32_t btb_index = find_btb_idx(pc);
+	uint32_t tag_index = find_tag_idx(pc);
+	//In case the branch is unrecognized 
+	if (BTB_table[btb_index].tag != tag_index)  
+	{
+		dst* = pc + 4;
+		return false;
+	}
+	//reconized branch and local
+	if (BTB_table[btb_index].tag != tag_index)
+		bool prediction = (BTB_table[btb_index].history_record_ptr.predict(pc,share_use));
+	// in case of Taken update according to table, else update as pc+4
+	if (prediction)
+		dst* = BTB_table[btb_index].dst_addr ;
+	else
+		dst* = pc + 4;
+	//bool prediction = false; 
+	//dst = new uint32_t(0x32);
 	return prediction;
 }
 
@@ -232,7 +242,6 @@ int BP_init(unsigned btbSize, unsigned historySize, unsigned tagSize, unsigned f
 }
 
 bool BP_predict(uint32_t pc, uint32_t *dst){
-	//TBD
 	return bp.BP_predict(pc, dst);
 }
 
