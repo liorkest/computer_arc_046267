@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <vector>
 #include <math.h>
-
+#include<iterator> // for iterators
 
 /* Constants and enums definitions */
 const int ADDR_SIZE = 32;
@@ -164,6 +164,7 @@ class branch_predictor
 int branch_predictor::init(unsigned btbSize, unsigned historySize, unsigned tagSize, unsigned fsmState,
 			bool isGlobalHist, bool isGlobalTable, int Shared)
 {
+	branch_num = 0;
 	// Parameter validation
     if (btbSize != 1 && btbSize != 2 && btbSize != 4 && btbSize != 8 && btbSize != 16 && btbSize != 32) {
         printf("Error: Invalid BTB size. BTB size must be 1, 2, 4, 8, 16, or 32.\n");
@@ -227,7 +228,7 @@ int branch_predictor::init(unsigned btbSize, unsigned historySize, unsigned tagS
 		BTB_table.push_back(new_record);
 	}
 
-	printf("Finished initialization of BTB\n");
+	printf("Finished initialization of BTB. length = %d\n", BTB_table.size());
 	return 0;
 }
 
@@ -262,6 +263,8 @@ uint32_t branch_predictor::find_tag_idx(uint32_t pc){
 
 bool branch_predictor::BP_predict(uint32_t pc, uint32_t *dst)
 {
+	branch_num++;
+	
 	uint32_t btb_index = find_btb_idx(pc);
 	uint32_t tag_index = find_tag_idx(pc);
 
@@ -282,7 +285,7 @@ bool branch_predictor::BP_predict(uint32_t pc, uint32_t *dst)
 		printf("No history ptr!\n");
 		return false;
 	}
-	bool prediction = record->predict(pc, share_use, isGlobalTable);
+	bool prediction = record->predict(pc);
 	// in case of Taken update according to table, else update as pc+4
 	if (prediction)
 		*dst = BTB_table[btb_index].dst_addr ;
@@ -304,7 +307,26 @@ void branch_predictor::BP_update(uint32_t pc, uint32_t targetPc, bool taken, uin
 
 void branch_predictor::BP_GetStats(SIM_stats *curStats)
 {
+	curStats->br_num = branch_num;
+	curStats->flush_num = flush_num;
+	int total_size;
+	if (isGlobalHist)
+		if (isGlobalTable)
+			total_size = btbSize * (tagSize + ADDR_SIZE) + historySize + 2 * pow(2, historySize);
+		else // global history, local table
+			total_size = historySize + btbSize * (tagSize + ADDR_SIZE) + btbSize * 2 * pow(2, historySize);
+	else // local hist local table
+		total_size = btbSize * (tagSize + ADDR_SIZE + historySize) + btbSize * 2 * pow(2, historySize);
 
+	curStats->size = total_size;
+
+	std::vector<btb_record>::iterator ptr; 
+	if (isGlobalHist)
+		delete BTB_table[0].history_record_ptr;
+	else
+		for (ptr = BTB_table.begin(); ptr < BTB_table.end(); ptr++) {
+				delete ptr->history_record_ptr;
+		}
 }
 
 
@@ -329,8 +351,9 @@ void BP_update(uint32_t pc, uint32_t targetPc, bool taken, uint32_t pred_dst){
 
 void BP_GetStats(SIM_stats *curStats)
 {
-	
-	return;
+	bp.BP_GetStats(curStats);
+
+
 }
 
 
