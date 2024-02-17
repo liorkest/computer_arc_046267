@@ -49,6 +49,23 @@ class history_record
 		std::vector<bimodal_FSM> * _bimodal_state_vector; // a pointer to a global or private FSM vector
 		
 	public:
+		unsigned int get_fsm_index(uint32_t pc, int using_share) {
+			//////////////   TBD - move to history ///////////
+			if(using_share = 1)
+			{
+				uint32_t pc_share_bits = (pc >> 2) ; // extract the relevent bits for lsb share
+
+				uint16_t row_index = pc_share_bits ^ history; // Perform XOR between pc_share_bit and the history
+				return row_index;
+			}
+			else if(using_share = 2)
+			{
+				return 1;
+			}
+			else 
+				return 0;
+		}
+
 		history_record(unsigned historySize, unsigned fsmState) // in case of local bimodal counters
 		{
 			history = 0x0;
@@ -59,8 +76,6 @@ class history_record
 			history = 0x0;
 			_bimodal_state_vector = global_bimodal_state_vector;
 		}
-		
-		uint32_t get_fsm_index(uint32_t pc, uint32_t btb_index, int using_share);
 
 		std::vector<bimodal_FSM> static * init_fsm_vec(unsigned historySize, unsigned fsmState)
 		{ // this is a helper function, that creates a binomal counters vector, in the size needed according to history size
@@ -78,34 +93,11 @@ class history_record
 
 		bool predict (uint32_t pc, share_use_method share_use)
 		{
-			uint32_t fsm_idx = 
-			/* need to implement forr all share method options*/
+			uint32_t fsm_idx = get_fsm_index(pc, share_use);
 			//in case of local hist, local fsm
-			if(/*!isGlobalHist &&*/ !isGlobalTable && share_use = 0)
-			{
-				std::vector<bimodal_FSM>* fsm_vector = history_record._bimodal_state_vector;
-				if (!fsm_vector) // Check if the FSM vector pointer is valid
-					return false;
-				return (*fsm_vector)[fsm_idx].get_decision();		
-			}
-			//same as above if global/local hist is under history class responsibility
-			//in case of global hist, local fsm
-			if(/*!isGlobalHist &&*/ && !isGlobalTable && share_use = 0)
-			{
-				std::vector<bimodal_FSM>* fsm_vector = history_record._bimodal_state_vector;
-				if (!fsm_vector) // Check if the FSM vector pointer is valid
-					return false;
-				return (*fsm_vector)[fsm_idx].get_decision();		
-			}
-
-			if(/*isGlobalHist &&*/ isGlobalTable && share_use = 1)
-			{
-				std::vector<bimodal_FSM>* fsm_vector = history_record._bimodal_state_vector;
-				if (!fsm_vector) // Check if the FSM vector pointer is valid
-					return false;
-				return (*fsm_vector).get_decision();		
-			}
-
+			if (!_bimodal_state_vector) // Check if the FSM vector pointer is valid
+				return false;
+			return (*_bimodal_state_vector)[fsm_idx].get_decision();		
 		}
 
 
@@ -230,22 +222,6 @@ uint32_t branch_predictor::find_tag_idx(uint32_t pc){
 }
 
 
-uint32_t history_record::get_fsm_index(uint32_t pc, uint32_t btb_index, int using_share) {
-	//////////////   TBD - move to history ///////////
-	if(using_share = 1)
-	{
-		uint32_t pc_share_bits = (pc >> 2) ; // extract the relevent bits for lsb share
-
-		uint16_t row_index = pc_share_bits ^ history; // Perform XOR between pc_share_bit and the history
-		return row_index;
-	}
-	if(using_share = 2)
-	{
-		
-	}
-
-}
-
 
 
 
@@ -271,7 +247,7 @@ bool branch_predictor::BP_predict(uint32_t pc, uint32_t *dst)
 		printf("No history ptr!\n");
 		return false;
 	}
-	bool prediction = record->predict(pc, share_use,btb_index);
+	bool prediction = record->predict(pc, share_use);
 	// in case of Taken update according to table, else update as pc+4
 	if (prediction)
 		*dst = BTB_table[btb_index].dst_addr ;
@@ -317,4 +293,5 @@ void BP_GetStats(SIM_stats *curStats){
 
 	return;
 }
+
 
