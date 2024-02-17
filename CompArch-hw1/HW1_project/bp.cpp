@@ -101,7 +101,7 @@ class history_record
 				return (*fsm_vector).get_decision();		
 			}
 
-
+		}
 
 
 
