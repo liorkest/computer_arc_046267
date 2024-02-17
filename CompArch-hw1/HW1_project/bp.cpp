@@ -72,15 +72,38 @@ class history_record
 			return vec;
 		}
 
-		bool predict (uint32_t pc, share_use_method share_use)
+		bool predict (uint32_t pc, share_use_method share_use, unit32_t btb_idx)
 		{
 			/* need to implement forr all share method options*/
-			//in case of local hist, local 
+			//in case of local hist, local fsm
+			if(/*!isGlobalHist &&*/ !isGlobalTable && share_use = 0)
+			{
+				std::vector<bimodal_FSM>* fsm_vector = history_record._bimodal_state_vector;
+				if (!fsm_vector) // Check if the FSM vector pointer is valid
+					return false;
+				return (*fsm_vector)[btb_idx].get_decision();		
+			}
+			//same as above if global/local hist is under history class responsibility
+			//in case of global hist, local fsm
+			if(/*!isGlobalHist &&*/ && !isGlobalTable && share_use = 0)
+			{
+				std::vector<bimodal_FSM>* fsm_vector = history_record._bimodal_state_vector;
+				if (!fsm_vector) // Check if the FSM vector pointer is valid
+					return false;
+				return (*fsm_vector)[btb_idx].get_decision();		
+			}
+
+			if(/*isGlobalHist &&*/ isGlobalTable && share_use = 1)
+			{
+				std::vector<bimodal_FSM>* fsm_vector = history_record._bimodal_state_vector;
+				if (!fsm_vector) // Check if the FSM vector pointer is valid
+					return false;
+				return (*fsm_vector).get_decision();		
+			}
 
 
 
-			return true;
-		}
+
 
 };
 
@@ -197,19 +220,44 @@ uint32_t branch_predictor::find_tag_idx(uint32_t pc){
 	return tag_index;
 }
 
+uint32_t branch_predictor::share_index(uint32_t pc, uint32_t btb_index, int using_share) {
+	if(using_share = 1)
+	{
+    uint32_t pc_share_bits = (pc >> 2) ; // extract the relevent bits for lsb share
+    uint16_t history = BTB_table[btb_index].history_record_ptr.history;
+    uint16_t row_index = pc_share_bit ^ history; // Perform XOR between pc_share_bit and the history
+    return row_index;
+	}
+	if(using_share = 2)
+	{
+		
+	}
+
+}
+
+
+
+
 bool branch_predictor::BP_predict(uint32_t pc, uint32_t *dst)
 {
 	uint32_t btb_index = find_btb_idx(pc);
 	uint32_t tag_index = find_tag_idx(pc);
-	//In case the branch is unrecognized 
-	if (BTB_table[btb_index].tag != tag_index)  
+
+	
+	if (btb_idx >= btbSize) // Check if btb_idx is within bounds of BTB_table
+	{
+		printf("BTB index out of bounds")
+		return false;
+	}
+	if (BTB_table[btb_index].tag != tag_index)  //In case the branch is unrecognized 
 	{
 		dst* = pc + 4;
 		return false;
 	}
-	//reconized branch and local
-	if (BTB_table[btb_index].tag != tag_index)
-		bool prediction = (BTB_table[btb_index].history_record_ptr.predict(pc,share_use));
+	history_record* record = BTB_table[btb_index].history_record_ptr;
+	if (!record) // Check if the pointer is valid
+		return false;
+	bool prediction = record->predict(pc, share_use,btb_index);
 	// in case of Taken update according to table, else update as pc+4
 	if (prediction)
 		dst* = BTB_table[btb_index].dst_addr ;
