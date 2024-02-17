@@ -60,10 +60,12 @@ class history_record
 			}
 			else if(using_share = 2)
 			{
-				return 1;
+				uint32_t pc_share_bits = (pc >> 16) ; // extract the relevent bits for lsb share
+				uint16_t row_index = pc_share_bits ^ history; // Perform XOR between pc_share_bit and the history
+				return row_index;
 			}
 			else 
-				return 0;
+				return -1;
 		}
 
 		history_record(unsigned historySize, unsigned fsmState) // in case of local bimodal counters
@@ -91,9 +93,20 @@ class history_record
 			return vec;
 		}
 
-		bool predict (uint32_t pc, share_use_method share_use)
+		bool predict (uint32_t pc, share_use_method share_use, bool isGlobalTable)
 		{
 			uint32_t fsm_idx = get_fsm_index(pc, share_use);
+			if(fsm_idx = -1)
+			{
+				if (isGlobalTable)
+				{
+					fsm_idx=0; //only one value in fsm vector
+				}
+				else
+					//fsm_idx = find_btb_idx(uint32_t pc);
+					fsm_idx = history; 
+			}
+			
 			//in case of local hist, local fsm
 			if (!_bimodal_state_vector) // Check if the FSM vector pointer is valid
 				return false;
@@ -155,12 +168,15 @@ int branch_predictor::init(unsigned btbSize, unsigned historySize, unsigned tagS
         return 0;
     }
 
-
+	branch_predictor::btbSize = btbSize;
 	share_use = (share_use_method)Shared;
-
+	branch_predictor::historySize = historySize;
+	branch_predictor::tagSize = tagSize;
+	branch_predictor::isGlobalHist = isGlobalHist;
+	branch_predictor::isGlobalTable = isGlobalTable;
 	// BTB init:
 	BTB_table = std::vector<btb_record>();
-
+	
 	// create global registers if needed
 	std::vector<bimodal_FSM> * bimodal_state_vector_global;
 	if (isGlobalTable) {
@@ -203,10 +219,13 @@ int branch_predictor::init(unsigned btbSize, unsigned historySize, unsigned tagS
 uint32_t branch_predictor::find_btb_idx(uint32_t pc){
 	//find btb index using mask
 	unsigned int num_btb_bits = log2(btbSize);
+	printf("num_btb_bits: %u\n", num_btb_bits);
 	uint32_t btb_mask = (1u << num_btb_bits) - 1;	// Create a mask with 1s in the relevant bits
+	printf("btb_mask: %u\n", btb_mask);
 	uint32_t btbBits = (pc >> 2) & btb_mask; // Apply the mask to pc after shifting to skip the 2 least significant bits
+	printf("btbBits %u\n", btbBits);
 	uint32_t btb_index = btbBits;
-
+	printf("btb_index: %u\n", btb_index);
 
 	return btb_index;
 }
@@ -247,7 +266,7 @@ bool branch_predictor::BP_predict(uint32_t pc, uint32_t *dst)
 		printf("No history ptr!\n");
 		return false;
 	}
-	bool prediction = record->predict(pc, share_use);
+	bool prediction = record->predict(pc, share_use, isGlobalTable);
 	// in case of Taken update according to table, else update as pc+4
 	if (prediction)
 		*dst = BTB_table[btb_index].dst_addr ;
@@ -288,9 +307,9 @@ void BP_update(uint32_t pc, uint32_t targetPc, bool taken, uint32_t S){
 	return;
 }
 
-void BP_GetStats(SIM_stats *curStats){
-		// TBD
-
+void BP_GetStats(SIM_stats *curStats)
+{
+	
 	return;
 }
 
