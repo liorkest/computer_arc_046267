@@ -232,18 +232,13 @@ int branch_predictor::init(unsigned btbSize, unsigned historySize, unsigned tagS
 	return 0;
 }
 
-//function recives pc, returns the BTB idx in that adress
+//function recives pc, returns the BTB idx in that adress, Tested
 uint32_t branch_predictor::find_btb_idx(uint32_t pc){
 	//find btb index using mask
-	unsigned int num_btb_bits = log2(btbSize);
-	printf("num_btb_bits: %u\n", num_btb_bits);
+    unsigned int num_btb_bits = (btbSize == 1) ? 1 : log2(btbSize);
 	uint32_t btb_mask = (1u << num_btb_bits) - 1;	// Create a mask with 1s in the relevant bits
-	printf("btb_mask: %u\n", btb_mask);
 	uint32_t btbBits = (pc >> 2) & btb_mask; // Apply the mask to pc after shifting to skip the 2 least significant bits
-	printf("btbBits %u\n", btbBits);
 	uint32_t btb_index = btbBits;
-	printf("btb_index: %u\n", btb_index);
-
 	return btb_index;
 }
 
