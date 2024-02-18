@@ -245,9 +245,9 @@ uint32_t branch_predictor::find_btb_idx(uint32_t pc){
 //function recives pc, returns the BTB idx in that adress
 uint32_t branch_predictor::find_tag_idx(uint32_t pc){
 	//find tag index using mask
-	unsigned int num_btb_bits = log2(btbSize);
-	uint32_t tag_mask = ((1u << tagSize) - 1) << num_btb_bits;
-	uint32_t tag_bits = (pc >> 2) & tag_mask;
+	 unsigned int num_btb_bits = (btbSize == 1) ? 1 : log2(btbSize);
+	uint32_t tag_mask = ((1u << tagSize) - 1)  ;
+	uint32_t tag_bits = (pc >> (2+ num_btb_bits)) & tag_mask;
 	int32_t tag_index = tag_bits; // Convert into numbers
 	return tag_index;
 }
