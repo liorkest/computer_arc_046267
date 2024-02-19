@@ -308,11 +308,11 @@ void branch_predictor::BP_GetStats(SIM_stats *curStats)
 	int total_size;
 	if (isGlobalHist)
 		if (isGlobalTable)
-			total_size = btbSize * (tagSize + ADDR_SIZE) + historySize + 2 * pow(2, historySize);
+			total_size = btbSize * (tagSize + 31 /*ADDR_SIZE*/) + historySize + 2 * pow(2, historySize);
 		else // global history, local table
-			total_size = historySize + btbSize * (tagSize + ADDR_SIZE) + btbSize * 2 * pow(2, historySize);
+			total_size = historySize + btbSize * (tagSize + 31 /*ADDR_SIZE*/) + btbSize * 2 * pow(2, historySize);
 	else // local hist local table
-		total_size = btbSize * (tagSize + ADDR_SIZE + historySize) + btbSize * 2 * pow(2, historySize);
+		total_size = btbSize * (tagSize + 31 /*ADDR_SIZE*/ + historySize) + btbSize * 2 * pow(2, historySize);
 
 	curStats->size = total_size;
 
