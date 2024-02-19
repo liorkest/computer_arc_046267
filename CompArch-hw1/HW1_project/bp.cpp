@@ -58,7 +58,7 @@ class history_record
 				uint16_t row_index = pc_share_bits ^ history; // Perform XOR between pc_share_bit and the history
 				return row_index;
 			}
-			else if(_share_use = using_share_mid)
+			else if(_share_use == using_share_mid)
 			{
 				uint32_t pc_share_bits = (pc >> 16) ; // extract the relevent bits for lsb share
 				uint16_t row_index = pc_share_bits ^ history; // Perform XOR between pc_share_bit and the history
