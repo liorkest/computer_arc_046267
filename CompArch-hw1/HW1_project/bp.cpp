@@ -293,7 +293,7 @@ bool branch_predictor::BP_predict(uint32_t pc, uint32_t *dst)
 void branch_predictor::BP_update(uint32_t pc, uint32_t targetPc, bool taken, uint32_t pred_dst)
 {
 	int index = find_btb_idx(pc);
-	if (targetPc != pred_dst) {
+	if( ((targetPc != pred_dst) && taken) || ((pred_dst != pc + 4) && !taken) ) {
 		flush_num++;
 	} 
 	BTB_table[index].dst_addr = targetPc;
