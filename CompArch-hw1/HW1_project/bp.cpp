@@ -315,7 +315,8 @@ void branch_predictor::BP_GetStats(SIM_stats *curStats)
 		total_size = btbSize * (tagSize + 31 /*ADDR_SIZE*/ + historySize) + btbSize * 2 * pow(2, historySize);
 
 	curStats->size = total_size;
-
+}
+/*
 	std::vector<btb_record>::iterator ptr; 
 	if (isGlobalHist)
 		delete BTB_table[0].history_record_ptr;
@@ -325,7 +326,7 @@ void branch_predictor::BP_GetStats(SIM_stats *curStats)
 		}
 }
 
-
+*/
 
 
 // Functions implementation for the given interface:
