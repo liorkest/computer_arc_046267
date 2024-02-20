@@ -129,6 +129,9 @@ class history_record
 				history = history + 1u;
 		}
 
+		~history_record(){
+			delete _bimodal_state_vector;
+		}
 };
 
 
@@ -228,7 +231,7 @@ int branch_predictor::init(unsigned btbSize, unsigned historySize, unsigned tagS
 		BTB_table.push_back(new_record);
 	}
 
-	printf("Finished initialization of BTB. length = %d\n", BTB_table.size());
+	printf("Finished initialization of BTB. length = %d\n", (int)BTB_table.size());
 	return 0;
 }
 
