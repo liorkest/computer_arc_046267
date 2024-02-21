@@ -9,8 +9,8 @@
 
 /* Constants and enums definitions */
 const int ADDR_SIZE = 32;
-enum share_use_method { not_using_share = 0, using_share_lsb = 1, using_share_mid = 2 };
-enum bimodal_state { SNT = 0, WNT = 1, WT = 2, ST = 3};
+enum share_use_method { not_using_share = 0u, using_share_lsb = 1u, using_share_mid = 2u };
+enum bimodal_state { SNT = 0u, WNT = 1u, WT = 2u, ST = 3u};
 
 class bimodal_FSM
 {
@@ -21,14 +21,12 @@ class bimodal_FSM
 		int _s;
 		int _default;
 	public:
-		bimodal_FSM() {		
+		bimodal_FSM() {	
+			_s = WNT; // just a default	
 		}
 		bimodal_FSM(unsigned int s) {
-			_s = (int)s;
-			_default = (int)s;
-		}
-		void set_state(bimodal_state s){
-			_s = (int)s;
+			_s = s;
+			_default = s;
 		}
 		void change_state_NT() { _s--; if (_s < 0) _s = 0; }
 		void change_state_T() { _s++; if (_s > 3) _s = 3; }
@@ -44,7 +42,7 @@ class history_record
 		This class represents a single history register, which is linked to FSMs
 	*/
 	private:
-		uint16_t history; // binary history 0101 = NT,T,NT,T lsb is most recent
+		uint32_t history; // binary history 0101 = NT,T,NT,T lsb is most recent
 		std::vector<bimodal_FSM> * _bimodal_state_vector; // a pointer to a global or private FSM vector
 		share_use_method _share_use;
 		bool _isGlobalTable;
@@ -55,13 +53,13 @@ class history_record
 			{
 				uint32_t pc_share_bits = (pc >> 2) ; // extract the relevent bits for lsb share
 
-				uint16_t row_index = pc_share_bits ^ history; // Perform XOR between pc_share_bit and the history
+				uint32_t row_index = pc_share_bits ^ history; // Perform XOR between pc_share_bit and the history
 				return row_index;
 			}
 			else if(_share_use == using_share_mid)
 			{
 				uint32_t pc_share_bits = (pc >> 16) ; // extract the relevent bits for lsb share
-				uint16_t row_index = pc_share_bits ^ history; // Perform XOR between pc_share_bit and the history
+				uint32_t row_index = pc_share_bits ^ history; // Perform XOR between pc_share_bit and the history
 				return row_index;
 			}
 			else 
@@ -78,14 +76,14 @@ class history_record
 
 		history_record(unsigned historySize, unsigned fsmState, share_use_method share_use, bool isGlobalTable) // in case of local bimodal counters
 		{
-			history = 0x0;
+			history = 0u;
 			_share_use = share_use;
 			_isGlobalTable = isGlobalTable;
 			_bimodal_state_vector = init_fsm_vec(historySize, fsmState);
 		}
 		history_record(unsigned historySize, unsigned fsmState, std::vector<bimodal_FSM> *global_bimodal_state_vector, share_use_method share_use, bool isGlobalTable) // in case of global bimodal counters
 		{
-			history = 0x0;
+			history = 0u;
 			_share_use = share_use;
 			_isGlobalTable = isGlobalTable;
 			_bimodal_state_vector = global_bimodal_state_vector;
@@ -96,12 +94,13 @@ class history_record
 		  // returns a pointer to this vector
 		  // this function is called once (if global) or multiple times by each history record (if local)
 			size_t bimodal_state_vector_size = pow(2, historySize);
-			std::vector<bimodal_FSM> *vec = new std::vector<bimodal_FSM>(bimodal_state_vector_size);
+			std::vector<bimodal_FSM> * vec = new std::vector<bimodal_FSM>();
 			for (unsigned int i=0; i<bimodal_state_vector_size; i++)
 			{
-				bimodal_FSM fsm(fsmState);
-				vec->push_back(fsm);
+				bimodal_FSM b(fsmState);
+				vec->push_back(b);
 			}
+			printf("expected: %d \n real std::vector<bimodal_FSM> size = %d\n", bimodal_state_vector_size, (int)vec->size());
 			return vec;
 		}
 
@@ -128,15 +127,21 @@ class history_record
 			if(taken)
 				history = history + 1u;
 		}
-
-		~history_record(){
+		void delete_bimodal_state_vector()
+		{ // called once, if global!
 			delete _bimodal_state_vector;
+		}
+		~history_record()
+		{
+			if (!_isGlobalTable)
+				delete _bimodal_state_vector;
 		}
 };
 
 
-struct btb_record
+class btb_record
 {
+	public:
 	/* This is a data structure for a single record in the BTB */
 	uint32_t tag; // tag associated with the branch instruction's address.
 	unsigned tag_size; // tag field size in bits
@@ -148,7 +153,6 @@ class branch_predictor
 {
 	private:
 		std::vector<btb_record> BTB_table;  
-		short **bimodal_counters; 
 		unsigned btbSize, historySize, tagSize;
 		bool isGlobalHist, isGlobalTable;
 		share_use_method share_use;
@@ -193,15 +197,12 @@ int branch_predictor::init(unsigned btbSize, unsigned historySize, unsigned tagS
 	branch_predictor::tagSize = tagSize;
 	branch_predictor::isGlobalHist = isGlobalHist;
 	branch_predictor::isGlobalTable = isGlobalTable;
-	
-	// BTB init:
-	BTB_table = std::vector<btb_record>();
-	
+		
 	// create global registers if needed
 	std::vector<bimodal_FSM> * bimodal_state_vector_global;
 	if (isGlobalTable) {
 		// one FSM table for all history registers
-		bimodal_state_vector_global = history_record::init_fsm_vec(historySize, fsmState);
+		bimodal_state_vector_global = history_record::init_fsm_vec(historySize, fsmState);;
 	}
 	history_record *history_record_ptr_global;
 	if (isGlobalHist) { 
@@ -301,7 +302,8 @@ void branch_predictor::BP_update(uint32_t pc, uint32_t targetPc, bool taken, uin
 		flush_num++;
 	} 
 	BTB_table[index].dst_addr = targetPc;
-	BTB_table[index].history_record_ptr->update_record(pc, taken);
+	if (BTB_table[index].history_record_ptr)
+		BTB_table[index].history_record_ptr->update_record(pc, taken);
 }
 
 void branch_predictor::BP_GetStats(SIM_stats *curStats)
@@ -318,18 +320,17 @@ void branch_predictor::BP_GetStats(SIM_stats *curStats)
 		total_size = btbSize * (tagSize + 31 /*ADDR_SIZE*/ + historySize) + btbSize * 2 * pow(2, historySize);
 
 	curStats->size = total_size;
-}
-/*
-	std::vector<btb_record>::iterator ptr; 
-	if (isGlobalHist)
+
+	// free allocated memory:
+	if (isGlobalHist) { 
+		// one history for all
+		if (isGlobalTable)
+			 BTB_table[0].history_record_ptr->delete_bimodal_state_vector();
+		// delete global hist
 		delete BTB_table[0].history_record_ptr;
-	else
-		for (ptr = BTB_table.begin(); ptr < BTB_table.end(); ptr++) {
-				delete ptr->history_record_ptr;
-		}
+	}
 }
 
-*/
 
 
 // Functions implementation for the given interface:
