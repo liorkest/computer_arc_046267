@@ -41,5 +41,12 @@
         "xstring": "cpp"
     },
     "cmake.options.statusBarVisibility": "visible",
-    "makefile.makefilePath": "CompArch-hw1\\makefile"
+    "makefile.makefilePath": "CompArch-hw1\\makefile",
+    "makefile.launchConfigurations": [
+        {
+            "cwd": "c:\\Users\\gandalf\\Desktop\\computer_arc_046267\\CompArch-hw1",
+            "binaryPath": "c:\\Users\\gandalf\\Desktop\\computer_arc_046267\\CompArch-hw1\\bp_main.exe",
+            "binaryArgs": []
+        }
+    ]
 }

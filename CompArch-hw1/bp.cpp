@@ -100,7 +100,7 @@ class history_record
 				bimodal_FSM b(fsmState);
 				vec->push_back(b);
 			}
-			printf("expected: %d \n real std::vector<bimodal_FSM> size = %d\n", bimodal_state_vector_size, (int)vec->size());
+			printf("expected: %d \n real std::vector<bimodal_FSM> size = %d\n", (int)bimodal_state_vector_size, (int)vec->size());
 			return vec;
 		}
 
