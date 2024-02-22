@@ -129,7 +129,7 @@ class history_record
 		{ // called once, if global!
 			delete _bimodal_state_vector;
 		}
-		~history_record()
+		~ history_record()
 		{
 			if (!_isGlobalTable)
 				delete _bimodal_state_vector;

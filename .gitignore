@@ -4,3 +4,6 @@ CompArch-hw1/HW1_project/bp_main.exe
 CompArch-hw1/HW1_project/bp.o
 CompArch-hw1/HW1_project/example1.trc
 .vscode/c_cpp_properties.json
+bp.o
+bp_main.exe
+bp_main.exe
