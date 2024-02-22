@@ -39,5 +39,8 @@
         "xlocinfo": "cpp",
         "xlocnum": "cpp",
         "xstring": "cpp"
-    }
+    },
+    "cmake.options.statusBarVisibility": "visible",
+    "makefile.makePath": "",
+    "makefile.makefilePath": "CompArch-hw1\\HW1_project\\makefile"
 }
