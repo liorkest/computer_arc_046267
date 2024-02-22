@@ -13,7 +13,7 @@ CXXFLAGS = -std=c++11 -Wall
 
 # Automatically detect whether the bp is C or C++
 # Must have either bp.c or bp.cpp - NOT both
-SRC_BP = $(wildcard \CompArch-hw1\bp.c \CompArch-hw1\bp.cpp)
+SRC_BP = $(wildcard bp.c bp.cpp)
 SRC_GIVEN = bp_main.c
 EXTRA_DEPS = bp_api.h
 
@@ -36,11 +36,11 @@ bp_main: $(OBJ)
 	$(CXX) -o $@ $(OBJ)
 
 bp.o: bp.cpp
-	$(CXX) -c -g $(CXXFLAGS)  -o $@ $^ -lm
+	$(CXX) -c $(CXXFLAGS)  -o $@ $^ -lm
 endif
 
 $(OBJ_GIVEN): %.o: %.c
-	$(CC) -c $(CFLAGS)  -o $@ $^ -lm
+	$(CC) -c -g $(CFLAGS)  -o $@ $^ -lm
 
 
 .PHONY: clean
