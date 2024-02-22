@@ -8,7 +8,7 @@
             "name": "(gdb) Launch",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${cwd}/bp_main.exe",
+            "program": "bp_main.exe",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",
