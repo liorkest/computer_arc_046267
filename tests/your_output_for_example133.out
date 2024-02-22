@@ -1,0 +1,210 @@
+expected: 64 
+ real std::vector<bimodal_FSM> size = 64
+Finished initialization of BTB. length = 1
+0x9294 BTB index out of boundsN 0x0
+PC: 0x9294, Target PC: 0xb1500, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 0
+0x9294 BTB index out of boundsN 0x0
+PC: 0x9294, Target PC: 0xb1500, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 1
+0x75b464 BTB index out of boundsN 0x0
+PC: 0x75b464, Target PC: 0x290, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 2
+0xaed268 N 0xaed26c
+PC: 0xaed268, Target PC: 0xaa8ad008, Predicted Dest Addr: 0xaed26c, Taken: True, Flush Num: 3
+0x832c8 N 0x832cc
+PC: 0x832c8, Target PC: 0xb14864c, Predicted Dest Addr: 0x832cc, Taken: False, Flush Num: 4
+0x832c8 N 0x832cc
+PC: 0x832c8, Target PC: 0xb14864c, Predicted Dest Addr: 0x832cc, Taken: False, Flush Num: 4
+0xec BTB index out of boundsN 0x0
+PC: 0xec, Target PC: 0x414718d4, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 4
+0xec BTB index out of boundsN 0x0
+PC: 0xec, Target PC: 0x414718d4, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 5
+0x75b464 BTB index out of boundsN 0x0
+PC: 0x75b464, Target PC: 0x290, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 6
+0xec BTB index out of boundsN 0x0
+PC: 0xec, Target PC: 0x414718d4, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 7
+0x75b464 BTB index out of boundsN 0x0
+PC: 0x75b464, Target PC: 0x290, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 8
+0xea4afc BTB index out of boundsN 0x0
+PC: 0xea4afc, Target PC: 0x17a2484, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 9
+0x75b464 BTB index out of boundsN 0x0
+PC: 0x75b464, Target PC: 0x290, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 10
+0x9294 BTB index out of boundsN 0x0
+PC: 0x9294, Target PC: 0xb1500, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 11
+0x75b88 N 0x75b8c
+PC: 0x75b88, Target PC: 0x72f47b7c, Predicted Dest Addr: 0x75b8c, Taken: True, Flush Num: 12
+0x75b464 BTB index out of boundsN 0x0
+PC: 0x75b464, Target PC: 0x290, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 13
+0x9294 BTB index out of boundsN 0x0
+PC: 0x9294, Target PC: 0xb1500, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 14
+0x9294 BTB index out of boundsN 0x0
+PC: 0x9294, Target PC: 0xb1500, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 15
+0xc3c7b0 N 0xc3c7b4
+PC: 0xc3c7b0, Target PC: 0xf4c, Predicted Dest Addr: 0xc3c7b4, Taken: False, Flush Num: 16
+0xaed268 N 0xaed26c
+PC: 0xaed268, Target PC: 0xaa8ad008, Predicted Dest Addr: 0xaed26c, Taken: True, Flush Num: 16
+0x832c8 N 0x832cc
+PC: 0x832c8, Target PC: 0xb14864c, Predicted Dest Addr: 0x832cc, Taken: True, Flush Num: 17
+0x9294 BTB index out of boundsN 0x0
+PC: 0x9294, Target PC: 0xb1500, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 18
+0xea4afc BTB index out of boundsN 0x0
+PC: 0xea4afc, Target PC: 0x17a2484, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 19
+0xea4afc BTB index out of boundsN 0x0
+PC: 0xea4afc, Target PC: 0x17a2484, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 20
+0x832c8 N 0x832cc
+PC: 0x832c8, Target PC: 0xb14864c, Predicted Dest Addr: 0x832cc, Taken: True, Flush Num: 21
+0x75b88 N 0x75b8c
+PC: 0x75b88, Target PC: 0x72f47b7c, Predicted Dest Addr: 0x75b8c, Taken: False, Flush Num: 22
+0xecca6a44 BTB index out of boundsN 0x0
+PC: 0xecca6a44, Target PC: 0xbc51c, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 22
+0xec BTB index out of boundsN 0x0
+PC: 0xec, Target PC: 0x414718d4, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 23
+0x75b464 BTB index out of boundsN 0x0
+PC: 0x75b464, Target PC: 0x290, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 24
+0xaa210 N 0xaa214
+PC: 0xaa210, Target PC: 0x2cf3340, Predicted Dest Addr: 0xaa214, Taken: False, Flush Num: 25
+0x75b88 N 0x75b8c
+PC: 0x75b88, Target PC: 0x72f47b7c, Predicted Dest Addr: 0x75b8c, Taken: True, Flush Num: 25
+0xea4afc BTB index out of boundsN 0x0
+PC: 0xea4afc, Target PC: 0x17a2484, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 26
+0xecca6a44 BTB index out of boundsN 0x0
+PC: 0xecca6a44, Target PC: 0xbc51c, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 27
+0xaa210 N 0xaa214
+PC: 0xaa210, Target PC: 0x2cf3340, Predicted Dest Addr: 0xaa214, Taken: False, Flush Num: 28
+0x832c8 N 0x832cc
+PC: 0x832c8, Target PC: 0xb14864c, Predicted Dest Addr: 0x832cc, Taken: True, Flush Num: 28
+0xc3c7b0 N 0xc3c7b4
+PC: 0xc3c7b0, Target PC: 0xf4c, Predicted Dest Addr: 0xc3c7b4, Taken: False, Flush Num: 29
+0xecca6a44 BTB index out of boundsN 0x0
+PC: 0xecca6a44, Target PC: 0xbc51c, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 29
+0x9294 BTB index out of boundsN 0x0
+PC: 0x9294, Target PC: 0xb1500, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 30
+0x75b88 N 0x75b8c
+PC: 0x75b88, Target PC: 0x72f47b7c, Predicted Dest Addr: 0x75b8c, Taken: True, Flush Num: 31
+0xecca6a44 BTB index out of boundsN 0x0
+PC: 0xecca6a44, Target PC: 0xbc51c, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 32
+0xaed268 N 0xaed26c
+PC: 0xaed268, Target PC: 0xaa8ad008, Predicted Dest Addr: 0xaed26c, Taken: False, Flush Num: 33
+0x75b88 N 0x75b8c
+PC: 0x75b88, Target PC: 0x72f47b7c, Predicted Dest Addr: 0x75b8c, Taken: True, Flush Num: 33
+0xc3c7b0 N 0xc3c7b4
+PC: 0xc3c7b0, Target PC: 0xf4c, Predicted Dest Addr: 0xc3c7b4, Taken: True, Flush Num: 34
+0xaed268 N 0xaed26c
+PC: 0xaed268, Target PC: 0xaa8ad008, Predicted Dest Addr: 0xaed26c, Taken: True, Flush Num: 35
+0xec BTB index out of boundsN 0x0
+PC: 0xec, Target PC: 0x414718d4, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 36
+0xaa210 N 0xaa214
+PC: 0xaa210, Target PC: 0x2cf3340, Predicted Dest Addr: 0xaa214, Taken: False, Flush Num: 37
+0xaed268 N 0xaed26c
+PC: 0xaed268, Target PC: 0xaa8ad008, Predicted Dest Addr: 0xaed26c, Taken: False, Flush Num: 37
+0xecca6a44 BTB index out of boundsN 0x0
+PC: 0xecca6a44, Target PC: 0xbc51c, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 37
+0xec BTB index out of boundsN 0x0
+PC: 0xec, Target PC: 0x414718d4, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 38
+0xaed268 N 0xaed26c
+PC: 0xaed268, Target PC: 0xaa8ad008, Predicted Dest Addr: 0xaed26c, Taken: True, Flush Num: 39
+0x9294 BTB index out of boundsN 0x0
+PC: 0x9294, Target PC: 0xb1500, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 40
+0x75b88 N 0x75b8c
+PC: 0x75b88, Target PC: 0x72f47b7c, Predicted Dest Addr: 0x75b8c, Taken: True, Flush Num: 41
+0xc3c7b0 N 0xc3c7b4
+PC: 0xc3c7b0, Target PC: 0xf4c, Predicted Dest Addr: 0xc3c7b4, Taken: True, Flush Num: 42
+0xecca6a44 BTB index out of boundsN 0x0
+PC: 0xecca6a44, Target PC: 0xbc51c, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 43
+0x75b464 BTB index out of boundsN 0x0
+PC: 0x75b464, Target PC: 0x290, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 44
+0xea4afc BTB index out of boundsN 0x0
+PC: 0xea4afc, Target PC: 0x17a2484, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 45
+0x75b88 N 0x75b8c
+PC: 0x75b88, Target PC: 0x72f47b7c, Predicted Dest Addr: 0x75b8c, Taken: False, Flush Num: 46
+0x9294 BTB index out of boundsN 0x0
+PC: 0x9294, Target PC: 0xb1500, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 46
+0x832c8 N 0x832cc
+PC: 0x832c8, Target PC: 0xb14864c, Predicted Dest Addr: 0x832cc, Taken: False, Flush Num: 47
+0xea4afc BTB index out of boundsN 0x0
+PC: 0xea4afc, Target PC: 0x17a2484, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 47
+0xaa210 N 0xaa214
+PC: 0xaa210, Target PC: 0x2cf3340, Predicted Dest Addr: 0xaa214, Taken: True, Flush Num: 48
+0x75b88 N 0x75b8c
+PC: 0x75b88, Target PC: 0x72f47b7c, Predicted Dest Addr: 0x75b8c, Taken: True, Flush Num: 49
+0xaed268 N 0xaed26c
+PC: 0xaed268, Target PC: 0xaa8ad008, Predicted Dest Addr: 0xaed26c, Taken: True, Flush Num: 50
+0x75b88 N 0x75b8c
+PC: 0x75b88, Target PC: 0x72f47b7c, Predicted Dest Addr: 0x75b8c, Taken: True, Flush Num: 51
+0xecca6a44 BTB index out of boundsN 0x0
+PC: 0xecca6a44, Target PC: 0xbc51c, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 52
+0x75b464 BTB index out of boundsN 0x0
+PC: 0x75b464, Target PC: 0x290, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 53
+0xec BTB index out of boundsN 0x0
+PC: 0xec, Target PC: 0x414718d4, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 54
+0xaa210 N 0xaa214
+PC: 0xaa210, Target PC: 0x2cf3340, Predicted Dest Addr: 0xaa214, Taken: False, Flush Num: 55
+0x75b88 N 0x75b8c
+PC: 0x75b88, Target PC: 0x72f47b7c, Predicted Dest Addr: 0x75b8c, Taken: True, Flush Num: 55
+0xec BTB index out of boundsN 0x0
+PC: 0xec, Target PC: 0x414718d4, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 56
+0x832c8 N 0x832cc
+PC: 0x832c8, Target PC: 0xb14864c, Predicted Dest Addr: 0x832cc, Taken: False, Flush Num: 57
+0x9294 BTB index out of boundsN 0x0
+PC: 0x9294, Target PC: 0xb1500, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 57
+0x75b464 BTB index out of boundsN 0x0
+PC: 0x75b464, Target PC: 0x290, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 58
+0xc3c7b0 N 0xc3c7b4
+PC: 0xc3c7b0, Target PC: 0xf4c, Predicted Dest Addr: 0xc3c7b4, Taken: False, Flush Num: 59
+0xaa210 N 0xaa214
+PC: 0xaa210, Target PC: 0x2cf3340, Predicted Dest Addr: 0xaa214, Taken: True, Flush Num: 59
+0x9294 BTB index out of boundsN 0x0
+PC: 0x9294, Target PC: 0xb1500, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 60
+0xec BTB index out of boundsN 0x0
+PC: 0xec, Target PC: 0x414718d4, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 61
+0x832c8 N 0x832cc
+PC: 0x832c8, Target PC: 0xb14864c, Predicted Dest Addr: 0x832cc, Taken: True, Flush Num: 62
+0xaa210 N 0xaa214
+PC: 0xaa210, Target PC: 0x2cf3340, Predicted Dest Addr: 0xaa214, Taken: False, Flush Num: 63
+0xec BTB index out of boundsN 0x0
+PC: 0xec, Target PC: 0x414718d4, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 63
+0xaed268 N 0xaed26c
+PC: 0xaed268, Target PC: 0xaa8ad008, Predicted Dest Addr: 0xaed26c, Taken: True, Flush Num: 64
+0x75b88 N 0x75b8c
+PC: 0x75b88, Target PC: 0x72f47b7c, Predicted Dest Addr: 0x75b8c, Taken: False, Flush Num: 65
+0xaed268 N 0xaed26c
+PC: 0xaed268, Target PC: 0xaa8ad008, Predicted Dest Addr: 0xaed26c, Taken: False, Flush Num: 65
+0x832c8 N 0x832cc
+PC: 0x832c8, Target PC: 0xb14864c, Predicted Dest Addr: 0x832cc, Taken: True, Flush Num: 65
+0x75b464 BTB index out of boundsN 0x0
+PC: 0x75b464, Target PC: 0x290, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 66
+0xea4afc BTB index out of boundsN 0x0
+PC: 0xea4afc, Target PC: 0x17a2484, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 67
+0x75b464 BTB index out of boundsN 0x0
+PC: 0x75b464, Target PC: 0x290, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 68
+0x75b88 N 0x75b8c
+PC: 0x75b88, Target PC: 0x72f47b7c, Predicted Dest Addr: 0x75b8c, Taken: True, Flush Num: 69
+0x75b88 N 0x75b8c
+PC: 0x75b88, Target PC: 0x72f47b7c, Predicted Dest Addr: 0x75b8c, Taken: True, Flush Num: 70
+0xc3c7b0 N 0xc3c7b4
+PC: 0xc3c7b0, Target PC: 0xf4c, Predicted Dest Addr: 0xc3c7b4, Taken: True, Flush Num: 71
+0xea4afc BTB index out of boundsN 0x0
+PC: 0xea4afc, Target PC: 0x17a2484, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 72
+0x75b464 BTB index out of boundsN 0x0
+PC: 0x75b464, Target PC: 0x290, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 73
+0xec BTB index out of boundsN 0x0
+PC: 0xec, Target PC: 0x414718d4, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 74
+0x9294 BTB index out of boundsN 0x0
+PC: 0x9294, Target PC: 0xb1500, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 75
+0x9294 BTB index out of boundsN 0x0
+PC: 0x9294, Target PC: 0xb1500, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 76
+0x75b464 BTB index out of boundsN 0x0
+PC: 0x75b464, Target PC: 0x290, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 77
+0x75b464 BTB index out of boundsN 0x0
+PC: 0x75b464, Target PC: 0x290, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 78
+0xec BTB index out of boundsN 0x0
+PC: 0xec, Target PC: 0x414718d4, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 79
+0xec BTB index out of boundsN 0x0
+PC: 0xec, Target PC: 0x414718d4, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 80
+0x832c8 N 0x832cc
+PC: 0x832c8, Target PC: 0xb14864c, Predicted Dest Addr: 0x832cc, Taken: True, Flush Num: 81
+0xaed268 N 0xaed26c
+PC: 0xaed268, Target PC: 0xaa8ad008, Predicted Dest Addr: 0xaed26c, Taken: True, Flush Num: 82
+0xecca6a44 BTB index out of boundsN 0x0
+PC: 0xecca6a44, Target PC: 0xbc51c, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 83
+0x9294 BTB index out of boundsN 0x0
+PC: 0x9294, Target PC: 0xb1500, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 84
+0x75b

@@ -1,0 +1,2 @@
+expected: 256 
+ real std::vector<bimodal_FSM> size = 256

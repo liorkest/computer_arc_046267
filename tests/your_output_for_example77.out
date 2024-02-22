@@ -1,0 +1,4 @@
+expected: 8 
+ real std::vector<bimodal_FSM> size = 8
+expected: 8 
+ real std::vector<bimodal_FSM> size = 8
