@@ -146,7 +146,12 @@ class btb_record
 	uint32_t tag; // tag associated with the branch instruction's address.
 	unsigned tag_size; // tag field size in bits
 	uint32_t dst_addr; // the target address of the branch instruction.
+	bool isGlobalHist;
 	history_record * history_record_ptr; // pointer to object which contains information about the branch history.
+	~btb_record(){
+		if(!isGlobalHist)
+			delete history_record_ptr;
+	}
 };
 
 class branch_predictor
