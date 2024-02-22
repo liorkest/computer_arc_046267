@@ -8,14 +8,13 @@
             "name": "(gdb) Launch",
             "type": "cppdbg",
             "request": "launch",
-            "program": "bp_main.exe",
-            "args": [],
+            "program": "${cwd}/bp_main.exe",
+            "args": ["${cwd}/input_examples/example1.trc"],
             "stopAtEntry": false,
-            "cwd": "${fileDirname}",
+            "cwd": "C:/Users/gandalf/Desktop/computer_arc_046267/",
             "environment": [],
             "externalConsole": false,
             "MIMode": "gdb",
-            "miDebuggerPath": "/path/to/gdb",
             "setupCommands": [
                 {
                     "description": "Enable pretty-printing for gdb",

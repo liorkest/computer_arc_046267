@@ -36,7 +36,7 @@ bp_main: $(OBJ)
 	$(CXX) -o $@ $(OBJ)
 
 bp.o: bp.cpp
-	$(CXX) -c $(CXXFLAGS)  -o $@ $^ -lm
+	$(CXX) -c -g $(CXXFLAGS)  -o $@ $^ -lm
 endif
 
 $(OBJ_GIVEN): %.o: %.c
