@@ -46,7 +46,7 @@
         {
             "cwd": "c:\\Users\\gandalf\\Desktop\\computer_arc_046267\\CompArch-hw1",
             "binaryPath": "c:\\Users\\gandalf\\Desktop\\computer_arc_046267\\CompArch-hw1\\bp_main.exe",
-            "binaryArgs": []
+            "binaryArgs": ["c:\\Users\\gandalf\\Desktop\\computer_arc_046267\\CompArch-hw1\\input_examples\\example1.trc"]
         }
     ]
 }
