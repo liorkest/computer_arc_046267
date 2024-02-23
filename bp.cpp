@@ -172,18 +172,30 @@ class btb_record
 			history_record_ptr->update_record(pc, taken);
 	}
 
-	bool predict(uint32_t pc, uint32_t * dst){
+	bool predict(uint32_t pc, uint32_t * dst, uint32_t tag_index){
+
 		if (!history_record_ptr) { // Check if the pointer is valid
 			printf("No history ptr!\n");
 			return false;
 		}
+		
+		if(!valid || tag_index != tag ){
+			*dst = pc + 4;
+			return false;
+		}
+
+
 		bool prediction = history_record_ptr->predict(pc);
 		// in case of Taken update according to table, else update as pc+4
 		if (prediction)
 			*dst = dst_addr ;
 		else
 			*dst = pc + 4;
+
+
+		return prediction;
 	}
+
 
 	~btb_record() {
 		if(!isGlobalHist)
@@ -317,7 +329,8 @@ bool branch_predictor::BP_predict(uint32_t pc, uint32_t *dst)
 		return false;
 	}
 
-	return BTB_table[btb_index].predict(pc, dst);
+
+	return BTB_table[btb_index].predict(pc, dst, tag_index);
 }
 
 void branch_predictor::BP_update(uint32_t pc, uint32_t targetPc, bool taken, uint32_t pred_dst)
