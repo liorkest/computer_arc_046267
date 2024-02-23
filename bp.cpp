@@ -10,7 +10,7 @@
 /* Constants and enums definitions */
 const int ADDR_SIZE = 32;
 enum share_use_method { not_using_share = 0u, using_share_lsb = 1u, using_share_mid = 2u };
-enum bimodal_state { SNT = 0u, WNT = 1u, WT = 2u, ST = 3u};
+enum bimodal_state { SNT = 0, WNT = 1, WT = 2, ST = 3};
 
 class bimodal_FSM
 {
@@ -24,13 +24,13 @@ class bimodal_FSM
 		bimodal_FSM() {	
 			_s = WNT; // just a default	
 		}
-		bimodal_FSM(unsigned int s) {
+		bimodal_FSM(int s) {
 			_s = s;
 			_default = s;
 		}
 		void change_state_NT() { _s--; if (_s < 0) _s = 0; }
 		void change_state_T() { _s++; if (_s > 3) _s = 3; }
-		bool get_decision() { return (_s >= 2); }
+		bool get_decision() { printf("FSM value: %d\n", _s); return (_s >= 2); }
 		void reset_to_default() {
 			_s = _default;
 		}
@@ -209,6 +209,7 @@ class btb_record
 		} 
 		else // totally new record :)
 		{
+			tag = curr_cmd_tag;
 			valid = true;
 			history_record_ptr->update_record(pc, taken);
 		}
