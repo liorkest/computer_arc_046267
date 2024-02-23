@@ -47,6 +47,7 @@ class history_record
 		share_use_method _share_use;
 		bool _isGlobalTable;
 		unsigned _historySize;
+		static int bimodal_global_ptr_delete_count;
 	public:
 		unsigned int get_fsm_index(uint32_t pc) {
 			uint32_t row_index;
@@ -72,6 +73,7 @@ class history_record
 
 		history_record(unsigned historySize, unsigned fsmState, share_use_method share_use, bool isGlobalTable) // in case of local bimodal counters
 		{
+			bimodal_global_ptr_delete_count = 0;
 			history = 0u;
 			_share_use = share_use;
 			_isGlobalTable = isGlobalTable;
@@ -80,6 +82,7 @@ class history_record
 		}
 		history_record(unsigned historySize, unsigned fsmState, std::vector<bimodal_FSM> *global_bimodal_state_vector, share_use_method share_use, bool isGlobalTable) // in case of global bimodal counters
 		{
+			bimodal_global_ptr_delete_count = 0;
 			history = 0u;
 			_share_use = share_use;
 			_isGlobalTable = isGlobalTable;
@@ -133,22 +136,62 @@ class history_record
 		{
 			if (!_isGlobalTable)
 				delete _bimodal_state_vector;
+			else if(bimodal_global_ptr_delete_count == 0)// global FSM vector
+			{
+				delete _bimodal_state_vector;
+				bimodal_global_ptr_delete_count = 1;
+			}
+
 		}
 };
 
 
 class btb_record
 {
-	public:
 	/* This is a data structure for a single record in the BTB */
 	uint32_t tag; // tag associated with the branch instruction's address.
 	unsigned tag_size; // tag field size in bits
 	uint32_t dst_addr; // the target address of the branch instruction.
 	bool isGlobalHist;
+	bool valid;
+	static int hist_global_ptr_delete_count;
 	history_record * history_record_ptr; // pointer to object which contains information about the branch history.
-	~btb_record(){
+	public:
+	btb_record(unsigned tag_size, bool isGlobalHist) {
+		hist_global_ptr_delete_count = 0;
+		btb_record::tag_size = tag_size;
+		btb_record::isGlobalHist = isGlobalHist;
+		btb_record::history_record_ptr = history_record_ptr;
+	}
+	void set_hist_ptr(history_record * history_record_ptr) {btb_record::history_record_ptr = history_record_ptr; }
+	void update(uint32_t pc, uint32_t targetPc, bool taken){
+		btb_record::tag = tag;
+		btb_record::dst_addr = dst_addr;
+		dst_addr = targetPc;
+		if (history_record_ptr)
+			history_record_ptr->update_record(pc, taken);
+	}
+
+	bool predict(uint32_t pc, uint32_t * dst){
+		if (!history_record_ptr) { // Check if the pointer is valid
+			printf("No history ptr!\n");
+			return false;
+		}
+		bool prediction = history_record_ptr->predict(pc);
+		// in case of Taken update according to table, else update as pc+4
+		if (prediction)
+			*dst = dst_addr ;
+		else
+			*dst = pc + 4;
+	}
+
+	~btb_record() {
 		if(!isGlobalHist)
 			delete history_record_ptr;
+		if (isGlobalHist && hist_global_ptr_delete_count == 0) {
+			delete history_record_ptr;
+			hist_global_ptr_delete_count = 1;
+		}
 	}
 };
 
@@ -220,17 +263,15 @@ int branch_predictor::init(unsigned btbSize, unsigned historySize, unsigned tagS
 	// generate the BTB table
 	for (unsigned int i=0; i<btbSize; i++) 
 	{
-		btb_record new_record;
-		new_record.tag_size = tagSize;
-		new_record.tag = 0x0;
-		new_record.dst_addr = 0x0;
+		btb_record new_record(tagSize, isGlobalHist);
+
 		if (isGlobalHist) { // one history for all
-			new_record.history_record_ptr = history_record_ptr_global;
+			new_record.set_hist_ptr(history_record_ptr_global);
 		} else { // seperate history for each record
 			if (isGlobalTable)
-				new_record.history_record_ptr = new history_record(historySize, fsmState, bimodal_state_vector_global, share_use, isGlobalTable);
+				new_record.set_hist_ptr(new history_record(historySize, fsmState, bimodal_state_vector_global, share_use, isGlobalTable));
 			else
-				new_record.history_record_ptr = new history_record(historySize, fsmState, share_use, isGlobalTable);
+				new_record.set_hist_ptr(new history_record(historySize, fsmState, share_use, isGlobalTable));
 		}
 
 		BTB_table.push_back(new_record);
@@ -270,32 +311,13 @@ bool branch_predictor::BP_predict(uint32_t pc, uint32_t *dst)
 	
 	uint32_t btb_index = find_btb_idx(pc);
 	uint32_t tag_index = find_tag_idx(pc);
-
-	
 	if (btb_index >= btbSize) // Check if btb_idx is within bounds of BTB_table
 	{
 		printf("BTB index out of bounds");
 		return false;
 	}
-	if (BTB_table[btb_index].tag != tag_index)  //In case the branch is unrecognized 
-	{
-		*dst = pc + 4;
-		return false;
-	}
 
-	history_record* record = BTB_table[btb_index].history_record_ptr;
-	if (!record) { // Check if the pointer is valid
-		printf("No history ptr!\n");
-		return false;
-	}
-	bool prediction = record->predict(pc);
-	// in case of Taken update according to table, else update as pc+4
-	if (prediction)
-		*dst = BTB_table[btb_index].dst_addr ;
-	else
-		*dst = pc + 4;
-
-	return prediction;
+	return BTB_table[btb_index].predict(pc, dst);
 }
 
 void branch_predictor::BP_update(uint32_t pc, uint32_t targetPc, bool taken, uint32_t pred_dst)
@@ -305,9 +327,7 @@ void branch_predictor::BP_update(uint32_t pc, uint32_t targetPc, bool taken, uin
 	if( ((targetPc != pred_dst) && taken) || ((pred_dst != pc + 4) && !taken) ) {
 		flush_num++;
 	} 
-	BTB_table[index].dst_addr = targetPc;
-	if (BTB_table[index].history_record_ptr)
-		BTB_table[index].history_record_ptr->update_record(pc, taken);
+	BTB_table[index].update(pc, targetPc, taken);
 }
 
 void branch_predictor::BP_GetStats(SIM_stats *curStats)
@@ -324,15 +344,6 @@ void branch_predictor::BP_GetStats(SIM_stats *curStats)
 		total_size = btbSize * (tagSize + 31 /*ADDR_SIZE*/ + historySize) + btbSize * 2 * pow(2, historySize);
 
 	curStats->size = total_size;
-
-	// free allocated memory:
-	if (isGlobalHist) { 
-		// one history for all
-		if (isGlobalTable)
-			 BTB_table[0].history_record_ptr->delete_bimodal_state_vector();
-		// delete global hist
-		delete BTB_table[0].history_record_ptr;
-	}
 }
 
 

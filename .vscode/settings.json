@@ -41,7 +41,7 @@
         "xstring": "cpp"
     },
     "cmake.options.statusBarVisibility": "visible",
-    "makefile.makefilePath": "makefile",
+    "makefile.makefilePath": "",
     "makefile.launchConfigurations": [
         {
             "cwd": "c:\\Users\\gandalf\\Desktop\\computer_arc_046267",
@@ -49,6 +49,11 @@
             "binaryArgs": [
                 "input_examples\\example1.trc"
             ]
+        },
+        {
+            "cwd": "c:\\Users\\gandalf\\Desktop\\computer_arc_046267",
+            "binaryPath": "c:\\Users\\gandalf\\Desktop\\computer_arc_046267\\bp_main",
+            "binaryArgs": []
         }
     ],
     "makefile.makePath": "make"
