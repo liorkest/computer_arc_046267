@@ -146,12 +146,8 @@ class history_record
 
 		}
 
-		void reset_hist() {history = 0x0;}
+		void reset_hist() {history = 0u;}
 
-		void delete_bimodal_state_vector()
-		{ // called once, if global!
-			delete _bimodal_state_vector;
-		}
 		~ history_record()
 		{
 			if (!_isGlobalTable)
