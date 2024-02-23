@@ -210,7 +210,7 @@ class btb_record
 		else // totally new record :)
 		{
 			valid = true;
-
+			history_record_ptr->update_record(pc, taken);
 		}
 		dst_addr = targetPc;
 	}
