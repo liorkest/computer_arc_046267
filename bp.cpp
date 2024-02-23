@@ -49,8 +49,9 @@ class history_record
 		unsigned _historySize;
 		static int bimodal_global_ptr_delete_count;
 	public:
+
 		unsigned int get_fsm_index(uint32_t pc) {
-			uint32_t row_index;
+			uint32_t row_index ;
 			uint32_t bitmask = (1 << _historySize) - 1; // Create bitmask to extract historySize lower bits
 
 			if (_share_use == using_share_lsb) {
@@ -59,15 +60,10 @@ class history_record
 			} else if (_share_use == using_share_mid) {
 				uint32_t pc_share_bits = (pc >> 16); // extract the relevant bits for mid share
 				row_index = pc_share_bits ^ history; // Perform XOR between pc_share_bits and the history
-			} else {
-				if (_isGlobalTable) {
-					return 0; // only one value in fsm vector
-				} else {
-					// fsm_idx = find_btb_idx(uint32_t pc); // Assuming find_btb_idx is another function that computes an index
-					row_index = history;
-				}
 			}
-
+			else
+				row_index = history;// fsm_idx = find_btb_idx(uint32_t pc); // Assuming find_btb_idx is another function that computes an index
+		
 			return row_index & bitmask; // Return only the historySize lower bits of the result
 		}
 
@@ -108,10 +104,12 @@ class history_record
 		bool predict (uint32_t pc)
 		{
 			uint32_t fsm_idx = get_fsm_index(pc);
-						
 			//in case of local hist, local fsm
 			if (!_bimodal_state_vector) // Check if the FSM vector pointer is valid
 				return false;
+			bool decision = (*_bimodal_state_vector)[fsm_idx].get_decision();
+			printf("accessing %d, decision is %d\n", fsm_idx, decision);	
+
 			return (*_bimodal_state_vector)[fsm_idx].get_decision();		
 		}
 
@@ -119,15 +117,37 @@ class history_record
 		{
 			uint32_t fsm_idx =  get_fsm_index(pc);
 			// update FSM
+			printf("fsm index %d\n",fsm_idx);
 			if (taken)
 				(*_bimodal_state_vector)[fsm_idx].change_state_T();
 			else
 				(*_bimodal_state_vector)[fsm_idx].change_state_NT();
+
+			//printf("before history update 0x%x\n",history);
 			// update history
 			history = history << 1;
+			uint32_t hist_bitmask = (1 << _historySize) - 1; // Create bitmask to extract historySize lower bits
 			if(taken)
 				history = history + 1u;
+
+			history = history & hist_bitmask;
+
+			//printf("after history update 0x%x\n",history);
+
 		}
+
+		void reset_record(uint32_t pc)
+		{
+			uint32_t fsm_idx =  get_fsm_index(pc);
+			if(!_isGlobalTable){
+				for (int i=0; i< sizeof(_bimodal_state_vector); i++)
+					(*_bimodal_state_vector)[fsm_idx].reset_to_default();
+			}
+
+		}
+
+		void reset_hist() {history = 0x0;}
+
 		void delete_bimodal_state_vector()
 		{ // called once, if global!
 			delete _bimodal_state_vector;
@@ -170,12 +190,29 @@ class btb_record
 
 
 	void set_hist_ptr(history_record * history_record_ptr) {btb_record::history_record_ptr = history_record_ptr; }
-	void update(uint32_t pc, uint32_t targetPc, bool taken){
-		btb_record::tag = tag;
-		btb_record::dst_addr = dst_addr;
+
+	void update(uint32_t pc, uint32_t targetPc, bool taken, uint32_t curr_cmd_tag){
+		if (valid) // record is already initialized
+		{
+			if (tag == curr_cmd_tag) 
+			{
+				if (history_record_ptr)
+					history_record_ptr->update_record(pc, taken);
+			}
+			else // overwrite the current record!
+			{
+				history_record_ptr->reset_record(pc);
+				btb_record::tag = curr_cmd_tag;
+				if (!isGlobalHist) // if local history, reset the history register
+					history_record_ptr->reset_hist();
+			}
+		} 
+		else // totally new record :)
+		{
+			valid = true;
+
+		}
 		dst_addr = targetPc;
-		if (history_record_ptr)
-			history_record_ptr->update_record(pc, taken);
 	}
 
 	bool predict(uint32_t pc, uint32_t * dst, uint32_t tag_index){
@@ -186,6 +223,7 @@ class btb_record
 		}
 		
 		if(!valid || tag_index != tag ){
+			//printf("notag or no valid\n");
 			*dst = pc + 4;
 			return false;
 		}
@@ -282,7 +320,7 @@ int branch_predictor::init(unsigned btbSize, unsigned historySize, unsigned tagS
 	// generate the BTB table
 	for (unsigned int i=0; i<btbSize; i++) 
 	{
-		printf("start btb number %d\n" ,i);
+		//printf("start btb number %d\n" ,i);
 		btb_record new_record(tagSize, isGlobalHist);
 
 		if (isGlobalHist) { // one history for all
@@ -298,9 +336,9 @@ int branch_predictor::init(unsigned btbSize, unsigned historySize, unsigned tagS
 				new_record.set_hist_ptr(tmp_ptr);
 			}
 		}
-		printf("btb number %d\n" ,i);
+		//printf("btb number %d\n" ,i);
 		BTB_table.push_back(new_record);
-		printf("after push back %d\n" , i);
+		//printf("after push back %d\n" , i);
 	}
 
 	printf("Finished initialization of BTB. length = %d\n", (int)BTB_table.size());
@@ -333,7 +371,7 @@ uint32_t branch_predictor::find_tag_idx(uint32_t pc){
 
 bool branch_predictor::BP_predict(uint32_t pc, uint32_t *dst)
 {
-	printf("started predicting");
+	//printf("started predicting");
 	branch_num++;
 	
 	uint32_t btb_index = find_btb_idx(pc);
@@ -344,18 +382,18 @@ bool branch_predictor::BP_predict(uint32_t pc, uint32_t *dst)
 		return false;
 	}
 
-
+	//printf("before entering predict func\n");
 	return BTB_table[btb_index].predict(pc, dst, tag_index);
 }
 
 void branch_predictor::BP_update(uint32_t pc, uint32_t targetPc, bool taken, uint32_t pred_dst)
 {
 	int index = find_btb_idx(pc);
-	printf("PC: 0x%x, Target PC: 0x%x, Predicted Dest Addr: 0x%x, Taken: %s, Flush Num: %d\n", pc, targetPc, pred_dst, taken ? "True" : "False", flush_num);
+	//printf("PC: 0x%x, Target PC: 0x%x, Predicted Dest Addr: 0x%x, Taken: %s, Flush Num: %d\n", pc, targetPc, pred_dst, taken ? "True" : "False", flush_num);
 	if( ((targetPc != pred_dst) && taken) || ((pred_dst != pc + 4) && !taken) ) {
 		flush_num++;
 	} 
-	BTB_table[index].update(pc, targetPc, taken);
+	BTB_table[index].update(pc, targetPc, taken, find_tag_idx(pc));
 }
 
 void branch_predictor::BP_GetStats(SIM_stats *curStats)
@@ -388,8 +426,12 @@ int BP_init(unsigned btbSize, unsigned historySize, unsigned tagSize, unsigned f
 	return bp.init( btbSize,  historySize,  tagSize,  fsmState,isGlobalHist,  isGlobalTable,  Shared);
 }
 
+
 bool BP_predict(uint32_t pc, uint32_t *dst){
-	return bp.BP_predict(pc, dst);
+	bool prediction = bp.BP_predict(pc, dst);
+	printf("\n");
+	return prediction;
+	
 }
 
 void BP_update(uint32_t pc, uint32_t targetPc, bool taken, uint32_t pred_dst){
