@@ -154,7 +154,7 @@ class btb_record
 	uint32_t dst_addr; // the target address of the branch instruction.
 	bool isGlobalHist;
 	bool valid;
-	static int hist_global_ptr_delete_count;
+	static inline int hist_global_ptr_delete_count {0};
 	history_record * history_record_ptr; // pointer to object which contains information about the branch history.
 	public:
 	btb_record(unsigned tag_size, bool isGlobalHist) {
@@ -202,7 +202,7 @@ class btb_record
 			delete history_record_ptr;
 		if (isGlobalHist && hist_global_ptr_delete_count == 0) {
 			delete history_record_ptr;
-			hist_global_ptr_delete_count = 1;
+			btb_record::hist_global_ptr_delete_count = 1;
 		}
 	}
 };
