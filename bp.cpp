@@ -158,7 +158,6 @@ class btb_record
 	history_record * history_record_ptr; // pointer to object which contains information about the branch history.
 	public:
 	btb_record(unsigned tag_size, bool isGlobalHist) {
-		hist_global_ptr_delete_count = 0;
 		btb_record::tag_size = tag_size;
 		btb_record::isGlobalHist = isGlobalHist;
 		btb_record::history_record_ptr = history_record_ptr;
@@ -196,7 +195,7 @@ class btb_record
 		return prediction;
 	}
 
-
+	
 	~btb_record() {
 		if(!isGlobalHist)
 			delete history_record_ptr;
