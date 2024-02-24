@@ -5,11 +5,11 @@ all: bp_main
 
 # Environment for C 
 CC = gcc
-CFLAGS = -std=c99 -Wall
+CFLAGS = -std=c99 -Wall -g
 
 # Environment for C++ 
 CXX = g++
-CXXFLAGS = -std=c++11 -Wall
+CXXFLAGS = -std=c++11 -Wall -g
 
 # Automatically detect whether the bp is C or C++
 # Must have either bp.c or bp.cpp - NOT both
@@ -21,28 +21,28 @@ OBJ_GIVEN = $(patsubst %.c,%.o,$(SRC_GIVEN))
 OBJ_BP = bp.o
 OBJ = $(OBJ_GIVEN) $(OBJ_BP)
 
-#$(info OBJ=$(OBJ))
-
-
+# Determine whether we're compiling C or C++ based on the presence of bp.c or bp.cpp
 ifeq ($(SRC_BP),bp.c)
 bp_main: $(OBJ)
-	$(CC)  -o $@ $(OBJ) -lm
+	$(CC) -o $@ $(OBJ) -lm
 
 bp.o: bp.c
-	$(CC) -c $(CFLAGS)  -o $@ $^ -lm
+	$(CC) -c $(CFLAGS) -o $@ $^ -lm
 
 else
 bp_main: $(OBJ)
 	$(CXX) -o $@ $(OBJ)
 
 bp.o: bp.cpp
-	$(CXX) -c $(CXXFLAGS)  -o $@ $^ -lm
+	$(CXX) -c $(CXXFLAGS) -o $@ $^ -lm
 endif
 
 $(OBJ_GIVEN): %.o: %.c
-	$(CC) -c $(CFLAGS)  -o $@ $^ -lm
+	$(CC) -c $(CFLAGS) -o $@ $^ -lm
 
-
-.PHONY: clean
+.PHONY: clean valgrind
 clean:
 	rm -f bp_main $(OBJ)
+
+valgrind: bp_main
+	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose ./bp_main

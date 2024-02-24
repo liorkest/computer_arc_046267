@@ -55,6 +55,7 @@ class history_record
 
 		unsigned int get_fsm_index(uint32_t pc) {
 			uint32_t row_index ;
+			
 			uint32_t bitmask = (1 << _historySize) - 1; // Create bitmask to extract historySize lower bits
 
 			if (_share_use == using_share_lsb) {
@@ -108,8 +109,9 @@ class history_record
 
 		bool predict (uint32_t pc)
 		{
+			
 			uint32_t fsm_idx = get_fsm_index(pc);
-			printf("accessing %d fsm to predict\n", fsm_idx);
+			//printf("accessing %d fsm to predict\n", fsm_idx);
 			//printf("fsm index: %d\n: " , fsm_idx);
 			//in case of local hist, local fsm
 			if (!_bimodal_state_vector) // Check if the FSM vector pointer is valid
@@ -123,13 +125,15 @@ class history_record
 		void update_record(uint32_t pc, bool taken)
 		{
 			//printf(" before history update %d\n",history);
-			
+			if (!_bimodal_state_vector) // Ensure the vector exists
+   				 return; // Handle error or invalid state appropriately
+
 			// update FSM
 			uint32_t fsm_idx =  get_fsm_index(pc);
 			//printf( "history before update %d\n",history);
-			if (taken)
+			if (taken && !_bimodal_state_vector )
 				(*_bimodal_state_vector)[fsm_idx].change_state_T();
-			else
+			else if (!_bimodal_state_vector)
 				(*_bimodal_state_vector)[fsm_idx].change_state_NT();
 
 
@@ -141,14 +145,14 @@ class history_record
 				history = history + 1u;
 
 			history = history & hist_bitmask;
-			printf( "history after update %d\n",history);
+			//printf( "history after update %d\n",history);
 
 		}
 
 		void reset_record(uint32_t pc)
 		{
 			if(!_isGlobalTable){
-				for (int i=0; i < _bimodal_state_vector->size(); i++)
+				for (unsigned int i=0; i < _bimodal_state_vector->size(); i++)
 					(*_bimodal_state_vector)[i].reset_to_default();
 			}
 
@@ -157,7 +161,7 @@ class history_record
 		void print(){
 			printf("history value: %d\n", history);
 			printf("FSM table:\n:");
-			for(int i=0;i<_bimodal_state_vector->size(); i++)
+			for(unsigned int i=0;i<_bimodal_state_vector->size(); i++)
 				(*_bimodal_state_vector)[i].print();
 			printf("\n");
 		}
@@ -214,7 +218,7 @@ class btb_record
 			else // overwrite the current record!
 			{
 				history_record_ptr->reset_record(pc);
-				print();
+				//print();
 				btb_record::tag = curr_cmd_tag;
 				if (!isGlobalHist) // if local history, reset the history register
 					history_record_ptr->reset_hist();
@@ -290,7 +294,7 @@ class branch_predictor
 		void BP_update(uint32_t pc, uint32_t targetPc, bool taken, uint32_t pred_dst);
 		void BP_GetStats(SIM_stats *curStats);
 		void BP_Print_BTB_data(){
-			for(int i; i < btbSize; i++){
+			for(unsigned i; i < btbSize; i++){
 				printf ("BTB record number %d:\n", i);
 				BTB_table[i].print();
 			}
@@ -369,7 +373,7 @@ int branch_predictor::init(unsigned btbSize, unsigned historySize, unsigned tagS
 	}
 
 	//printf("Finished initialization of BTB. length = %d\n", (int)BTB_table.size());
-	BP_Print_BTB_data();
+	//BP_Print_BTB_data();
 	return 0;
 }
 
@@ -402,12 +406,15 @@ bool branch_predictor::BP_predict(uint32_t pc, uint32_t *dst)
 
 	//printf("started predicting");
 	branch_num++;
-		if (branch_num == 27)
-		BP_Print_BTB_data();
+		//if (branch_num == 27)
+		//BP_Print_BTB_data();
 		
 	uint32_t btb_index = find_btb_idx(pc);
 	uint32_t tag_index = find_tag(pc);
-	if (btb_index >= btbSize) // Check if btb_idx is within bounds of BTB_table
+	printf("pc: 0x%x\n", pc);
+	printf("btb_index %d\n",btb_index);
+	printf("btbSize %d\n", btbSize);
+	if (btb_index > btbSize) // Check if btb_idx is within bounds of BTB_table
 	{
 		printf("BTB index out of bounds");
 		return false;
@@ -434,16 +441,22 @@ void branch_predictor::BP_GetStats(SIM_stats *curStats)
 	curStats->flush_num = flush_num;
 	int total_size;
 	if (isGlobalHist)
+	{
 		if (isGlobalTable)
 			total_size = btbSize * (tagSize + 31 /*ADDR_SIZE*/) + historySize + 2 * pow(2, historySize);
 		else // global history, local table
 			total_size = historySize + btbSize * (tagSize + 31 /*ADDR_SIZE*/) + btbSize * 2 * pow(2, historySize);
-	else // local hist local table
-		total_size = btbSize * (tagSize + 31 /*ADDR_SIZE*/ + historySize) + btbSize * 2 * pow(2, historySize);
-
+	}
+	else
+	{	
+			if (isGlobalTable)
+				total_size = btbSize * (tagSize + 31 /*ADDR_SIZE*/+ historySize )  + 2 * pow(2, historySize);
+			else	 // local hist local table     
+				total_size = btbSize * (tagSize + 31 /*ADDR_SIZE*/ + historySize) +  btbSize *2 * pow(2, historySize);
+	}
 	curStats->size = total_size;
 
-	for(int i = 0; i < btbSize; i++){
+	for(unsigned  i = 0; i < btbSize; i++){
 		BTB_table[i].free_mem();
 	}
 }
