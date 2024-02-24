@@ -34,6 +34,9 @@ class bimodal_FSM
 		void reset_to_default() {
 			_s = _default;
 		}
+		void print(){
+			printf("curr state = %d", _s);
+		}
 };
 
 class history_record
@@ -147,6 +150,12 @@ class history_record
 
 		}
 
+		void print(){
+			printf("history value: %x\n", history);
+			for(int i=0;i<_bimodal_state_vector->size(); i++)
+				(*_bimodal_state_vector)[i].print();
+		}
+
 		void reset_hist() {history = 0u;}
 
 		~ history_record()
@@ -239,6 +248,10 @@ class btb_record
 		return prediction;
 	}
 
+	void print(){
+		printf("valid: %d, tag: %x, dst: %x\n");
+		history_record_ptr->print();
+	}
 	void free_mem() {
 		if(!isGlobalHist)
 			delete history_record_ptr;
@@ -258,7 +271,7 @@ class branch_predictor
 		bool isGlobalHist, isGlobalTable;
 		share_use_method share_use;
 		uint32_t find_btb_idx(uint32_t pc);
-		uint32_t find_tag_idx(uint32_t pc);
+		uint32_t find_tag(uint32_t pc);
 		int flush_num, branch_num, total_size;
 	public:
 		branch_predictor()	{}
@@ -267,6 +280,12 @@ class branch_predictor
 		bool BP_predict(uint32_t pc, uint32_t *dst);
 		void BP_update(uint32_t pc, uint32_t targetPc, bool taken, uint32_t pred_dst);
 		void BP_GetStats(SIM_stats *curStats);
+		void BP_Print_BTB_data(){
+			for(int i; i < btbSize; i++){
+				printf ("BTB record number %d:\n", i);
+				BTB_table[i].print();
+			}
+		}
 		
 };
 
@@ -355,10 +374,10 @@ uint32_t branch_predictor::find_btb_idx(uint32_t pc){
 }
 
 //function recives pc, returns the BTB idx in that adress
-uint32_t branch_predictor::find_tag_idx(uint32_t pc){
+uint32_t branch_predictor::find_tag(uint32_t pc){
 	//find tag index using mask
 	 unsigned int num_btb_bits = (btbSize == 1) ? 1 : log2(btbSize);
-	uint32_t tag_mask = ((1u << tagSize) - 1)  ;
+	uint32_t tag_mask = (1u << tagSize) - 1  ;
 	uint32_t tag_bits = (pc >> (2+ num_btb_bits)) & tag_mask;
 	int32_t tag_index = tag_bits; // Convert into numbers
 	return tag_index;
@@ -374,7 +393,7 @@ bool branch_predictor::BP_predict(uint32_t pc, uint32_t *dst)
 	branch_num++;
 	
 	uint32_t btb_index = find_btb_idx(pc);
-	uint32_t tag_index = find_tag_idx(pc);
+	uint32_t tag_index = find_tag(pc);
 	if (btb_index >= btbSize) // Check if btb_idx is within bounds of BTB_table
 	{
 		printf("BTB index out of bounds");
@@ -392,7 +411,7 @@ void branch_predictor::BP_update(uint32_t pc, uint32_t targetPc, bool taken, uin
 	if( ((targetPc != pred_dst) && taken) || ((pred_dst != pc + 4) && !taken) ) {
 		flush_num++;
 	} 
-	BTB_table[index].update(pc, targetPc, taken, find_tag_idx(pc));
+	BTB_table[index].update(pc, targetPc, taken, find_tag(pc));
 	
 	//printf("PC: 0x%x, Target PC: 0x%x, Predicted Dest Addr: 0x%x, Taken: %s, Flush Num: %d\n", pc, targetPc, pred_dst, taken ? "True" : "False", flush_num);
 }
