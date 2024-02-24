@@ -109,6 +109,7 @@ class history_record
 		bool predict (uint32_t pc)
 		{
 			uint32_t fsm_idx = get_fsm_index(pc);
+			printf("accessing %d fsm to predict\n", fsm_idx);
 			//printf("fsm index: %d\n: " , fsm_idx);
 			//in case of local hist, local fsm
 			if (!_bimodal_state_vector) // Check if the FSM vector pointer is valid
@@ -121,7 +122,7 @@ class history_record
 
 		void update_record(uint32_t pc, bool taken)
 		{
-			printf(" before history update %d\n",history);
+			//printf(" before history update %d\n",history);
 			
 			// update FSM
 			uint32_t fsm_idx =  get_fsm_index(pc);
@@ -140,22 +141,21 @@ class history_record
 				history = history + 1u;
 
 			history = history & hist_bitmask;
-			//printf( "history after update %d\n",history);
+			printf( "history after update %d\n",history);
 
 		}
 
 		void reset_record(uint32_t pc)
 		{
-		
 			if(!_isGlobalTable){
-				for (int i=0; i< sizeof(_bimodal_state_vector); i++)
+				for (int i=0; i < _bimodal_state_vector->size(); i++)
 					(*_bimodal_state_vector)[i].reset_to_default();
 			}
 
 		}
 
 		void print(){
-			printf("history value: %x\n", history);
+			printf("history value: %d\n", history);
 			printf("FSM table:\n:");
 			for(int i=0;i<_bimodal_state_vector->size(); i++)
 				(*_bimodal_state_vector)[i].print();
@@ -214,6 +214,7 @@ class btb_record
 			else // overwrite the current record!
 			{
 				history_record_ptr->reset_record(pc);
+				print();
 				btb_record::tag = curr_cmd_tag;
 				if (!isGlobalHist) // if local history, reset the history register
 					history_record_ptr->reset_hist();
@@ -259,6 +260,7 @@ class btb_record
 		printf("valid: %d, tag: %x, dst: %x\n", valid, tag, dst_addr);
 		history_record_ptr->print();
 	}
+
 	void free_mem() {
 		if(!isGlobalHist)
 			delete history_record_ptr;
@@ -397,9 +399,12 @@ uint32_t branch_predictor::find_tag(uint32_t pc){
 
 bool branch_predictor::BP_predict(uint32_t pc, uint32_t *dst)
 {
+
 	//printf("started predicting");
 	branch_num++;
-	
+		if (branch_num == 27)
+		BP_Print_BTB_data();
+		
 	uint32_t btb_index = find_btb_idx(pc);
 	uint32_t tag_index = find_tag(pc);
 	if (btb_index >= btbSize) // Check if btb_idx is within bounds of BTB_table
@@ -415,7 +420,6 @@ bool branch_predictor::BP_predict(uint32_t pc, uint32_t *dst)
 void branch_predictor::BP_update(uint32_t pc, uint32_t targetPc, bool taken, uint32_t pred_dst)
 {
 	int index = find_btb_idx(pc);
-	
 	if( ((targetPc != pred_dst) && taken) || ((pred_dst != pc + 4) && !taken) ) {
 		flush_num++;
 	} 
@@ -457,13 +461,13 @@ int BP_init(unsigned btbSize, unsigned historySize, unsigned tagSize, unsigned f
 
 bool BP_predict(uint32_t pc, uint32_t *dst){
 	bool prediction = bp.BP_predict(pc, dst);
-	printf("\n\n");
+	//printf("\n\n");
 	return prediction;
 	
 }
 
 void BP_update(uint32_t pc, uint32_t targetPc, bool taken, uint32_t pred_dst){
-	printf("taken in update: %d" ,taken);
+	//printf("taken in update: %d" ,taken);
 	bp.BP_update(pc, targetPc, taken, pred_dst);
 	return;
 }
