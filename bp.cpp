@@ -63,8 +63,10 @@ class history_record
 			}
 			else
 				row_index = history;// fsm_idx = find_btb_idx(uint32_t pc); // Assuming find_btb_idx is another function that computes an index
-		
-			return row_index & bitmask; // Return only the historySize lower bits of the result
+				uint32_t fsm_index = row_index & bitmask ;
+				//printf("history in function: %d", history);
+				//printf("fsm index in fsm function: %d", fsm_index);
+			return fsm_index; // Return only the historySize lower bits of the result
 		}
 
 		history_record(unsigned historySize, unsigned fsmState, share_use_method share_use, bool isGlobalTable) // in case of local bimodal counters
@@ -116,15 +118,18 @@ class history_record
 
 		void update_record(uint32_t pc, bool taken)
 		{
-			uint32_t fsm_idx =  get_fsm_index(pc);
-			// update FSM
+			printf(" before history update %d\n",history);
 			
+			// update FSM
+			uint32_t fsm_idx =  get_fsm_index(pc);
+			//printf( "history before update %d\n",history);
 			if (taken)
 				(*_bimodal_state_vector)[fsm_idx].change_state_T();
 			else
 				(*_bimodal_state_vector)[fsm_idx].change_state_NT();
 
-			//printf("before history update 0x%x\n",history);
+
+			//printf("fsm index %d\n",fsm_idx);
 			// update history
 			history = history << 1;
 			uint32_t hist_bitmask = (1 << _historySize) - 1; // Create bitmask to extract historySize lower bits
@@ -132,8 +137,7 @@ class history_record
 				history = history + 1u;
 
 			history = history & hist_bitmask;
-			//printf("fsm index %d\n",fsm_idx);
-			//printf("after history update 0x%x\n",history);
+			//printf( "history after update %d\n",history);
 
 		}
 
@@ -202,6 +206,7 @@ class btb_record
 				btb_record::tag = curr_cmd_tag;
 				if (!isGlobalHist) // if local history, reset the history register
 					history_record_ptr->reset_hist();
+				history_record_ptr->update_record(pc, taken);
 			}
 		} 
 		
@@ -393,8 +398,8 @@ void branch_predictor::BP_update(uint32_t pc, uint32_t targetPc, bool taken, uin
 		flush_num++;
 	} 
 	BTB_table[index].update(pc, targetPc, taken, find_tag_idx(pc));
-	
-	//printf("PC: 0x%x, Target PC: 0x%x, Predicted Dest Addr: 0x%x, Taken: %s, Flush Num: %d\n", pc, targetPc, pred_dst, taken ? "True" : "False", flush_num);
+	printf("branch num: %d\n",branch_num);
+	printf("PC: 0x%x, Target PC: 0x%x, Predicted Dest Addr: 0x%x, Taken: %s, Flush Num: %d\n", pc, targetPc, pred_dst, taken ? "True" : "False", flush_num);
 }
 
 void branch_predictor::BP_GetStats(SIM_stats *curStats)
@@ -430,12 +435,13 @@ int BP_init(unsigned btbSize, unsigned historySize, unsigned tagSize, unsigned f
 
 bool BP_predict(uint32_t pc, uint32_t *dst){
 	bool prediction = bp.BP_predict(pc, dst);
-	//printf("\n");
+	printf("\n\n");
 	return prediction;
 	
 }
 
 void BP_update(uint32_t pc, uint32_t targetPc, bool taken, uint32_t pred_dst){
+	printf("taken in update: %d" ,taken);
 	bp.BP_update(pc, targetPc, taken, pred_dst);
 	return;
 }

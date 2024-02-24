@@ -1,311 +1,1913 @@
 0xe28810 N 0xe28814
+ before history update 0
+fsm index 1
+history after update 1
+branch num: 1
+PC: 0xe28810, Target PC: 0x4d9db324, Predicted Dest Addr: 0xe28814, Taken: True, Flush Num: 1
 0xd48434 BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 2
+PC: 0xd48434, Target PC: 0x3eaeef4, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 2
 0x68dfc8 N 0x68dfcc
+ before history update 2
+fsm index 3
+history after update 3
+branch num: 3
+PC: 0x68dfc8, Target PC: 0x2812eaf0, Predicted Dest Addr: 0x68dfcc, Taken: True, Flush Num: 3
 0x154 BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 4
+PC: 0x154, Target PC: 0xa88603bc, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 4
 0xe77c1ec BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 5
+PC: 0xe77c1ec, Target PC: 0x24c20dfc, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 5
 0x155694 BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 6
+PC: 0x155694, Target PC: 0xb528c994, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 6
 0x17c BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 7
+PC: 0x17c, Target PC: 0x944, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 7
 0xe28810 N 0xe28814
+ before history update 6
+fsm index 6
+history after update 6
+branch num: 8
+PC: 0xe28810, Target PC: 0x4d9db324, Predicted Dest Addr: 0xe28814, Taken: False, Flush Num: 7
 0x154 BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 9
+PC: 0x154, Target PC: 0xa88603bc, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 8
 0xe77c1ec BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 10
+PC: 0xe77c1ec, Target PC: 0x24c20dfc, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 9
 0xe77c1ec BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 11
+PC: 0xe77c1ec, Target PC: 0x24c20dfc, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 10
 0xd48434 BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 12
+PC: 0xd48434, Target PC: 0x3eaeef4, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 11
 0x280 N 0x284
+ before history update 12
+fsm index 12
+history after update 12
+branch num: 13
+PC: 0x280, Target PC: 0x1fb7290, Predicted Dest Addr: 0x284, Taken: False, Flush Num: 11
 0x781b8 N 0x781bc
+ before history update 24
+fsm index 8
+history after update 8
+branch num: 14
+PC: 0x781b8, Target PC: 0x84cf0b8, Predicted Dest Addr: 0x781bc, Taken: False, Flush Num: 11
 0x38932378 N 0x3893237c
+ before history update 16
+fsm index 0
+history after update 0
+branch num: 15
+PC: 0x38932378, Target PC: 0x15d8, Predicted Dest Addr: 0x3893237c, Taken: False, Flush Num: 11
 0xac3c50 N 0xac3c54
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 16
+PC: 0xac3c50, Target PC: 0xe11d0, Predicted Dest Addr: 0xac3c54, Taken: False, Flush Num: 11
 0xf20 N 0xf24
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 17
+PC: 0xf20, Target PC: 0x9678, Predicted Dest Addr: 0xf24, Taken: False, Flush Num: 11
 0x63b320 N 0x63b324
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 18
+PC: 0x63b320, Target PC: 0x9ca8dd40, Predicted Dest Addr: 0x63b324, Taken: False, Flush Num: 11
 0x68dfc8 N 0x68dfcc
+ before history update 0
+fsm index 1
+history after update 1
+branch num: 19
+PC: 0x68dfc8, Target PC: 0x2812eaf0, Predicted Dest Addr: 0x68dfcc, Taken: True, Flush Num: 12
 0x1f7f64 BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 20
+PC: 0x1f7f64, Target PC: 0x4abd68, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 13
 0xfc007ec BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 21
+PC: 0xfc007ec, Target PC: 0x7da8, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 14
 0xea0 N 0xea4
+ before history update 2
+fsm index 2
+history after update 2
+branch num: 22
+PC: 0xea0, Target PC: 0xcaf4, Predicted Dest Addr: 0xea4, Taken: False, Flush Num: 14
 0x280 N 0x284
+ before history update 4
+fsm index 4
+history after update 4
+branch num: 23
+PC: 0x280, Target PC: 0x1fb7290, Predicted Dest Addr: 0x284, Taken: False, Flush Num: 14
 0xfb8 N 0xfbc
+ before history update 8
+fsm index 8
+history after update 8
+branch num: 24
+PC: 0xfb8, Target PC: 0xcf1744, Predicted Dest Addr: 0xfbc, Taken: False, Flush Num: 14
 0x155694 BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 25
+PC: 0x155694, Target PC: 0xb528c994, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 15
 0xe60 N 0xe64
+ before history update 16
+fsm index 0
+history after update 0
+branch num: 26
+PC: 0xe60, Target PC: 0xe50, Predicted Dest Addr: 0xe64, Taken: False, Flush Num: 15
 0x31079c BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 27
+PC: 0x31079c, Target PC: 0xc84, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 16
 0x5f3b82c BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 28
+PC: 0x5f3b82c, Target PC: 0xcd86e8, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 17
 0x38932378 N 0x3893237c
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 29
+PC: 0x38932378, Target PC: 0x15d8, Predicted Dest Addr: 0x3893237c, Taken: False, Flush Num: 17
 0x31079c BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 30
+PC: 0x31079c, Target PC: 0xc84, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 18
 0xd47c BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 31
+PC: 0xd47c, Target PC: 0xa5ae50, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 19
 0x280 N 0x284
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 32
+PC: 0x280, Target PC: 0x1fb7290, Predicted Dest Addr: 0x284, Taken: False, Flush Num: 19
 0xf20 N 0xf24
+ before history update 0
+fsm index 1
+history after update 1
+branch num: 33
+PC: 0xf20, Target PC: 0x9678, Predicted Dest Addr: 0xf24, Taken: True, Flush Num: 20
 0xac3c50 N 0xac3c54
+ before history update 2
+fsm index 3
+history after update 3
+branch num: 34
+PC: 0xac3c50, Target PC: 0xe11d0, Predicted Dest Addr: 0xac3c54, Taken: True, Flush Num: 21
 0x781b8 N 0x781bc
+ before history update 6
+fsm index 6
+history after update 6
+branch num: 35
+PC: 0x781b8, Target PC: 0x84cf0b8, Predicted Dest Addr: 0x781bc, Taken: False, Flush Num: 21
 0xe60 N 0xe64
+ before history update 12
+fsm index 12
+history after update 12
+branch num: 36
+PC: 0xe60, Target PC: 0xe50, Predicted Dest Addr: 0xe64, Taken: False, Flush Num: 21
 0xac3c50 N 0xac3c54
+ before history update 24
+fsm index 9
+history after update 9
+branch num: 37
+PC: 0xac3c50, Target PC: 0xe11d0, Predicted Dest Addr: 0xac3c54, Taken: True, Flush Num: 22
 0x53a10c BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 38
+PC: 0x53a10c, Target PC: 0x7ceca0, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 23
 0x781b8 N 0x781bc
+ before history update 18
+fsm index 2
+history after update 2
+branch num: 39
+PC: 0x781b8, Target PC: 0x84cf0b8, Predicted Dest Addr: 0x781bc, Taken: False, Flush Num: 23
 0xd48434 BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 40
+PC: 0xd48434, Target PC: 0x3eaeef4, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 24
 0x781b8 T 0x84cf0b8
+ before history update 4
+fsm index 4
+history after update 4
+branch num: 41
+PC: 0x781b8, Target PC: 0x84cf0b8, Predicted Dest Addr: 0x84cf0b8, Taken: False, Flush Num: 25
 0xe77c1ec BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 42
+PC: 0xe77c1ec, Target PC: 0x24c20dfc, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 26
 0x1f7f64 BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 43
+PC: 0x1f7f64, Target PC: 0x4abd68, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 27
 0xe60 N 0xe64
+ before history update 8
+fsm index 8
+history after update 8
+branch num: 44
+PC: 0xe60, Target PC: 0xe50, Predicted Dest Addr: 0xe64, Taken: False, Flush Num: 27
 0x154 BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 45
+PC: 0x154, Target PC: 0xa88603bc, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 28
 0x96d28 N 0x96d2c
+ before history update 16
+fsm index 1
+history after update 1
+branch num: 46
+PC: 0x96d28, Target PC: 0xb3dc8, Predicted Dest Addr: 0x96d2c, Taken: True, Flush Num: 29
 0xe28810 N 0xe28814
+ before history update 2
+fsm index 3
+history after update 3
+branch num: 47
+PC: 0xe28810, Target PC: 0x4d9db324, Predicted Dest Addr: 0xe28814, Taken: True, Flush Num: 30
 0x68dfc8 N 0x68dfcc
+ before history update 6
+fsm index 7
+history after update 7
+branch num: 48
+PC: 0x68dfc8, Target PC: 0x2812eaf0, Predicted Dest Addr: 0x68dfcc, Taken: True, Flush Num: 31
 0x154 BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 49
+PC: 0x154, Target PC: 0xa88603bc, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 32
 0xec78b8 N 0xec78bc
+ before history update 14
+fsm index 14
+history after update 14
+branch num: 50
+PC: 0xec78b8, Target PC: 0x384, Predicted Dest Addr: 0xec78bc, Taken: False, Flush Num: 32
 0x68dfc8 N 0x68dfcc
+ before history update 28
+fsm index 12
+history after update 12
+branch num: 51
+PC: 0x68dfc8, Target PC: 0x2812eaf0, Predicted Dest Addr: 0x68dfcc, Taken: False, Flush Num: 32
 0x5f3b82c BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 52
+PC: 0x5f3b82c, Target PC: 0xcd86e8, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 33
 0x96d28 N 0x96d2c
+ before history update 24
+fsm index 9
+history after update 9
+branch num: 53
+PC: 0x96d28, Target PC: 0xb3dc8, Predicted Dest Addr: 0x96d2c, Taken: True, Flush Num: 34
 0xac3c50 N 0xac3c54
+ before history update 18
+fsm index 2
+history after update 2
+branch num: 54
+PC: 0xac3c50, Target PC: 0xe11d0, Predicted Dest Addr: 0xac3c54, Taken: False, Flush Num: 34
 0xe28810 N 0xe28814
+ before history update 4
+fsm index 5
+history after update 5
+branch num: 55
+PC: 0xe28810, Target PC: 0x4d9db324, Predicted Dest Addr: 0xe28814, Taken: True, Flush Num: 35
 0x68dfc8 N 0x68dfcc
+ before history update 10
+fsm index 10
+history after update 10
+branch num: 56
+PC: 0x68dfc8, Target PC: 0x2812eaf0, Predicted Dest Addr: 0x68dfcc, Taken: False, Flush Num: 35
 0xfc8530 N 0xfc8534
+ before history update 20
+fsm index 4
+history after update 4
+branch num: 57
+PC: 0xfc8530, Target PC: 0x6054, Predicted Dest Addr: 0xfc8534, Taken: False, Flush Num: 35
 0x84d44 BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 58
+PC: 0x84d44, Target PC: 0xe498, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 36
 0xec78b8 N 0xec78bc
+ before history update 8
+fsm index 9
+history after update 9
+branch num: 59
+PC: 0xec78b8, Target PC: 0x384, Predicted Dest Addr: 0xec78bc, Taken: True, Flush Num: 37
 0xd47c BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 60
+PC: 0xd47c, Target PC: 0xa5ae50, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 38
 0xd3abc BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 61
+PC: 0xd3abc, Target PC: 0xdd3858, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 39
 0xd47c BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 62
+PC: 0xd47c, Target PC: 0xa5ae50, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 40
 0xac3c50 N 0xac3c54
+ before history update 18
+fsm index 2
+history after update 2
+branch num: 63
+PC: 0xac3c50, Target PC: 0xe11d0, Predicted Dest Addr: 0xac3c54, Taken: False, Flush Num: 40
 0x96d28 N 0x96d2c
+ before history update 4
+fsm index 4
+history after update 4
+branch num: 64
+PC: 0x96d28, Target PC: 0xb3dc8, Predicted Dest Addr: 0x96d2c, Taken: False, Flush Num: 40
 0x4db9d600 N 0x4db9d604
+ before history update 8
+fsm index 9
+history after update 9
+branch num: 65
+PC: 0x4db9d600, Target PC: 0x258724, Predicted Dest Addr: 0x4db9d604, Taken: True, Flush Num: 41
 0x3914 BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 66
+PC: 0x3914, Target PC: 0x6fd85a8, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 42
 0x38932378 N 0x3893237c
+ before history update 18
+fsm index 2
+history after update 2
+branch num: 67
+PC: 0x38932378, Target PC: 0x15d8, Predicted Dest Addr: 0x3893237c, Taken: False, Flush Num: 42
 0xac3c50 N 0xac3c54
+ before history update 4
+fsm index 4
+history after update 4
+branch num: 68
+PC: 0xac3c50, Target PC: 0xe11d0, Predicted Dest Addr: 0xac3c54, Taken: False, Flush Num: 42
 0x1f7f64 BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 69
+PC: 0x1f7f64, Target PC: 0x4abd68, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 43
 0x68dfc8 N 0x68dfcc
+ before history update 8
+fsm index 8
+history after update 8
+branch num: 70
+PC: 0x68dfc8, Target PC: 0x2812eaf0, Predicted Dest Addr: 0x68dfcc, Taken: False, Flush Num: 43
 0x1f7f64 BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 71
+PC: 0x1f7f64, Target PC: 0x4abd68, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 44
 0xe28810 N 0xe28814
+ before history update 16
+fsm index 0
+history after update 0
+branch num: 72
+PC: 0xe28810, Target PC: 0x4d9db324, Predicted Dest Addr: 0xe28814, Taken: False, Flush Num: 44
 0x154 BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 73
+PC: 0x154, Target PC: 0xa88603bc, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 45
 0xfc8530 N 0xfc8534
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 74
+PC: 0xfc8530, Target PC: 0x6054, Predicted Dest Addr: 0xfc8534, Taken: False, Flush Num: 45
 0x63b320 N 0x63b324
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 75
+PC: 0x63b320, Target PC: 0x9ca8dd40, Predicted Dest Addr: 0x63b324, Taken: False, Flush Num: 45
 0xfc007ec BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 76
+PC: 0xfc007ec, Target PC: 0x7da8, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 46
 0xec78b8 N 0xec78bc
+ before history update 0
+fsm index 1
+history after update 1
+branch num: 77
+PC: 0xec78b8, Target PC: 0x384, Predicted Dest Addr: 0xec78bc, Taken: True, Flush Num: 47
 0xac3c50 N 0xac3c54
+ before history update 2
+fsm index 2
+history after update 2
+branch num: 78
+PC: 0xac3c50, Target PC: 0xe11d0, Predicted Dest Addr: 0xac3c54, Taken: False, Flush Num: 47
 0xea0 N 0xea4
+ before history update 4
+fsm index 4
+history after update 4
+branch num: 79
+PC: 0xea0, Target PC: 0xcaf4, Predicted Dest Addr: 0xea4, Taken: False, Flush Num: 47
 0xfc007ec BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 80
+PC: 0xfc007ec, Target PC: 0x7da8, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 48
 0xe77c1ec BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 81
+PC: 0xe77c1ec, Target PC: 0x24c20dfc, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 49
 0x75c BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 82
+PC: 0x75c, Target PC: 0x56f4, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 50
 0xd47c BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 83
+PC: 0xd47c, Target PC: 0xa5ae50, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 51
 0x63b320 N 0x63b324
+ before history update 8
+fsm index 8
+history after update 8
+branch num: 84
+PC: 0x63b320, Target PC: 0x9ca8dd40, Predicted Dest Addr: 0x63b324, Taken: False, Flush Num: 51
 0x4b5f20 N 0x4b5f24
+ before history update 16
+fsm index 1
+history after update 1
+branch num: 85
+PC: 0x4b5f20, Target PC: 0xba4, Predicted Dest Addr: 0x4b5f24, Taken: True, Flush Num: 52
 0x38932378 N 0x3893237c
+ before history update 2
+fsm index 2
+history after update 2
+branch num: 86
+PC: 0x38932378, Target PC: 0x15d8, Predicted Dest Addr: 0x3893237c, Taken: False, Flush Num: 52
 0x63b320 N 0x63b324
+ before history update 4
+fsm index 4
+history after update 4
+branch num: 87
+PC: 0x63b320, Target PC: 0x9ca8dd40, Predicted Dest Addr: 0x63b324, Taken: False, Flush Num: 52
 0xea0 N 0xea4
+ before history update 8
+fsm index 9
+history after update 9
+branch num: 88
+PC: 0xea0, Target PC: 0xcaf4, Predicted Dest Addr: 0xea4, Taken: True, Flush Num: 53
 0x53a10c BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 89
+PC: 0x53a10c, Target PC: 0x7ceca0, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 54
 0x38932378 N 0x3893237c
+ before history update 18
+fsm index 2
+history after update 2
+branch num: 90
+PC: 0x38932378, Target PC: 0x15d8, Predicted Dest Addr: 0x3893237c, Taken: False, Flush Num: 54
 0x4b5f20 N 0x4b5f24
+ before history update 4
+fsm index 5
+history after update 5
+branch num: 91
+PC: 0x4b5f20, Target PC: 0xba4, Predicted Dest Addr: 0x4b5f24, Taken: True, Flush Num: 55
 0x53a10c BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 92
+PC: 0x53a10c, Target PC: 0x7ceca0, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 56
 0x4db9d600 N 0x4db9d604
+ before history update 10
+fsm index 11
+history after update 11
+branch num: 93
+PC: 0x4db9d600, Target PC: 0x258724, Predicted Dest Addr: 0x4db9d604, Taken: True, Flush Num: 57
 0x280 N 0x284
+ before history update 22
+fsm index 7
+history after update 7
+branch num: 94
+PC: 0x280, Target PC: 0x1fb7290, Predicted Dest Addr: 0x284, Taken: True, Flush Num: 58
 0x53a10c BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 95
+PC: 0x53a10c, Target PC: 0x7ceca0, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 59
 0xe28810 N 0xe28814
+ before history update 14
+fsm index 14
+history after update 14
+branch num: 96
+PC: 0xe28810, Target PC: 0x4d9db324, Predicted Dest Addr: 0xe28814, Taken: False, Flush Num: 59
 0x1f7f64 BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 97
+PC: 0x1f7f64, Target PC: 0x4abd68, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 60
 0xfc007ec BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 98
+PC: 0xfc007ec, Target PC: 0x7da8, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 61
 0xfb8 N 0xfbc
+ before history update 28
+fsm index 12
+history after update 12
+branch num: 99
+PC: 0xfb8, Target PC: 0xcf1744, Predicted Dest Addr: 0xfbc, Taken: False, Flush Num: 61
 0x1f7f64 BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 100
+PC: 0x1f7f64, Target PC: 0x4abd68, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 62
 0xe28810 N 0xe28814
+ before history update 24
+fsm index 9
+history after update 9
+branch num: 101
+PC: 0xe28810, Target PC: 0x4d9db324, Predicted Dest Addr: 0xe28814, Taken: True, Flush Num: 63
 0x68dfc8 N 0x68dfcc
+ before history update 18
+fsm index 2
+history after update 2
+branch num: 102
+PC: 0x68dfc8, Target PC: 0x2812eaf0, Predicted Dest Addr: 0x68dfcc, Taken: False, Flush Num: 63
 0x63b320 N 0x63b324
+ before history update 4
+fsm index 4
+history after update 4
+branch num: 103
+PC: 0x63b320, Target PC: 0x9ca8dd40, Predicted Dest Addr: 0x63b324, Taken: False, Flush Num: 63
 0x154 BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 104
+PC: 0x154, Target PC: 0xa88603bc, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 64
 0x68dfc8 N 0x68dfcc
+ before history update 8
+fsm index 9
+history after update 9
+branch num: 105
+PC: 0x68dfc8, Target PC: 0x2812eaf0, Predicted Dest Addr: 0x68dfcc, Taken: True, Flush Num: 65
 0x84d44 BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 106
+PC: 0x84d44, Target PC: 0xe498, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 66
 0x1f7f64 BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 107
+PC: 0x1f7f64, Target PC: 0x4abd68, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 67
 0x1f7f64 BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 108
+PC: 0x1f7f64, Target PC: 0x4abd68, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 68
 0x280 N 0x284
+ before history update 18
+fsm index 3
+history after update 3
+branch num: 109
+PC: 0x280, Target PC: 0x1fb7290, Predicted Dest Addr: 0x284, Taken: True, Flush Num: 69
 0x75c BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 110
+PC: 0x75c, Target PC: 0x56f4, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 70
 0x38932378 N 0x3893237c
+ before history update 6
+fsm index 6
+history after update 6
+branch num: 111
+PC: 0x38932378, Target PC: 0x15d8, Predicted Dest Addr: 0x3893237c, Taken: False, Flush Num: 70
 0x781b8 N 0x781bc
+ before history update 12
+fsm index 13
+history after update 13
+branch num: 112
+PC: 0x781b8, Target PC: 0x84cf0b8, Predicted Dest Addr: 0x781bc, Taken: True, Flush Num: 71
 0x3914 BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 113
+PC: 0x3914, Target PC: 0x6fd85a8, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 72
 0x4b5f20 N 0x4b5f24
+ before history update 26
+fsm index 11
+history after update 11
+branch num: 114
+PC: 0x4b5f20, Target PC: 0xba4, Predicted Dest Addr: 0x4b5f24, Taken: True, Flush Num: 73
 0x53a10c BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 115
+PC: 0x53a10c, Target PC: 0x7ceca0, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 74
 0xd3abc BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 116
+PC: 0xd3abc, Target PC: 0xdd3858, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 75
 0x31079c BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 117
+PC: 0x31079c, Target PC: 0xc84, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 76
 0x154 BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 118
+PC: 0x154, Target PC: 0xa88603bc, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 77
 0x68dfc8 N 0x68dfcc
+ before history update 22
+fsm index 7
+history after update 7
+branch num: 119
+PC: 0x68dfc8, Target PC: 0x2812eaf0, Predicted Dest Addr: 0x68dfcc, Taken: True, Flush Num: 78
 0xe60 N 0xe64
+ before history update 14
+fsm index 14
+history after update 14
+branch num: 120
+PC: 0xe60, Target PC: 0xe50, Predicted Dest Addr: 0xe64, Taken: False, Flush Num: 78
 0x154 BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 121
+PC: 0x154, Target PC: 0xa88603bc, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 79
 0xd3abc BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 122
+PC: 0xd3abc, Target PC: 0xdd3858, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 80
 0x1f7f64 BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 123
+PC: 0x1f7f64, Target PC: 0x4abd68, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 81
 0x75c BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 124
+PC: 0x75c, Target PC: 0x56f4, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 82
 0x4b5f20 N 0x4b5f24
+ before history update 28
+fsm index 13
+history after update 13
+branch num: 125
+PC: 0x4b5f20, Target PC: 0xba4, Predicted Dest Addr: 0x4b5f24, Taken: True, Flush Num: 83
 0xfc8530 N 0xfc8534
+ before history update 26
+fsm index 10
+history after update 10
+branch num: 126
+PC: 0xfc8530, Target PC: 0x6054, Predicted Dest Addr: 0xfc8534, Taken: False, Flush Num: 83
 0x75c BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 127
+PC: 0x75c, Target PC: 0x56f4, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 84
 0x63b320 N 0x63b324
+ before history update 20
+fsm index 5
+history after update 5
+branch num: 128
+PC: 0x63b320, Target PC: 0x9ca8dd40, Predicted Dest Addr: 0x63b324, Taken: True, Flush Num: 85
 0x4db9d600 N 0x4db9d604
+ before history update 10
+fsm index 10
+history after update 10
+branch num: 129
+PC: 0x4db9d600, Target PC: 0x258724, Predicted Dest Addr: 0x4db9d604, Taken: False, Flush Num: 85
 0x155694 BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 130
+PC: 0x155694, Target PC: 0xb528c994, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 86
 0x280 N 0x284
+ before history update 20
+fsm index 5
+history after update 5
+branch num: 131
+PC: 0x280, Target PC: 0x1fb7290, Predicted Dest Addr: 0x284, Taken: True, Flush Num: 87
 0x1f7f64 BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 132
+PC: 0x1f7f64, Target PC: 0x4abd68, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 88
 0xf20 N 0xf24
+ before history update 10
+fsm index 10
+history after update 10
+branch num: 133
+PC: 0xf20, Target PC: 0x9678, Predicted Dest Addr: 0xf24, Taken: False, Flush Num: 88
 0xfc007ec BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 134
+PC: 0xfc007ec, Target PC: 0x7da8, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 89
 0xac3c50 N 0xac3c54
+ before history update 20
+fsm index 4
+history after update 4
+branch num: 135
+PC: 0xac3c50, Target PC: 0xe11d0, Predicted Dest Addr: 0xac3c54, Taken: False, Flush Num: 89
 0x96d28 N 0x96d2c
+ before history update 8
+fsm index 9
+history after update 9
+branch num: 136
+PC: 0x96d28, Target PC: 0xb3dc8, Predicted Dest Addr: 0x96d2c, Taken: True, Flush Num: 90
 0x4db9d600 N 0x4db9d604
+ before history update 18
+fsm index 3
+history after update 3
+branch num: 137
+PC: 0x4db9d600, Target PC: 0x258724, Predicted Dest Addr: 0x4db9d604, Taken: True, Flush Num: 91
 0x84d44 BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 138
+PC: 0x84d44, Target PC: 0xe498, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 92
 0x154 BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 139
+PC: 0x154, Target PC: 0xa88603bc, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 93
 0xfb8 N 0xfbc
+ before history update 6
+fsm index 7
+history after update 7
+branch num: 140
+PC: 0xfb8, Target PC: 0xcf1744, Predicted Dest Addr: 0xfbc, Taken: True, Flush Num: 94
 0x154 BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 141
+PC: 0x154, Target PC: 0xa88603bc, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 95
 0xfb8 T 0xcf1744
+ before history update 14
+fsm index 14
+history after update 14
+branch num: 142
+PC: 0xfb8, Target PC: 0xcf1744, Predicted Dest Addr: 0xcf1744, Taken: False, Flush Num: 96
 0x781b8 N 0x781bc
+ before history update 28
+fsm index 12
+history after update 12
+branch num: 143
+PC: 0x781b8, Target PC: 0x84cf0b8, Predicted Dest Addr: 0x781bc, Taken: False, Flush Num: 96
 0xec78b8 N 0xec78bc
+ before history update 24
+fsm index 9
+history after update 9
+branch num: 144
+PC: 0xec78b8, Target PC: 0x384, Predicted Dest Addr: 0xec78bc, Taken: True, Flush Num: 97
 0x4b5f20 N 0x4b5f24
+ before history update 18
+fsm index 3
+history after update 3
+branch num: 145
+PC: 0x4b5f20, Target PC: 0xba4, Predicted Dest Addr: 0x4b5f24, Taken: True, Flush Num: 98
 0x155694 BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 146
+PC: 0x155694, Target PC: 0xb528c994, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 99
 0x75c BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 147
+PC: 0x75c, Target PC: 0x56f4, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 100
 0x63b320 N 0x63b324
+ before history update 6
+fsm index 7
+history after update 7
+branch num: 148
+PC: 0x63b320, Target PC: 0x9ca8dd40, Predicted Dest Addr: 0x63b324, Taken: True, Flush Num: 101
 0xfc007ec BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 149
+PC: 0xfc007ec, Target PC: 0x7da8, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 102
 0xec78b8 N 0xec78bc
+ before history update 14
+fsm index 14
+history after update 14
+branch num: 150
+PC: 0xec78b8, Target PC: 0x384, Predicted Dest Addr: 0xec78bc, Taken: False, Flush Num: 102
 0x5f3b82c BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 151
+PC: 0x5f3b82c, Target PC: 0xcd86e8, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 103
 0xe60 N 0xe64
+ before history update 28
+fsm index 12
+history after update 12
+branch num: 152
+PC: 0xe60, Target PC: 0xe50, Predicted Dest Addr: 0xe64, Taken: False, Flush Num: 103
 0x154 BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 153
+PC: 0x154, Target PC: 0xa88603bc, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 104
 0x96d28 N 0x96d2c
+ before history update 24
+fsm index 9
+history after update 9
+branch num: 154
+PC: 0x96d28, Target PC: 0xb3dc8, Predicted Dest Addr: 0x96d2c, Taken: True, Flush Num: 105
 0x68dfc8 N 0x68dfcc
+ before history update 18
+fsm index 2
+history after update 2
+branch num: 155
+PC: 0x68dfc8, Target PC: 0x2812eaf0, Predicted Dest Addr: 0x68dfcc, Taken: False, Flush Num: 105
 0x154 BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 156
+PC: 0x154, Target PC: 0xa88603bc, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 106
 0xec78b8 N 0xec78bc
+ before history update 4
+fsm index 5
+history after update 5
+branch num: 157
+PC: 0xec78b8, Target PC: 0x384, Predicted Dest Addr: 0xec78bc, Taken: True, Flush Num: 107
 0x63b320 N 0x63b324
+ before history update 10
+fsm index 10
+history after update 10
+branch num: 158
+PC: 0x63b320, Target PC: 0x9ca8dd40, Predicted Dest Addr: 0x63b324, Taken: False, Flush Num: 107
 0xe28810 N 0xe28814
+ before history update 20
+fsm index 5
+history after update 5
+branch num: 159
+PC: 0xe28810, Target PC: 0x4d9db324, Predicted Dest Addr: 0xe28814, Taken: True, Flush Num: 108
 0x5f3b82c BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 160
+PC: 0x5f3b82c, Target PC: 0xcd86e8, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 109
 0x31079c BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 161
+PC: 0x31079c, Target PC: 0xc84, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 110
 0xfc007ec BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 162
+PC: 0xfc007ec, Target PC: 0x7da8, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 111
 0x63b320 N 0x63b324
+ before history update 10
+fsm index 11
+history after update 11
+branch num: 163
+PC: 0x63b320, Target PC: 0x9ca8dd40, Predicted Dest Addr: 0x63b324, Taken: True, Flush Num: 112
 0xe28810 N 0xe28814
+ before history update 22
+fsm index 7
+history after update 7
+branch num: 164
+PC: 0xe28810, Target PC: 0x4d9db324, Predicted Dest Addr: 0xe28814, Taken: True, Flush Num: 113
 0xf20 N 0xf24
+ before history update 14
+fsm index 15
+history after update 15
+branch num: 165
+PC: 0xf20, Target PC: 0x9678, Predicted Dest Addr: 0xf24, Taken: True, Flush Num: 114
 0xe77c1ec BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 166
+PC: 0xe77c1ec, Target PC: 0x24c20dfc, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 115
 0x781b8 N 0x781bc
+ before history update 30
+fsm index 15
+history after update 15
+branch num: 167
+PC: 0x781b8, Target PC: 0x84cf0b8, Predicted Dest Addr: 0x781bc, Taken: True, Flush Num: 116
 0x53a10c BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 168
+PC: 0x53a10c, Target PC: 0x7ceca0, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 117
 0xe28810 N 0xe28814
+ before history update 30
+fsm index 14
+history after update 14
+branch num: 169
+PC: 0xe28810, Target PC: 0x4d9db324, Predicted Dest Addr: 0xe28814, Taken: False, Flush Num: 117
 0x1f7f64 BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 170
+PC: 0x1f7f64, Target PC: 0x4abd68, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 118
 0x4b5f20 N 0x4b5f24
+ before history update 28
+fsm index 12
+history after update 12
+branch num: 171
+PC: 0x4b5f20, Target PC: 0xba4, Predicted Dest Addr: 0x4b5f24, Taken: False, Flush Num: 118
 0xf20 N 0xf24
+ before history update 24
+fsm index 8
+history after update 8
+branch num: 172
+PC: 0xf20, Target PC: 0x9678, Predicted Dest Addr: 0xf24, Taken: False, Flush Num: 118
 0xfb8 N 0xfbc
+ before history update 16
+fsm index 0
+history after update 0
+branch num: 173
+PC: 0xfb8, Target PC: 0xcf1744, Predicted Dest Addr: 0xfbc, Taken: False, Flush Num: 118
 0xfc007ec BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 174
+PC: 0xfc007ec, Target PC: 0x7da8, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 119
 0x63b320 N 0x63b324
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 175
+PC: 0x63b320, Target PC: 0x9ca8dd40, Predicted Dest Addr: 0x63b324, Taken: False, Flush Num: 119
 0xe60 N 0xe64
+ before history update 0
+fsm index 1
+history after update 1
+branch num: 176
+PC: 0xe60, Target PC: 0xe50, Predicted Dest Addr: 0xe64, Taken: True, Flush Num: 120
 0xd47c BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 177
+PC: 0xd47c, Target PC: 0xa5ae50, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 121
 0xfc8530 N 0xfc8534
+ before history update 2
+fsm index 2
+history after update 2
+branch num: 178
+PC: 0xfc8530, Target PC: 0x6054, Predicted Dest Addr: 0xfc8534, Taken: False, Flush Num: 121
 0x68dfc8 N 0x68dfcc
+ before history update 4
+fsm index 4
+history after update 4
+branch num: 179
+PC: 0x68dfc8, Target PC: 0x2812eaf0, Predicted Dest Addr: 0x68dfcc, Taken: False, Flush Num: 121
 0x63b320 N 0x63b324
+ before history update 8
+fsm index 9
+history after update 9
+branch num: 180
+PC: 0x63b320, Target PC: 0x9ca8dd40, Predicted Dest Addr: 0x63b324, Taken: True, Flush Num: 122
 0xec78b8 N 0xec78bc
+ before history update 18
+fsm index 3
+history after update 3
+branch num: 181
+PC: 0xec78b8, Target PC: 0x384, Predicted Dest Addr: 0xec78bc, Taken: True, Flush Num: 123
 0x84d44 BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 182
+PC: 0x84d44, Target PC: 0xe498, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 124
 0xfb8 N 0xfbc
+ before history update 6
+fsm index 6
+history after update 6
+branch num: 183
+PC: 0xfb8, Target PC: 0xcf1744, Predicted Dest Addr: 0xfbc, Taken: False, Flush Num: 124
 0x68dfc8 N 0x68dfcc
+ before history update 12
+fsm index 13
+history after update 13
+branch num: 184
+PC: 0x68dfc8, Target PC: 0x2812eaf0, Predicted Dest Addr: 0x68dfcc, Taken: True, Flush Num: 125
 0x154 BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 185
+PC: 0x154, Target PC: 0xa88603bc, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 126
 0xd48434 BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 186
+PC: 0xd48434, Target PC: 0x3eaeef4, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 127
 0xe77c1ec BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 187
+PC: 0xe77c1ec, Target PC: 0x24c20dfc, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 128
 0x155694 BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 188
+PC: 0x155694, Target PC: 0xb528c994, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 129
 0xe60 N 0xe64
+ before history update 26
+fsm index 10
+history after update 10
+branch num: 189
+PC: 0xe60, Target PC: 0xe50, Predicted Dest Addr: 0xe64, Taken: False, Flush Num: 129
 0x4b5f20 N 0x4b5f24
+ before history update 20
+fsm index 5
+history after update 5
+branch num: 190
+PC: 0x4b5f20, Target PC: 0xba4, Predicted Dest Addr: 0x4b5f24, Taken: True, Flush Num: 130
 0xd3abc BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 191
+PC: 0xd3abc, Target PC: 0xdd3858, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 131
 0x154 BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 192
+PC: 0x154, Target PC: 0xa88603bc, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 132
 0xd47c BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 193
+PC: 0xd47c, Target PC: 0xa5ae50, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 133
 0xe60 N 0xe64
+ before history update 10
+fsm index 10
+history after update 10
+branch num: 194
+PC: 0xe60, Target PC: 0xe50, Predicted Dest Addr: 0xe64, Taken: False, Flush Num: 133
 0xe28810 N 0xe28814
+ before history update 20
+fsm index 5
+history after update 5
+branch num: 195
+PC: 0xe28810, Target PC: 0x4d9db324, Predicted Dest Addr: 0xe28814, Taken: True, Flush Num: 134
 0xd47c BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 196
+PC: 0xd47c, Target PC: 0xa5ae50, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 135
 0x38932378 N 0x3893237c
+ before history update 10
+fsm index 11
+history after update 11
+branch num: 197
+PC: 0x38932378, Target PC: 0x15d8, Predicted Dest Addr: 0x3893237c, Taken: True, Flush Num: 136
 0x96d28 N 0x96d2c
+ before history update 22
+fsm index 6
+history after update 6
+branch num: 198
+PC: 0x96d28, Target PC: 0xb3dc8, Predicted Dest Addr: 0x96d2c, Taken: False, Flush Num: 136
 0x154 BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 199
+PC: 0x154, Target PC: 0xa88603bc, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 137
 0xfc8530 N 0xfc8534
+ before history update 12
+fsm index 13
+history after update 13
+branch num: 200
+PC: 0xfc8530, Target PC: 0x6054, Predicted Dest Addr: 0xfc8534, Taken: True, Flush Num: 138
 0xd3abc BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 201
+PC: 0xd3abc, Target PC: 0xdd3858, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 139
 0xd47c BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 202
+PC: 0xd47c, Target PC: 0xa5ae50, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 140
 0xf20 N 0xf24
+ before history update 26
+fsm index 10
+history after update 10
+branch num: 203
+PC: 0xf20, Target PC: 0x9678, Predicted Dest Addr: 0xf24, Taken: False, Flush Num: 140
 0xfb8 N 0xfbc
+ before history update 20
+fsm index 5
+history after update 5
+branch num: 204
+PC: 0xfb8, Target PC: 0xcf1744, Predicted Dest Addr: 0xfbc, Taken: True, Flush Num: 141
 0xe77c1ec BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 205
+PC: 0xe77c1ec, Target PC: 0x24c20dfc, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 142
 0xe60 N 0xe64
+ before history update 10
+fsm index 11
+history after update 11
+branch num: 206
+PC: 0xe60, Target PC: 0xe50, Predicted Dest Addr: 0xe64, Taken: True, Flush Num: 143
 0xe28810 N 0xe28814
+ before history update 22
+fsm index 7
+history after update 7
+branch num: 207
+PC: 0xe28810, Target PC: 0x4d9db324, Predicted Dest Addr: 0xe28814, Taken: True, Flush Num: 144
 0xfb8 N 0xfbc
+ before history update 14
+fsm index 15
+history after update 15
+branch num: 208
+PC: 0xfb8, Target PC: 0xcf1744, Predicted Dest Addr: 0xfbc, Taken: True, Flush Num: 145
 0xf20 N 0xf24
+ before history update 30
+fsm index 15
+history after update 15
+branch num: 209
+PC: 0xf20, Target PC: 0x9678, Predicted Dest Addr: 0xf24, Taken: True, Flush Num: 146
 0x17c BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 210
+PC: 0x17c, Target PC: 0x944, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 147
 0xe60 N 0xe64
+ before history update 30
+fsm index 15
+history after update 15
+branch num: 211
+PC: 0xe60, Target PC: 0xe50, Predicted Dest Addr: 0xe64, Taken: True, Flush Num: 148
 0xac3c50 N 0xac3c54
+ before history update 30
+fsm index 14
+history after update 14
+branch num: 212
+PC: 0xac3c50, Target PC: 0xe11d0, Predicted Dest Addr: 0xac3c54, Taken: False, Flush Num: 148
 0x31079c BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 213
+PC: 0x31079c, Target PC: 0xc84, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 149
 0xfc8530 N 0xfc8534
+ before history update 28
+fsm index 13
+history after update 13
+branch num: 214
+PC: 0xfc8530, Target PC: 0x6054, Predicted Dest Addr: 0xfc8534, Taken: True, Flush Num: 150
 0x96d28 N 0x96d2c
+ before history update 26
+fsm index 11
+history after update 11
+branch num: 215
+PC: 0x96d28, Target PC: 0xb3dc8, Predicted Dest Addr: 0x96d2c, Taken: True, Flush Num: 151
 0xfc007ec BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 216
+PC: 0xfc007ec, Target PC: 0x7da8, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 152
 0x280 N 0x284
+ before history update 22
+fsm index 7
+history after update 7
+branch num: 217
+PC: 0x280, Target PC: 0x1fb7290, Predicted Dest Addr: 0x284, Taken: True, Flush Num: 153
 0xea0 N 0xea4
+ before history update 14
+fsm index 15
+history after update 15
+branch num: 218
+PC: 0xea0, Target PC: 0xcaf4, Predicted Dest Addr: 0xea4, Taken: True, Flush Num: 154
 0x96d28 N 0x96d2c
+ before history update 30
+fsm index 15
+history after update 15
+branch num: 219
+PC: 0x96d28, Target PC: 0xb3dc8, Predicted Dest Addr: 0x96d2c, Taken: True, Flush Num: 155
 0x154 BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 220
+PC: 0x154, Target PC: 0xa88603bc, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 156
 0xec78b8 N 0xec78bc
+ before history update 30
+fsm index 15
+history after update 15
+branch num: 221
+PC: 0xec78b8, Target PC: 0x384, Predicted Dest Addr: 0xec78bc, Taken: True, Flush Num: 157
 0xd47c BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 222
+PC: 0xd47c, Target PC: 0xa5ae50, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 158
 0x84d44 BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 223
+PC: 0x84d44, Target PC: 0xe498, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 159
 0x4db9d600 N 0x4db9d604
+ before history update 30
+fsm index 14
+history after update 14
+branch num: 224
+PC: 0x4db9d600, Target PC: 0x258724, Predicted Dest Addr: 0x4db9d604, Taken: False, Flush Num: 159
 0xd47c BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 225
+PC: 0xd47c, Target PC: 0xa5ae50, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 160
 0xf20 N 0xf24
+ before history update 28
+fsm index 12
+history after update 12
+branch num: 226
+PC: 0xf20, Target PC: 0x9678, Predicted Dest Addr: 0xf24, Taken: False, Flush Num: 160
 0x4db9d600 N 0x4db9d604
+ before history update 24
+fsm index 8
+history after update 8
+branch num: 227
+PC: 0x4db9d600, Target PC: 0x258724, Predicted Dest Addr: 0x4db9d604, Taken: False, Flush Num: 160
 0x4b5f20 N 0x4b5f24
+ before history update 16
+fsm index 1
+history after update 1
+branch num: 228
+PC: 0x4b5f20, Target PC: 0xba4, Predicted Dest Addr: 0x4b5f24, Taken: True, Flush Num: 161
 0x96d28 N 0x96d2c
+ before history update 2
+fsm index 3
+history after update 3
+branch num: 229
+PC: 0x96d28, Target PC: 0xb3dc8, Predicted Dest Addr: 0x96d2c, Taken: True, Flush Num: 162
 0x781b8 N 0x781bc
+ before history update 6
+fsm index 6
+history after update 6
+branch num: 230
+PC: 0x781b8, Target PC: 0x84cf0b8, Predicted Dest Addr: 0x781bc, Taken: False, Flush Num: 162
 0x1f7f64 BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 231
+PC: 0x1f7f64, Target PC: 0x4abd68, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 163
 0x84d44 BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 232
+PC: 0x84d44, Target PC: 0xe498, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 164
 0x96d28 N 0x96d2c
+ before history update 12
+fsm index 12
+history after update 12
+branch num: 233
+PC: 0x96d28, Target PC: 0xb3dc8, Predicted Dest Addr: 0x96d2c, Taken: False, Flush Num: 164
 0x38932378 N 0x3893237c
+ before history update 24
+fsm index 8
+history after update 8
+branch num: 234
+PC: 0x38932378, Target PC: 0x15d8, Predicted Dest Addr: 0x3893237c, Taken: False, Flush Num: 164
 0x38932378 T 0x15d8
+ before history update 16
+fsm index 0
+history after update 0
+branch num: 235
+PC: 0x38932378, Target PC: 0x15d8, Predicted Dest Addr: 0x15d8, Taken: False, Flush Num: 165
 0x68dfc8 N 0x68dfcc
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 236
+PC: 0x68dfc8, Target PC: 0x2812eaf0, Predicted Dest Addr: 0x68dfcc, Taken: False, Flush Num: 165
 0x5f3b82c BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 237
+PC: 0x5f3b82c, Target PC: 0xcd86e8, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 166
 0x5f3b82c BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 238
+PC: 0x5f3b82c, Target PC: 0xcd86e8, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 167
 0xfc007ec BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 239
+PC: 0xfc007ec, Target PC: 0x7da8, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 168
 0xfc007ec BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 240
+PC: 0xfc007ec, Target PC: 0x7da8, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 169
 0xe28810 N 0xe28814
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 241
+PC: 0xe28810, Target PC: 0x4d9db324, Predicted Dest Addr: 0xe28814, Taken: False, Flush Num: 169
 0x68dfc8 N 0x68dfcc
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 242
+PC: 0x68dfc8, Target PC: 0x2812eaf0, Predicted Dest Addr: 0x68dfcc, Taken: False, Flush Num: 169
 0x38932378 N 0x3893237c
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 243
+PC: 0x38932378, Target PC: 0x15d8, Predicted Dest Addr: 0x3893237c, Taken: False, Flush Num: 169
 0x84d44 BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 244
+PC: 0x84d44, Target PC: 0xe498, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 170
 0x280 N 0x284
+ before history update 0
+fsm index 1
+history after update 1
+branch num: 245
+PC: 0x280, Target PC: 0x1fb7290, Predicted Dest Addr: 0x284, Taken: True, Flush Num: 171
 0xfb8 N 0xfbc
+ before history update 2
+fsm index 2
+history after update 2
+branch num: 246
+PC: 0xfb8, Target PC: 0xcf1744, Predicted Dest Addr: 0xfbc, Taken: False, Flush Num: 171
 0x63b320 N 0x63b324
+ before history update 4
+fsm index 5
+history after update 5
+branch num: 247
+PC: 0x63b320, Target PC: 0x9ca8dd40, Predicted Dest Addr: 0x63b324, Taken: True, Flush Num: 172
 0x1f7f64 BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 248
+PC: 0x1f7f64, Target PC: 0x4abd68, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 173
 0x96d28 N 0x96d2c
+ before history update 10
+fsm index 11
+history after update 11
+branch num: 249
+PC: 0x96d28, Target PC: 0xb3dc8, Predicted Dest Addr: 0x96d2c, Taken: True, Flush Num: 174
 0xe60 N 0xe64
+ before history update 22
+fsm index 7
+history after update 7
+branch num: 250
+PC: 0xe60, Target PC: 0xe50, Predicted Dest Addr: 0xe64, Taken: True, Flush Num: 175
 0x75c BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 251
+PC: 0x75c, Target PC: 0x56f4, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 176
 0x5f3b82c BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 252
+PC: 0x5f3b82c, Target PC: 0xcd86e8, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 177
 0x53a10c BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 253
+PC: 0x53a10c, Target PC: 0x7ceca0, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 178
 0x4db9d600 N 0x4db9d604
+ before history update 14
+fsm index 14
+history after update 14
+branch num: 254
+PC: 0x4db9d600, Target PC: 0x258724, Predicted Dest Addr: 0x4db9d604, Taken: False, Flush Num: 178
 0xfc8530 N 0xfc8534
+ before history update 28
+fsm index 12
+history after update 12
+branch num: 255
+PC: 0xfc8530, Target PC: 0x6054, Predicted Dest Addr: 0xfc8534, Taken: False, Flush Num: 178
 0xd3abc BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 256
+PC: 0xd3abc, Target PC: 0xdd3858, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 179
 0xe60 N 0xe64
+ before history update 24
+fsm index 8
+history after update 8
+branch num: 257
+PC: 0xe60, Target PC: 0xe50, Predicted Dest Addr: 0xe64, Taken: False, Flush Num: 179
 0x155694 BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 258
+PC: 0x155694, Target PC: 0xb528c994, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 180
 0xfb8 N 0xfbc
+ before history update 16
+fsm index 1
+history after update 1
+branch num: 259
+PC: 0xfb8, Target PC: 0xcf1744, Predicted Dest Addr: 0xfbc, Taken: True, Flush Num: 181
 0xfc8530 N 0xfc8534
+ before history update 2
+fsm index 2
+history after update 2
+branch num: 260
+PC: 0xfc8530, Target PC: 0x6054, Predicted Dest Addr: 0xfc8534, Taken: False, Flush Num: 181
 0xfc8530 T 0x6054
+ before history update 4
+fsm index 5
+history after update 5
+branch num: 261
+PC: 0xfc8530, Target PC: 0x6054, Predicted Dest Addr: 0x6054, Taken: True, Flush Num: 181
 0xec78b8 N 0xec78bc
+ before history update 10
+fsm index 10
+history after update 10
+branch num: 262
+PC: 0xec78b8, Target PC: 0x384, Predicted Dest Addr: 0xec78bc, Taken: False, Flush Num: 181
 0x31079c BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 263
+PC: 0x31079c, Target PC: 0xc84, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 182
 0x53a10c BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 264
+PC: 0x53a10c, Target PC: 0x7ceca0, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 183
 0x5f3b82c BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 265
+PC: 0x5f3b82c, Target PC: 0xcd86e8, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 184
 0x155694 BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 266
+PC: 0x155694, Target PC: 0xb528c994, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 185
 0xfc8530 N 0xfc8534
+ before history update 20
+fsm index 4
+history after update 4
+branch num: 267
+PC: 0xfc8530, Target PC: 0x6054, Predicted Dest Addr: 0xfc8534, Taken: False, Flush Num: 185
 0x68dfc8 N 0x68dfcc
+ before history update 8
+fsm index 8
+history after update 8
+branch num: 268
+PC: 0x68dfc8, Target PC: 0x2812eaf0, Predicted Dest Addr: 0x68dfcc, Taken: False, Flush Num: 185
 0xd48434 BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 269
+PC: 0xd48434, Target PC: 0x3eaeef4, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 186
 0xf20 N 0xf24
+ before history update 16
+fsm index 1
+history after update 1
+branch num: 270
+PC: 0xf20, Target PC: 0x9678, Predicted Dest Addr: 0xf24, Taken: True, Flush Num: 187
 0x5f3b82c BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 271
+PC: 0x5f3b82c, Target PC: 0xcd86e8, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 188
 0x781b8 N 0x781bc
+ before history update 2
+fsm index 2
+history after update 2
+branch num: 272
+PC: 0x781b8, Target PC: 0x84cf0b8, Predicted Dest Addr: 0x781bc, Taken: False, Flush Num: 188
 0xfb8 N 0xfbc
+ before history update 4
+fsm index 5
+history after update 5
+branch num: 273
+PC: 0xfb8, Target PC: 0xcf1744, Predicted Dest Addr: 0xfbc, Taken: True, Flush Num: 189
 0xe60 N 0xe64
+ before history update 10
+fsm index 10
+history after update 10
+branch num: 274
+PC: 0xe60, Target PC: 0xe50, Predicted Dest Addr: 0xe64, Taken: False, Flush Num: 189
 0x4db9d600 N 0x4db9d604
+ before history update 20
+fsm index 5
+history after update 5
+branch num: 275
+PC: 0x4db9d600, Target PC: 0x258724, Predicted Dest Addr: 0x4db9d604, Taken: True, Flush Num: 190
 0x96d28 N 0x96d2c
+ before history update 10
+fsm index 10
+history after update 10
+branch num: 276
+PC: 0x96d28, Target PC: 0xb3dc8, Predicted Dest Addr: 0x96d2c, Taken: False, Flush Num: 190
 0xd47c BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 277
+PC: 0xd47c, Target PC: 0xa5ae50, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 191
 0x5f3b82c BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 278
+PC: 0x5f3b82c, Target PC: 0xcd86e8, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 192
 0xfc007ec BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 279
+PC: 0xfc007ec, Target PC: 0x7da8, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 193
 0x63b320 N 0x63b324
+ before history update 20
+fsm index 4
+history after update 4
+branch num: 280
+PC: 0x63b320, Target PC: 0x9ca8dd40, Predicted Dest Addr: 0x63b324, Taken: False, Flush Num: 193
 0x17c BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 281
+PC: 0x17c, Target PC: 0x944, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 194
 0x68dfc8 N 0x68dfcc
+ before history update 8
+fsm index 9
+history after update 9
+branch num: 282
+PC: 0x68dfc8, Target PC: 0x2812eaf0, Predicted Dest Addr: 0x68dfcc, Taken: True, Flush Num: 195
 0x96d28 N 0x96d2c
+ before history update 18
+fsm index 2
+history after update 2
+branch num: 283
+PC: 0x96d28, Target PC: 0xb3dc8, Predicted Dest Addr: 0x96d2c, Taken: False, Flush Num: 195
 0xd47c BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 284
+PC: 0xd47c, Target PC: 0xa5ae50, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 196
 0xe28810 N 0xe28814
+ before history update 4
+fsm index 4
+history after update 4
+branch num: 285
+PC: 0xe28810, Target PC: 0x4d9db324, Predicted Dest Addr: 0xe28814, Taken: False, Flush Num: 196
 0x63b320 N 0x63b324
+ before history update 8
+fsm index 9
+history after update 9
+branch num: 286
+PC: 0x63b320, Target PC: 0x9ca8dd40, Predicted Dest Addr: 0x63b324, Taken: True, Flush Num: 197
 0xf20 N 0xf24
+ before history update 18
+fsm index 3
+history after update 3
+branch num: 287
+PC: 0xf20, Target PC: 0x9678, Predicted Dest Addr: 0xf24, Taken: True, Flush Num: 198
 0x4b5f20 N 0x4b5f24
+ before history update 6
+fsm index 7
+history after update 7
+branch num: 288
+PC: 0x4b5f20, Target PC: 0xba4, Predicted Dest Addr: 0x4b5f24, Taken: True, Flush Num: 199
 0x75c BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 289
+PC: 0x75c, Target PC: 0x56f4, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 200
 0xec78b8 N 0xec78bc
+ before history update 14
+fsm index 15
+history after update 15
+branch num: 290
+PC: 0xec78b8, Target PC: 0x384, Predicted Dest Addr: 0xec78bc, Taken: True, Flush Num: 201
 0x84d44 BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 291
+PC: 0x84d44, Target PC: 0xe498, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 202
 0x1f7f64 BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 292
+PC: 0x1f7f64, Target PC: 0x4abd68, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 203
 0x1f7f64 BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 293
+PC: 0x1f7f64, Target PC: 0x4abd68, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 204
 0xd3abc BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 294
+PC: 0xd3abc, Target PC: 0xdd3858, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 205
 0xfc8530 N 0xfc8534
+ before history update 30
+fsm index 14
+history after update 14
+branch num: 295
+PC: 0xfc8530, Target PC: 0x6054, Predicted Dest Addr: 0xfc8534, Taken: False, Flush Num: 205
 0xd48434 BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 296
+PC: 0xd48434, Target PC: 0x3eaeef4, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 206
 0x31079c BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 297
+PC: 0x31079c, Target PC: 0xc84, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 207
 0xe60 N 0xe64
+ before history update 28
+fsm index 12
+history after update 12
+branch num: 298
+PC: 0xe60, Target PC: 0xe50, Predicted Dest Addr: 0xe64, Taken: False, Flush Num: 207
 0x96d28 N 0x96d2c
+ before history update 24
+fsm index 9
+history after update 9
+branch num: 299
+PC: 0x96d28, Target PC: 0xb3dc8, Predicted Dest Addr: 0x96d2c, Taken: True, Flush Num: 208
 0x38932378 N 0x3893237c
+ before history update 18
+fsm index 3
+history after update 3
+branch num: 300
+PC: 0x38932378, Target PC: 0x15d8, Predicted Dest Addr: 0x3893237c, Taken: True, Flush Num: 209
 0xd47c BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 301
+PC: 0xd47c, Target PC: 0xa5ae50, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 210
 0xea0 N 0xea4
+ before history update 6
+fsm index 7
+history after update 7
+branch num: 302
+PC: 0xea0, Target PC: 0xcaf4, Predicted Dest Addr: 0xea4, Taken: True, Flush Num: 211
 0xf20 N 0xf24
+ before history update 14
+fsm index 15
+history after update 15
+branch num: 303
+PC: 0xf20, Target PC: 0x9678, Predicted Dest Addr: 0xf24, Taken: True, Flush Num: 212
 0x4db9d600 N 0x4db9d604
+ before history update 30
+fsm index 15
+history after update 15
+branch num: 304
+PC: 0x4db9d600, Target PC: 0x258724, Predicted Dest Addr: 0x4db9d604, Taken: True, Flush Num: 213
 0x4db9d600 T 0x258724
+ before history update 30
+fsm index 14
+history after update 14
+branch num: 305
+PC: 0x4db9d600, Target PC: 0x258724, Predicted Dest Addr: 0x258724, Taken: False, Flush Num: 214
 0x75c BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 306
+PC: 0x75c, Target PC: 0x56f4, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 215
 0x3914 BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 307
+PC: 0x3914, Target PC: 0x6fd85a8, Predicted Dest Addr: 0x0, Taken: False, Flush Num: 216
 0xfb8 N 0xfbc
+ before history update 28
+fsm index 12
+history after update 12
+branch num: 308
+PC: 0xfb8, Target PC: 0xcf1744, Predicted Dest Addr: 0xfbc, Taken: False, Flush Num: 216
 0xe60 N 0xe64
+ before history update 24
+fsm index 9
+history after update 9
+branch num: 309
+PC: 0xe60, Target PC: 0xe50, Predicted Dest Addr: 0xe64, Taken: True, Flush Num: 217
 0xe60 T 0xe50
-0x280 N 0
+ before history update 18
+fsm index 3
+history after update 3
+branch num: 310
+PC: 0xe60, Target PC: 0xe50, Predicted Dest Addr: 0xe50, Taken: True, Flush Num: 217
+0x280 N 0x284
+ before history update 6
+fsm index 7
+history after update 7
+branch num: 311
+PC: 0x280, Target PC: 0x1fb7290, Predicted Dest Addr: 0x284, Taken: True, Flush Num: 218
+0xe28810 N 0xe28814
+ before history update 14
+fsm index 14
+history after update 14
+branch num: 312
+PC: 0xe28810, Target PC: 0x4d9db324, Predicted Dest Addr: 0xe28814, Taken: False, Flush Num: 218
+0xf20 N 0xf24
+ before history update 28
+fsm index 12
+history after update 12
+branch num: 313
+PC: 0xf20, Target PC: 0x9678, Predicted Dest Addr: 0xf24, Taken: False, Flush Num: 218
+0xfb8 N 0xfbc
+ before history update 24
+fsm index 8
+history after update 8
+branch num: 314
+PC: 0xfb8, Target PC: 0xcf1744, Predicted Dest Addr: 0xfbc, Taken: False, Flush Num: 218
+0x68dfc8 N 0x68dfcc
+ before history update 16
+fsm index 1
+history after update 1
+branch num: 315
+PC: 0x68dfc8, Target PC: 0x2812eaf0, Predicted Dest Addr: 0x68dfcc, Taken: True, Flush Num: 219
+0x5f3b82c BTB index out of boundsN 0x0
+ before history update 0
+fsm index 0
+history after update 0
+branch num: 316
+PC: 0x5f3b82c, Target PC: 0xcd86e8, Predicted Dest Addr: 0x0, Taken: True, Flush Num: 220
+0xf20 N 0xf24
+ before history update 2
+fsm index 3
+history after update 3
+branch num: 317
+PC: 0xf20, Target PC: 0x9678, Predicted Dest Addr: 0xf24, Taken: True, Flush Num: 221
+0x96d28 N 0x96d2c
+ before history update 6
+fsm index 7
+history after update 7
+branch num: 318
+PC: 0x96d28, Target PC: 0xb3dc8, Predicted Dest Addr: 0x96d2c, Taken: True, Flush Num: 222
+0xea0 N 0xea4
+ before history update 14
+fsm index 15
+history after update 15
+bra
