@@ -35,7 +35,7 @@ class bimodal_FSM
 			_s = _default;
 		}
 		void print(){
-			printf("curr state = %d", _s);
+			printf("curr state = %d, ", _s);
 		}
 };
 
@@ -142,18 +142,20 @@ class history_record
 
 		void reset_record(uint32_t pc)
 		{
-			uint32_t fsm_idx =  get_fsm_index(pc);
+		
 			if(!_isGlobalTable){
 				for (int i=0; i< sizeof(_bimodal_state_vector); i++)
-					(*_bimodal_state_vector)[fsm_idx].reset_to_default();
+					(*_bimodal_state_vector)[i].reset_to_default();
 			}
 
 		}
 
 		void print(){
 			printf("history value: %x\n", history);
+			printf("FSM table:\n:");
 			for(int i=0;i<_bimodal_state_vector->size(); i++)
 				(*_bimodal_state_vector)[i].print();
+			printf("\n");
 		}
 
 		void reset_hist() {history = 0u;}
@@ -187,7 +189,7 @@ class btb_record
 	history_record * history_record_ptr; // pointer to object which contains information about the branch history.
 	public:
 	btb_record(unsigned tag_size, bool isGlobalHist) {
-		
+		valid = false;
 		btb_record::tag_size = tag_size;
 		btb_record::isGlobalHist = isGlobalHist;
 		btb_record::history_record_ptr = history_record_ptr;
@@ -211,6 +213,7 @@ class btb_record
 				btb_record::tag = curr_cmd_tag;
 				if (!isGlobalHist) // if local history, reset the history register
 					history_record_ptr->reset_hist();
+				history_record_ptr->update_record(pc, taken);
 			}
 		} 
 		
@@ -249,7 +252,7 @@ class btb_record
 	}
 
 	void print(){
-		printf("valid: %d, tag: %x, dst: %x\n");
+		printf("valid: %d, tag: %x, dst: %x\n", valid, tag, dst_addr);
 		history_record_ptr->print();
 	}
 	void free_mem() {
@@ -360,6 +363,7 @@ int branch_predictor::init(unsigned btbSize, unsigned historySize, unsigned tagS
 	}
 
 	//printf("Finished initialization of BTB. length = %d\n", (int)BTB_table.size());
+	BP_Print_BTB_data();
 	return 0;
 }
 
