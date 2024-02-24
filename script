@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# Directory containing the .trc files
+DIRECTORY="./tests"
+
+for file in "$DIRECTORY"/*.trc; do
+    # Add a space at the end of the first line without adding a new line
+    sed -i '1s/$/ /' "$file"
+done

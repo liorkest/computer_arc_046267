@@ -30,7 +30,7 @@ class bimodal_FSM
 		}
 		void change_state_NT() { _s--; if (_s < 0) _s = 0; }
 		void change_state_T() { _s++; if (_s > 3) _s = 3; }
-		bool get_decision() { printf("FSM value: %d\n", _s); return (_s >= 2); }
+		bool get_decision() { /*printf("(FSM value: %d) ", _s) ;*/ return (_s >= 2); }
 		void reset_to_default() {
 			_s = _default;
 		}
@@ -97,27 +97,28 @@ class history_record
 				bimodal_FSM b(fsmState);
 				vec->push_back(b);
 			}
-			printf("expected: %d \n real std::vector<bimodal_FSM> size = %d\n", (int)bimodal_state_vector_size, (int)vec->size());
+			//printf("expected: %d \n real std::vector<bimodal_FSM> size = %d\n", (int)bimodal_state_vector_size, (int)vec->size());
 			return vec;
 		}
 
 		bool predict (uint32_t pc)
 		{
 			uint32_t fsm_idx = get_fsm_index(pc);
+			//printf("fsm index: %d\n: " , fsm_idx);
 			//in case of local hist, local fsm
 			if (!_bimodal_state_vector) // Check if the FSM vector pointer is valid
 				return false;
 			bool decision = (*_bimodal_state_vector)[fsm_idx].get_decision();
-			printf("accessing %d, decision is %d\n", fsm_idx, decision);	
+			//printf("accessing %d, decision is %d\n", fsm_idx, decision);	
 
-			return (*_bimodal_state_vector)[fsm_idx].get_decision();		
+			return decision;		
 		}
 
 		void update_record(uint32_t pc, bool taken)
 		{
 			uint32_t fsm_idx =  get_fsm_index(pc);
 			// update FSM
-			printf("fsm index %d\n",fsm_idx);
+			
 			if (taken)
 				(*_bimodal_state_vector)[fsm_idx].change_state_T();
 			else
@@ -131,7 +132,7 @@ class history_record
 				history = history + 1u;
 
 			history = history & hist_bitmask;
-
+			//printf("fsm index %d\n",fsm_idx);
 			//printf("after history update 0x%x\n",history);
 
 		}
@@ -203,6 +204,7 @@ class btb_record
 					history_record_ptr->reset_hist();
 			}
 		} 
+		
 		else // totally new record :)
 		{
 			tag = curr_cmd_tag;
@@ -312,7 +314,7 @@ int branch_predictor::init(unsigned btbSize, unsigned historySize, unsigned tagS
 		else
 			history_record_ptr_global = new history_record(historySize, fsmState, share_use, isGlobalTable);
 	}
-	printf("int btb line 280\n");
+	//printf("int btb line 280\n");
 	history_record * tmp_ptr;
 	// generate the BTB table
 	for (unsigned int i=0; i<btbSize; i++) 
@@ -338,7 +340,7 @@ int branch_predictor::init(unsigned btbSize, unsigned historySize, unsigned tagS
 		//printf("after push back %d\n" , i);
 	}
 
-	printf("Finished initialization of BTB. length = %d\n", (int)BTB_table.size());
+	//printf("Finished initialization of BTB. length = %d\n", (int)BTB_table.size());
 	return 0;
 }
 
@@ -386,11 +388,13 @@ bool branch_predictor::BP_predict(uint32_t pc, uint32_t *dst)
 void branch_predictor::BP_update(uint32_t pc, uint32_t targetPc, bool taken, uint32_t pred_dst)
 {
 	int index = find_btb_idx(pc);
-	//printf("PC: 0x%x, Target PC: 0x%x, Predicted Dest Addr: 0x%x, Taken: %s, Flush Num: %d\n", pc, targetPc, pred_dst, taken ? "True" : "False", flush_num);
+	
 	if( ((targetPc != pred_dst) && taken) || ((pred_dst != pc + 4) && !taken) ) {
 		flush_num++;
 	} 
 	BTB_table[index].update(pc, targetPc, taken, find_tag_idx(pc));
+	
+	//printf("PC: 0x%x, Target PC: 0x%x, Predicted Dest Addr: 0x%x, Taken: %s, Flush Num: %d\n", pc, targetPc, pred_dst, taken ? "True" : "False", flush_num);
 }
 
 void branch_predictor::BP_GetStats(SIM_stats *curStats)
@@ -426,7 +430,7 @@ int BP_init(unsigned btbSize, unsigned historySize, unsigned tagSize, unsigned f
 
 bool BP_predict(uint32_t pc, uint32_t *dst){
 	bool prediction = bp.BP_predict(pc, dst);
-	printf("\n");
+	//printf("\n");
 	return prediction;
 	
 }

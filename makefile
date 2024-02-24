@@ -40,7 +40,7 @@ bp.o: bp.cpp
 endif
 
 $(OBJ_GIVEN): %.o: %.c
-	$(CC) -c -g $(CFLAGS)  -o $@ $^ -lm
+	$(CC) -c $(CFLAGS)  -o $@ $^ -lm
 
 
 .PHONY: clean
