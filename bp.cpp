@@ -30,7 +30,7 @@ class bimodal_FSM
 		}
 		void change_state_NT() { _s--; if (_s < 0) _s = 0; }
 		void change_state_T() { _s++; if (_s > 3) _s = 3; }
-		bool get_decision() { /*printf("(FSM value: %d) ", _s) ;*/ return (_s >= 2); }
+		bool get_decision() {  return (_s >= 2); }
 		void reset_to_default() {
 			_s = _default;
 		}
@@ -131,9 +131,9 @@ class history_record
 			// update FSM
 			uint32_t fsm_idx =  get_fsm_index(pc);
 			//printf( "history before update %d\n",history);
-			if (taken && !_bimodal_state_vector )
+			if (taken)
 				(*_bimodal_state_vector)[fsm_idx].change_state_T();
-			else if (!_bimodal_state_vector)
+			else 
 				(*_bimodal_state_vector)[fsm_idx].change_state_NT();
 
 
@@ -242,7 +242,7 @@ class btb_record
 			return false;
 		}
 		
-		if(!valid || tag_index != tag ){
+		if(!valid  || tag_index != tag ){
 			//printf("notag or no valid\n");
 			*dst = pc + 4;
 			return false;
@@ -346,12 +346,11 @@ int branch_predictor::init(unsigned btbSize, unsigned historySize, unsigned tagS
 		else
 			history_record_ptr_global = new history_record(historySize, fsmState, share_use, isGlobalTable);
 	}
-	//printf("int btb line 280\n");
+
 	history_record * tmp_ptr;
 	// generate the BTB table
 	for (unsigned int i=0; i<btbSize; i++) 
 	{
-		//printf("start btb number %d\n" ,i);
 		btb_record new_record(tagSize, isGlobalHist);
 
 		if (isGlobalHist) { // one history for all
@@ -367,12 +366,9 @@ int branch_predictor::init(unsigned btbSize, unsigned historySize, unsigned tagS
 				new_record.set_hist_ptr(tmp_ptr);
 			}
 		}
-		//printf("btb number %d\n" ,i);
 		BTB_table.push_back(new_record);
-		//printf("after push back %d\n" , i);
 	}
 
-	//printf("Finished initialization of BTB. length = %d\n", (int)BTB_table.size());
 	//BP_Print_BTB_data();
 	return 0;
 }
@@ -380,12 +376,16 @@ int branch_predictor::init(unsigned btbSize, unsigned historySize, unsigned tagS
 //function recives pc, returns the BTB idx in that adress, Tested
 uint32_t branch_predictor::find_btb_idx(uint32_t pc){
 	//find btb index using mask
-    unsigned int num_btb_bits = (btbSize == 1) ? 1 : log2(btbSize);
+    unsigned int num_btb_bits =  log2(btbSize);
+
+	if(num_btb_bits == 0)
+		return 0;
 	uint32_t btb_mask = (1u << num_btb_bits) - 1;	// Create a mask with 1s in the relevant bits
 	uint32_t btbBits = (pc >> 2) & btb_mask; // Apply the mask to pc after shifting to skip the 2 least significant bits
 	uint32_t btb_index = btbBits;
 	return btb_index;
 }
+
 
 //function recives pc, returns the BTB idx in that adress
 uint32_t branch_predictor::find_tag(uint32_t pc){
@@ -401,26 +401,22 @@ uint32_t branch_predictor::find_tag(uint32_t pc){
 
 
 
+
 bool branch_predictor::BP_predict(uint32_t pc, uint32_t *dst)
 {
 
-	//printf("started predicting");
 	branch_num++;
-		//if (branch_num == 27)
-		//BP_Print_BTB_data();
+	//BP_Print_BTB_data();
 		
 	uint32_t btb_index = find_btb_idx(pc);
 	uint32_t tag_index = find_tag(pc);
-	printf("pc: 0x%x\n", pc);
-	printf("btb_index %d\n",btb_index);
-	printf("btbSize %d\n", btbSize);
+
 	if (btb_index > btbSize) // Check if btb_idx is within bounds of BTB_table
 	{
 		printf("BTB index out of bounds");
 		return false;
 	}
 
-	//printf("before entering predict func\n");
 	return BTB_table[btb_index].predict(pc, dst, tag_index);
 }
 
@@ -428,11 +424,10 @@ void branch_predictor::BP_update(uint32_t pc, uint32_t targetPc, bool taken, uin
 {
 	int index = find_btb_idx(pc);
 	if( ((targetPc != pred_dst) && taken) || ((pred_dst != pc + 4) && !taken) ) {
+		//printf("targetPc: 0x%x ,pred_dst: 0x%x, taken: %d " , targetPc,pred_dst,taken);
 		flush_num++;
 	} 
 	BTB_table[index].update(pc, targetPc, taken, find_tag(pc));
-	
-	//printf("PC: 0x%x, Target PC: 0x%x, Predicted Dest Addr: 0x%x, Taken: %s, Flush Num: %d\n", pc, targetPc, pred_dst, taken ? "True" : "False", flush_num);
 }
 
 void branch_predictor::BP_GetStats(SIM_stats *curStats)
