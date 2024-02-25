@@ -378,8 +378,9 @@ uint32_t branch_predictor::find_btb_idx(uint32_t pc){
 	//find btb index using mask
     unsigned int num_btb_bits =  log2(btbSize);
 
-	if(num_btb_bits == 0)
+	if(num_btb_bits == 0){
 		return 0;
+	}
 	uint32_t btb_mask = (1u << num_btb_bits) - 1;	// Create a mask with 1s in the relevant bits
 	uint32_t btbBits = (pc >> 2) & btb_mask; // Apply the mask to pc after shifting to skip the 2 least significant bits
 	uint32_t btb_index = btbBits;
