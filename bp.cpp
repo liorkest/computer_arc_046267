@@ -6,6 +6,10 @@
 #include <vector>
 #include <math.h>
 #include<iterator> // for iterators
+#include <bitset>
+#include <iostream>
+#include <cstdint>
+
 
 /* Constants and enums definitions */
 const int ADDR_SIZE = 32;
@@ -77,13 +81,20 @@ class history_record
 			uint32_t row_index ;
 			
 			uint32_t bitmask = (1 << _historySize) - 1; // Create bitmask to extract historySize lower bits
+			std::bitset<32> binaryHistory(history);
+			std::bitset<32> binaryPc(pc);
 
 			if (_share_use == using_share_lsb) {
 				uint32_t pc_share_bits = (pc >> 2); // extract the relevant bits for lsb share
 				row_index = pc_share_bits ^ history; // Perform XOR between pc_share_bits and the history
+    		std::cout << "share_lsb, pc: " << binaryPc << ", row index: " << std::dec << (row_index & bitmask) << ", history: " << history << std::endl;
 			} else if (_share_use == using_share_mid) {
 				uint32_t pc_share_bits = (pc >> 16); // extract the relevant bits for mid share
 				row_index = pc_share_bits ^ history; // Perform XOR between pc_share_bits and the history
+				std::cout << "share_mid, pc: " << binaryPc<< ", row index: " << std::dec << (row_index & bitmask) << ", history: " << binaryHistory << std::endl;
+
+				
+
 			}
 			else
 				row_index = history;// fsm_idx = find_btb_idx(uint32_t pc); // Assuming find_btb_idx is another function that computes an index
@@ -238,8 +249,9 @@ class btb_record
 		printf("	valid: %d, tag: %x, dst: %x\n", valid, tag, dst_addr);
 		history_record_ptr->print();
 		printf("	FSM table:\n:");
-		for(unsigned int i=0;i<_bimodal_state_vector->size(); i++)
+		for(unsigned int i=0;i<_bimodal_state_vector->size(); i++){
 			(*_bimodal_state_vector)[i].print();
+		}
 		printf("\n");
 	}
 
@@ -369,7 +381,9 @@ uint32_t branch_predictor::find_btb_idx(uint32_t pc)
 //function recives pc, returns the BTB idx in that adress
 uint32_t branch_predictor::find_tag(uint32_t pc){
 	//find tag index using mask
-	 unsigned int num_btb_bits = (btbSize == 1) ? 1 : log2(btbSize);
+	if(tagSize==0)
+		return 0;
+	unsigned int num_btb_bits =  log2(btbSize);
 	uint32_t tag_mask = (1u << tagSize) - 1  ;
 	uint32_t tag_bits = (pc >> (2+ num_btb_bits)) & tag_mask;
 	int32_t tag_index = tag_bits; // Convert into numbers
@@ -385,7 +399,9 @@ bool branch_predictor::BP_predict(uint32_t pc, uint32_t *dst)
 {
 
 	branch_num++;
-		
+	printf("branch_num: %d\n",branch_num);	
+	//BP_Print_BTB_data();
+
 	uint32_t btb_index = find_btb_idx(pc);
 	uint32_t tag_index = find_tag(pc);
 
@@ -401,9 +417,10 @@ bool branch_predictor::BP_predict(uint32_t pc, uint32_t *dst)
 void branch_predictor::BP_update(uint32_t pc, uint32_t targetPc, bool taken, uint32_t pred_dst)
 {
 	if( ((targetPc != pred_dst) && taken) || ((pred_dst != pc + 4) && !taken) ) {
-		//printf("targetPc: 0x%x ,pred_dst: 0x%x, taken: %d " , targetPc,pred_dst,taken);
 		flush_num++;
 	} 
+	//printf("targetPc: 0x%x ,pred_dst: 0x%x, taken: %d " , targetPc,pred_dst,taken);
+
 	int index = find_btb_idx(pc);
 	BTB_table[index].update(pc, targetPc, taken, find_tag(pc));
 }
@@ -447,6 +464,7 @@ int BP_init(unsigned btbSize, unsigned historySize, unsigned tagSize, unsigned f
 
 bool BP_predict(uint32_t pc, uint32_t *dst){
 	bool prediction = bp.BP_predict(pc, dst);
+	
 	//printf("\n\n");
 	return prediction;
 	
