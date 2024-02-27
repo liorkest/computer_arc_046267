@@ -40,7 +40,6 @@ class bimodal_FSM
 			_s = _default;
 		}
 		void print(){
-			
 			printf("	curr state = %d, ", _s);
 		}
 };
@@ -56,44 +55,35 @@ class history_record
 		unsigned _historySize;
 		bool  isGlobalTable;
 	public:
-
+		//initialize history record
 		history_record(unsigned historySize, share_use_method share_use, bool is_GlobalTable)
 		{
 			isGlobalTable = is_GlobalTable;
 			history = 0u;
 			_share_use = share_use;
-			
 			_historySize = historySize;
 		}
-
 
 		void update_record(uint32_t pc, bool taken)
 		{
 			// update history
-			history = history << 1;
+			history = history << 1; //remove MSB bit, add 0 at LSB
 			uint32_t hist_bitmask = (1 << _historySize) - 1; // Create bitmask to extract historySize lower bits
-			if(taken)
+			if(taken) //change LSB to '1' in case of branch taken
 				history = history + 1u;
-
-			history = history & hist_bitmask;
-
+			history = history & hist_bitmask; //remove additonal bits.
 		}
 
 		unsigned int get_fsm_index(uint32_t pc) {
 			uint32_t row_index ;
-			
 			uint32_t bitmask = (1 << _historySize) - 1; // Create bitmask to extract historySize lower bits
-			std::bitset<32> binaryHistory(history);
-			std::bitset<32> binaryPc(pc);
-
+			
 			if (_share_use == using_share_lsb && isGlobalTable) {
 				uint32_t pc_share_bits = (pc >> 2); // extract the relevant bits for lsb share
 				row_index = pc_share_bits ^ history; // Perform XOR between pc_share_bits and the history
-    		// std::cout << "share_lsb, pc: " << binaryPc << ", row index: " << std::dec << (row_index & bitmask) << ", history: " << history << std::endl;
 			} else if (_share_use == using_share_mid  && isGlobalTable) {
 				uint32_t pc_share_bits = (pc >> 16); // extract the relevant bits for mid share
 				row_index = pc_share_bits ^ history; // Perform XOR between pc_share_bits and the history
-				//std::cout << "share_mid, pc: " << binaryPc<< ", row index: " << std::dec << (row_index & bitmask) << ", history: " << binaryHistory << std::endl;
 			}
 			else {
 				row_index = history;// fsm_idx = find_btb_idx(uint32_t pc); // Assuming find_btb_idx is another function that computes an index
@@ -110,9 +100,6 @@ class history_record
 		void reset_hist() {history = 0u;}
 
 };
-
-
-
 
 class btb_record
 {
@@ -131,6 +118,7 @@ class btb_record
 	static int bimodal_global_ptr_delete_count;
 
 	public:
+	//initialize btb rec
 	btb_record(unsigned tag_size, bool isGlobalHist, bool isGlobalTable, unsigned history_size, share_use_method share_use, uint32_t fsmState) {
 		btb_record::isGlobalTable = isGlobalTable;
 		valid = false;
@@ -144,7 +132,7 @@ class btb_record
 		if(!isGlobalHist)
 			btb_record::history_record_ptr = new history_record(history_size, share_use, isGlobalTable);
 	}
-
+	//initialize fsm vec
 	std::vector<bimodal_FSM> static * init_fsm_vec(unsigned historySize, unsigned fsmState)
 	{ // this is a helper function, that creates a binomal counters vector, in the size needed according to history size
 		// returns a pointer to this vector
@@ -164,9 +152,8 @@ class btb_record
 	{
 		if (!isGlobalHist) // if local history, reset the history register
 			history_record_ptr->reset_hist();
-
+		//reset all vector in fsm table
 		if(!isGlobalTable){
-			//printf("flush table!!!!!!!!!\n");
 			for (unsigned int i=0; i < _bimodal_state_vector->size(); i++)
 				(*_bimodal_state_vector)[i].reset_to_default();
 		}
@@ -176,7 +163,6 @@ class btb_record
 	void set_table_ptr(std::vector<bimodal_FSM> * table_ptr) {btb_record::_bimodal_state_vector = table_ptr; }
 	void update(uint32_t pc, uint32_t targetPc, bool taken, uint32_t curr_cmd_tag)
 	{
-		//printf("update: PC %x, target PC %x, taken: %d, tag: %x\n",pc, targetPc,taken, curr_cmd_tag);
 		if (valid) // record is already initialized
 		{
 			if (tag == curr_cmd_tag) 
@@ -199,14 +185,12 @@ class btb_record
 			update_table(taken, pc);
 			history_record_ptr->update_record(pc, taken);
 		}
-
 		dst_addr = targetPc;
 	}
 
 	void update_table(bool taken, uint32_t pc){
 		// update FSM
 		uint32_t fsm_idx = history_record_ptr->get_fsm_index(pc);
-
 		if (taken)
 			(*_bimodal_state_vector)[fsm_idx].change_state_T();
 		else 
@@ -214,37 +198,28 @@ class btb_record
 	}
 
 	bool predict(uint32_t pc, uint32_t * dst, uint32_t tag_index){
-
 		if (!history_record_ptr) { // Check if the pointer is valid
 			printf("No history ptr!\n");
 			return false;
 		}
-		
 		if(!valid  || tag_index != tag ){
 			//printf("notag or no valid\n");
 			*dst = pc + 4;
 			return false;
 		}
-
-
 		uint32_t fsm_idx = history_record_ptr->get_fsm_index(pc);
-		//printf("accessing %d fsm to predict\n", fsm_idx);
-		//printf("fsm index: %d\n: " , fsm_idx);
 		//in case of local hist, local fsm
 		if (!_bimodal_state_vector) // Check if the FSM vector pointer is valid
 			return false;
 		bool prediction = (*_bimodal_state_vector)[fsm_idx].get_decision();
-
 		// in case of Taken update according to table, else update as pc+4
 		if (prediction)
 			*dst = dst_addr ;
 		else
 			*dst = pc + 4;
-
-
 		return prediction;
 	}
-
+	//print function
 	void print(){
 		printf("	valid: %d, tag: %x, dst: %x\n", valid, tag, dst_addr);
 		history_record_ptr->print();
@@ -254,7 +229,6 @@ class btb_record
 		}
 		printf("\n");
 	}
-
 	void free_mem() {
 		if (!isGlobalTable)
 			delete _bimodal_state_vector;
@@ -270,10 +244,8 @@ class btb_record
 			btb_record::hist_global_ptr_ref_count = 1;
 		}
 	}
-	
 };
 int btb_record::bimodal_global_ptr_delete_count = 0;
-
 int btb_record::hist_global_ptr_ref_count = 0;
 class branch_predictor
 {
@@ -365,17 +337,14 @@ uint32_t branch_predictor::find_btb_idx(uint32_t pc)
 {
 	//find btb index using mask
     unsigned int num_btb_bits =  log2(btbSize);
-
 	if(num_btb_bits == 0){
 		return 0;
 	}
 	uint32_t btb_mask = (1u << num_btb_bits) - 1;	// Create a mask with 1s in the relevant bits
 	uint32_t btbBits = (pc >> 2) & btb_mask; // Apply the mask to pc after shifting to skip the 2 least significant bits
 	uint32_t btb_index = btbBits;
-
 	return btb_index;
 }
-
 
 //function recives pc, returns the BTB idx in that adress
 uint32_t branch_predictor::find_tag(uint32_t pc){
@@ -388,11 +357,6 @@ uint32_t branch_predictor::find_tag(uint32_t pc){
 	int32_t tag_index = tag_bits; // Convert into numbers
 	return tag_index;
 }
-
-
-
-
-
 
 bool branch_predictor::BP_predict(uint32_t pc, uint32_t *dst)
 {
@@ -464,7 +428,6 @@ int BP_init(unsigned btbSize, unsigned historySize, unsigned tagSize, unsigned f
 
 bool BP_predict(uint32_t pc, uint32_t *dst){
 	bool prediction = bp.BP_predict(pc, dst);
-	
 	return prediction;
 	
 }
@@ -477,8 +440,6 @@ void BP_update(uint32_t pc, uint32_t targetPc, bool taken, uint32_t pred_dst){
 void BP_GetStats(SIM_stats *curStats)
 {
 	bp.BP_GetStats(curStats);
-
-
 }
 
 
