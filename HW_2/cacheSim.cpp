@@ -129,7 +129,7 @@ class cache
 		uint32_t cache_cycles;
 		cache * lower_cache;
 		uint32_t assoc_lvl;
-		uint32_t way_lines;
+		uint32_t num_of_ways;
 		int misses, access_times;
 
 	public:
@@ -149,12 +149,11 @@ class cache
 					cache::lower_cache = NULL;
 				else
 					cache::lower_cache = pnt_lower;
-				if(assoc_lvl==0)
-					cache::way_lines =0;
-				else
-					cache::way_lines = cache_size / (block_size * assoc_lvl); 	
-				for(unsigned i=0 ; i< assoc_lvl ; i++){
-					way w = way(way_lines,block_size, assoc_lvl);	
+				
+				num_of_ways = pow(2, assoc_lvl);
+				uint32_t num_of_blocks_in_way = cache_size / (block_size * assoc_lvl); 	
+				for(unsigned i=0 ; i < num_of_ways ; i++){
+					way w = way(num_of_blocks_in_way,block_size, assoc_lvl);	
 					way_data.push_back(w);
 				}
 
