@@ -163,8 +163,16 @@ class cache
 		//search for data_adress in current cache - doesn't check next lvl!
 		uint32_t cache_read(uint32_t data_adress)
 		{
-			access_times++;
 			uint32_t delay = 0;	
+			access_times++;//only if cache excists or everytime??????????
+			if(assoc_lvl==0){
+				if(lower_cache!=NULL)
+					return mem_cycles;
+				else
+					return cache_cycles + (*lower_cache).cache_read(data_adress); // with delay of current cache???????????
+			}
+			else
+			{
 			bool data_found = false;
 			/// SEARCH FOR DATA IN RELVENT CACHE ////
 			//run through all way to read the data
@@ -190,7 +198,8 @@ class cache
 			bool got_added=false; // initialize to check if data got added
 			unsigned int updated_way;
 			//if not found add data to cache, go in at every cache
-			if(!data_found){
+			
+			if(!data_found ){
 				//run through all ways to find empty spot
 				for(unsigned i=0 ; i< assoc_lvl ; i++){
 					if(way_data[i].access_data_from_way(data_adress) == 1)//found empty spot
@@ -219,7 +228,7 @@ class cache
 				if(i != updated_way)//way needs to get updated
 					way_data[i].update_age_of_not_accessed(data_adress);
 			}	
-
+			}
 			return delay;
 		}
 		
