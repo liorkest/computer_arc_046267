@@ -341,7 +341,9 @@ int main(int argc, char **argv) {
 
 	double L1MissRate = L1.get_missRate();
 	double L2MissRate = L2.get_missRate();
-	double avgAccTime = total_delay / L1.get_accesses_num();
+	double avgAccTime = 0;
+	if (L1.get_accesses_num() != 0)
+		avgAccTime = total_delay / L1.get_accesses_num();
 
 
 	printf("L1miss=%.03f ", L1MissRate);
