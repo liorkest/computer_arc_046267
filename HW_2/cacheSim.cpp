@@ -109,6 +109,16 @@ int main(int argc, char **argv) {
 	return 0;
 }
 
+class way
+{
+	std::vector<cache_block> cache_data;
+};
+
+class cache_block
+{
+	uint32_t size;
+};
+
 
 class cache
 {
