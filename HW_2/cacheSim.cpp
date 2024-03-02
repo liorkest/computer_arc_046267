@@ -146,10 +146,13 @@ class cache
 				misses=0;
 				access_times=0;
 				if (pnt_lower == NULL)
-					cache::lower_cache == NULL;
+					cache::lower_cache = NULL;
 				else
-					cache::lower_cache == pnt_lower;
-				cache::way_lines = cache_size / (block_size *assoc_lvl); 	
+					cache::lower_cache = pnt_lower;
+				if(assoc_lvl==0)
+					cache::way_lines =0;
+				else
+					cache::way_lines = cache_size / (block_size * assoc_lvl); 	
 				for(unsigned i=0 ; i< assoc_lvl ; i++){
 					way w = way(way_lines,block_size, assoc_lvl);	
 					way_data.push_back(w);
@@ -290,11 +293,16 @@ int main(int argc, char **argv) {
 			return 0;
 		}
 	}
-	printf("before initilazation of caches");
-	cache L2(L2Size,BSize,WrAlloc,MemCyc,L2Cyc,L2Assoc,NULL);
-	cache L1(L1Size,BSize,WrAlloc,MemCyc,L1Cyc,L1Assoc,&L2);
-	int total_delay = 0;
 
+
+
+	
+	cache L2(L2Size,BSize,WrAlloc,MemCyc,L2Cyc,L2Assoc,NULL);
+	
+	cache L1(L1Size,BSize,WrAlloc,MemCyc,L1Cyc,L1Assoc,&L2);
+
+	int total_delay = 0;
+	
 	while (getline(file, line)) {
 
 		stringstream ss(line);
@@ -340,6 +348,6 @@ int main(int argc, char **argv) {
 	printf("L1miss=%.03f ", L1MissRate);
 	printf("L2miss=%.03f ", L2MissRate);
 	printf("AccTimeAvg=%.03f\n", avgAccTime);
-
+		
 	return 0;
 }
