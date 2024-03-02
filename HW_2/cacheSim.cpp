@@ -2,6 +2,8 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <vector>
+
 
 using std::FILE;
 using std::string;
@@ -91,9 +93,41 @@ int main(int argc, char **argv) {
 	double L2MissRate;
 	double avgAccTime;
 
+	/*
+	
+	add code here
+	
+	
+	
+	*/
+
+
 	printf("L1miss=%.03f ", L1MissRate);
 	printf("L2miss=%.03f ", L2MissRate);
 	printf("AccTimeAvg=%.03f\n", avgAccTime);
 
 	return 0;
 }
+
+
+class cache
+{
+private:
+	uint32_t cache_size;
+	std::vector<way> * cache_data;
+	uint32_t block_size;
+	bool allocate; 
+	uint32_t mem_cycles;
+	uint32_t cache_cycles;
+	cache* lower_cache;
+
+public:
+	cache(unsigned cache_size,unsigned block_size,bool allocate,unsigned mem_cycles,
+		unsigned cache_cycles,cache* pnt_lower){
+			cache::cache_size = cache_size;
+			cache::cache_cycles = cache_cycles;
+			cache::mem_cycles = mem_cycles;
+			cache::allocate = allocate;
+			cache::lower_cache = lower_cache;
+		}
+};
