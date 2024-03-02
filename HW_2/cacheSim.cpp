@@ -112,32 +112,158 @@ int main(int argc, char **argv) {
 class way
 {
 	std::vector<cache_block> cache_data;
+	uint32_t block_size;
+	/// <- more variables for tag&block_index calc
+	public:
+	way(uint32_t number_of_blocks, uint32_t block_size){
+		cache_data.resize(number_of_blocks);
+		way::block_size = block_size;
+	}
+	
+	int access_data_from_way(uint32_t data_address) // returns 0 if block occipied by another, 1 if empty, 2 if block found
+	{
+		cache_block b = cache_data[get_block_index_from_addr(data_address)];
+		if (get_tag_from_addr(data_address) == b.get_tag())
+		{
+			/// <- block found, update it's age
+			return 2;
+		}
+		else if (b.is_initialized())
+		{
+			return 0;
+		}
+		else{
+			return 1;
+		}
+	}
+	
+	uint32_t get_age_of_block(uint32_t data_address) // will be called for all ways, if the data not found and need to understand who to evict
+	{
+
+	}
+
+	bool add_new_data_to_way(uint32_t data_address){
+		
+	}
+
+	void update_age_of_not_accessed(uint32_t data_address) // will be called for all theways that weren't accessed to get the block
+	{
+		cache_data[get_block_index_from_addr(data_address)].update_age_of_not_accessed();
+	}
+
+	uint32_t get_tag_from_addr(uint32_t data_address)
+	{
+		
+	}
+	uint32_t get_block_index_from_addr(uint32_t data_address)
+	{
+		
+	}
 };
 
 class cache_block
 {
-	uint32_t size;
+	uint32_t tag;
+	bool initialized;
+	uint32_t age; // for eviction policy
+	bool dirty;   /////// <- PROBABLY NOT NEEDED!!!!
+	public:
+	cache_block()
+	{
+		initialized = false;
+	}
+	void add_cache_block(uint32_t tag, uint32_t  ways_num)
+	{
+		if(!initialized) {
+			initialized = true;
+			cache_block::tag = tag;
+			cache_block::age = ways_num;	// it has the highest value
+		}
+		else // already contains data
+		{
+			//// ???
+		}
+	}
+	uint32_t get_tag(){return tag;}
+	bool is_initialized() {return is_initialized;}
+	void update_age_of_not_accessed() // will substract 1 from age of all.
+	{
+		
+	}
 };
 
 
 class cache
 {
-private:
-	uint32_t cache_size;
-	std::vector<way> * cache_data;
-	uint32_t block_size;
-	bool allocate; 
-	uint32_t mem_cycles;
-	uint32_t cache_cycles;
-	cache* lower_cache;
+	private:
+		uint32_t cache_size;
+		std::vector<way> cache_data;
+		uint32_t block_size;
+		bool allocate; 
+		uint32_t mem_cycles;
+		uint32_t cache_cycles;
+		cache* lower_cache;
+		uint32_t assoc_lvl;
+		uint32_t way_lines;
 
-public:
-	cache(unsigned cache_size,unsigned block_size,bool allocate,unsigned mem_cycles,
-		unsigned cache_cycles,cache* pnt_lower){
-			cache::cache_size = cache_size;
-			cache::cache_cycles = cache_cycles;
-			cache::mem_cycles = mem_cycles;
-			cache::allocate = allocate;
-			cache::lower_cache = lower_cache;
+
+	public:
+
+		cache(unsigned cache_size,unsigned block_size,bool allocate,unsigned mem_cycles,
+			unsigned cache_cycles,uint32_t assoc_lvl,cache* pnt_lower){
+				cache::cache_size = cache_size;
+				cache::cache_cycles = cache_cycles;
+				cache::mem_cycles = mem_cycles;
+				cache::allocate = allocate;
+				cache::lower_cache = lower_cache;
+				cache::block_size = block_size;
+				cache::assoc_lvl = assoc_lvl;
+				if (pnt_lower == NULL)
+					cache::lower_cache == NULL;
+				else
+					cache::lower_cache == pnt_lower;
+				cache::way_lines = cache_size / (block_size *assoc_lvl); 	
+				for(unsigned i=0 ; i< way_lines ; i++){
+					way w = way(way_lines,block_size);	
+					cache_data.push_back(w);
+				}
+
 		}
+			
+		//search for data_adress in current cache - doesn't check next lvl!
+		bool cache_read(uint32_t data_adress)
+		{
+		bool data_found = false;
+		//run through all way to read the data
+		for(unsigned i=0 ; i< way_lines ; i++){
+			if(cache_data[i].access_data_from_way(data_adress))
+				data_found = true ;
+		}
+		return data_found;
+		}
+		
+		
+		// returns 0 if block occipied by another, 1 if empty, 2 if block found
+
+
+		
+		bool cache_write(uint32_t data_adress){
+		//find the block
+		uint32_t block_line = find_block(data_adress);
+		//search if the block already in current cache lvl
+		bool found = cache_read(data_adress);
+		//if not found write that block in cache
+		if(!found){
+			
+
+
+		}
+
+
+
+		}
+
+
+		uint32_t find_block(uint32_t data_adress);
+
 };
