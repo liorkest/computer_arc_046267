@@ -4,7 +4,7 @@
 #include <sstream>
 #include <vector>
 #include <stdint.h>
-
+#include <math.h>
 
 using std::FILE;
 using std::string;
@@ -16,7 +16,41 @@ using std::stringstream;
 
 uint32_t ADDR_SIZE = 32;
 
-
+class cache_block
+{
+	uint32_t tag;
+	bool initialized;
+	uint32_t age; // for eviction policy
+	bool dirty;   /////// <- PROBABLY NOT NEEDED!!!!
+	public:
+	cache_block()
+	{
+		initialized = false;
+	}
+	void add_cache_block(uint32_t tag, uint32_t  ways_num)
+	{
+		if(!initialized) {
+			initialized = true;
+			cache_block::tag = tag;
+			cache_block::age = ways_num;	// it has the highest value
+		}
+		else // already contains data
+		{
+			cache_block::tag = tag;
+			cache_block::age = ways_num;	// it has the highest value
+		}
+	}
+	uint32_t get_tag(){return tag;}
+	bool is_initialized() {return initialized;}
+	uint32_t get_age() // will substract 1 from age of all.
+	{
+		return age;
+	}
+	void update_age_of_not_accessed() // will substract 1 from age of all.
+	{
+		age--;
+	}
+};
 class way
 {
 	std::vector<cache_block> way_data;
@@ -82,41 +116,6 @@ class way
 	}
 };
 
-class cache_block
-{
-	uint32_t tag;
-	bool initialized;
-	uint32_t age; // for eviction policy
-	bool dirty;   /////// <- PROBABLY NOT NEEDED!!!!
-	public:
-	cache_block()
-	{
-		initialized = false;
-	}
-	void add_cache_block(uint32_t tag, uint32_t  ways_num)
-	{
-		if(!initialized) {
-			initialized = true;
-			cache_block::tag = tag;
-			cache_block::age = ways_num;	// it has the highest value
-		}
-		else // already contains data
-		{
-			cache_block::tag = tag;
-			cache_block::age = ways_num;	// it has the highest value
-		}
-	}
-	uint32_t get_tag(){return tag;}
-	bool is_initialized() {return is_initialized;}
-	uint32_t get_age() // will substract 1 from age of all.
-	{
-		return age;
-	}
-	void update_age_of_not_accessed() // will substract 1 from age of all.
-	{
-		age--;
-	}
-};
 
 
 class cache
@@ -235,7 +234,7 @@ class cache
 
 
 int main(int argc, char **argv) {
-
+	printf("start main");
 	if (argc < 19) {
 		cerr << "Not enough arguments" << endl;
 		return 0;
@@ -282,7 +281,7 @@ int main(int argc, char **argv) {
 			return 0;
 		}
 	}
-
+	printf("before initilazation of caches");
 	cache L2(L2Size,BSize,WrAlloc,MemCyc,L2Cyc,L2Assoc,NULL);
 	cache L1(L1Size,BSize,WrAlloc,MemCyc,L1Cyc,L1Assoc,&L2);
 	int total_delay = 0;
@@ -322,6 +321,7 @@ int main(int argc, char **argv) {
 		}
 
 	}
+	printf("after initilazation of caches");
 
 	double L1MissRate = L1.get_missRate();
 	double L2MissRate = L2.get_missRate();
