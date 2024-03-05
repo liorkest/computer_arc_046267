@@ -22,6 +22,7 @@ class cache_block
 	bool initialized;
 	uint32_t age; // for eviction policy
 	bool dirty;   /////// <- PROBABLY NOT NEEDED!!!!
+	uint32_t  _ways_num;
 	public:
 	cache_block()
 	{
@@ -29,6 +30,7 @@ class cache_block
 	}
 	void add_cache_block(uint32_t tag, uint32_t  ways_num)
 	{
+		_ways_num = ways_num;
 		if(!initialized) {
 			initialized = true;
 			cache_block::tag = tag;
@@ -50,6 +52,12 @@ class cache_block
 	{
 		if(initialized){
 			age--;
+		}
+	}
+	void update_age_of_accessed() // will reset the age to newest
+	{
+		if(initialized){
+			age = _ways_num;
 		}
 	}
 
@@ -88,9 +96,6 @@ class way
 
 		if (get_tag_from_addr(data_address) == b.get_tag())
 		{
-					printf("access_data 2.1\n");
-
-			/// <- block found, update it's age
 			return 2;
 		}
 		else if (b.is_initialized())
@@ -118,6 +123,11 @@ class way
 		way_data[get_block_idx_from_addr(data_address)].update_age_of_not_accessed();
 	}
 
+	void update_age_of_accessed(uint32_t data_address) // will be called for all theways that weren't accessed to get the block
+	{
+		way_data[get_block_idx_from_addr(data_address)].update_age_of_accessed();
+	}
+
 	uint32_t get_tag_from_addr(uint32_t data_address)
 	{
 		uint32_t tag_mask = (1u << tag_size) - 1  ;
@@ -128,7 +138,6 @@ class way
 	{
 		uint32_t block_idx_mask = (1u << block_bits_size) - 1  ;
 		uint32_t block_idx = (data_address >> 2 )& block_idx_mask;
-		printf("block_idx: %d\n", block_idx);
 		return block_idx;
 	}
 
@@ -177,7 +186,6 @@ class cache
 				
 				num_of_ways = pow(2, assoc_lvl);
 				uint32_t num_of_blocks_in_way = cache_size / (block_size * num_of_ways); 
-				printf("num_of_blocks_in_way %d\n",num_of_blocks_in_way);	
 				for(unsigned i=0 ; i < num_of_ways ; i++){
 					way w = way(num_of_blocks_in_way,block_size, num_of_ways);	
 					way_data.push_back(w);
@@ -194,30 +202,31 @@ class cache
 			uint32_t delay = 0;	
 			access_times++;
 			
-			bool data_found = search_in_cache(data_address);
+			int way_idx_of_data = search_in_cache(data_address);
 			//if found update delay for current cache
-			if(data_found)
-				delay = delay + cache_cycles;
-				
-			//data not found - we search in lower lvls
-			if(!data_found ){
-				misses++;9
+			if(way_idx_of_data == -1) // not found in the cache
+			{
+				//data not found - we search in lower lvls
+				misses++;
 				//we are in L1, so we seach in L2	
 				if(lower_cache!=NULL){
-					printf("before recursion");
-					delay = cache_cycles + (*lower_cache).cache_read(data_address)   ; // if not found add delay to next level
-					printf("after recursion");
+					delay = cache_cycles + (*lower_cache).cache_read(data_address); // if not found add delay to next level
+					printf("read lower cache\n");
 				}
 				//we are in L2, so we search in mem
 				if(lower_cache==NULL)
 					delay = cache_cycles + mem_cycles;
+				way_idx_of_data = add_new_block_to_cache(data_address);
+				update_ages(data_address, way_idx_of_data);  
+			}
+			else
+			{ 
+				delay = delay + cache_cycles;
+				update_ages(data_address, way_idx_of_data);  
 			}
 			//// ADD DATA TO RELEVENT CACHE ////////
 			//if not found add data to cache, go in at every cache
 			
-			if(!data_found ){
-				add_new_block_to_cache(data_address);
-			}
 			return delay;
 		}
 
@@ -238,6 +247,7 @@ class cache
 				else{
 					if(lower_cache!=NULL){//we are in L1, write in L2
 						access_times++;
+						printf("write lower cache\n");
 						return (*lower_cache).cache_write(data_address);
 					}
 					else//we are in L2, write to mem
@@ -251,16 +261,18 @@ class cache
 		
 		}
 
-		bool search_in_cache(uint32_t data_address){
+		int search_in_cache(uint32_t data_address)
+		{
 			//run through all way to read the data
 			for(unsigned i=0 ; i< num_of_ways ; i++){
 				if(way_data[i].access_data_from_way(data_address) == 2)//found data in some way
-					return true ;
+					return i ;
 			}
-			return false;
+			return -1;
 		}
 
-		void add_new_block_to_cache(uint32_t data_address){
+		int add_new_block_to_cache(uint32_t data_address) // returns the index of way that the data was added to 
+		{
 			//run through all ways to find empty spot
 			bool got_added=false; // initialize to check if data got added 
 			unsigned int updated_way;
@@ -285,16 +297,20 @@ class cache
 						updated_way = i;
 					}
 				}	
-			}
+			}	
+			return updated_way;
+		}
+
+		void update_ages(uint32_t data_address, int accesed_way_idx){
 			///UPDATE AGE OF WAYS///
 			for(unsigned i=0 ; i< num_of_ways ; i++){
-				if(i != updated_way)//way needs to get updated
+				if(i != accesed_way_idx)//way needs to get updated
 					way_data[i].update_age_of_not_accessed(data_address);
+				else
+					way_data[i].update_age_of_accessed(data_address);
 			}	
 			
 		}
-		
-		
 
 		void print(){
 			printf("Printing cache data\n");
