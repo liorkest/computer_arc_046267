@@ -48,7 +48,9 @@ class cache_block
 	}
 	void update_age_of_not_accessed() // will substract 1 from age of all.
 	{
-		age--;
+		if(initialized){
+			age--;
+		}
 	}
 
 	void print()
@@ -68,6 +70,7 @@ class way
 	public:
 	way(uint32_t number_of_blocks, uint32_t block_size, int ways_num){
 		block_bits_size = log2(number_of_blocks);
+		way::ways_num = ways_num;
 		printf("in way init, block_bits_size: %dblock_bits_size , tag_size: %d, blocks_num: %d \n",block_bits_size,tag_size,blocks_num);
 		tag_size = ADDR_SIZE - 2 - block_bits_size;
 		blocks_num = number_of_blocks;
@@ -77,7 +80,7 @@ class way
 	
 	int access_data_from_way(uint32_t data_address) // returns 0 if block occipied by another, 1 if empty, 2 if block found
 	{
-		printf("acces_data 1\n");
+		printf("access_data 1\n");
 		uint32_t way_idx= get_block_idx_from_addr(data_address);
 		printf("way idx: %d\n",way_idx);
 		cache_block b = way_data[way_idx];
@@ -85,7 +88,7 @@ class way
 
 		if (get_tag_from_addr(data_address) == b.get_tag())
 		{
-					printf("acces_data 2.1\n");
+					printf("access_data 2.1\n");
 
 			/// <- block found, update it's age
 			return 2;
@@ -381,6 +384,11 @@ int main(int argc, char **argv) {
 	double L1MissRate = L1.get_missRate();
 	double L2MissRate = L2.get_missRate();
 	double avgAccTime = 0;
+
+	L1.print();
+	L2.print();
+
+
 	if (L1.get_accesses_num() != 0)
 		avgAccTime = total_delay / L1.get_accesses_num();
 
