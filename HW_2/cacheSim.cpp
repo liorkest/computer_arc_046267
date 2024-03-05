@@ -155,21 +155,19 @@ class cache
 		uint32_t mem_cycles;
 		uint32_t cache_cycles;
 		cache * lower_cache;
-		uint32_t assoc_lvl;
 		uint32_t num_of_ways;
 		int misses, access_times;
 
 	public:
 
-		cache(unsigned cache_size,unsigned block_size,bool allocate,unsigned mem_cycles,
+		cache(unsigned cache_size_bits,unsigned block_bits,bool allocate,unsigned mem_cycles,
 			unsigned cache_cycles,uint32_t assoc_lvl,cache* pnt_lower){
-				cache::cache_size = pow(2,cache_size);
+				cache::cache_size = pow(2,cache_size_bits);
 				cache::cache_cycles = cache_cycles;
 				cache::mem_cycles = mem_cycles;
 				cache::allocate = allocate;
 				cache::lower_cache = lower_cache;
-				cache::block_size = pow(2,block_size);
-				cache::assoc_lvl = assoc_lvl;
+				cache::block_size = pow(2,block_bits);
 				misses=0;
 				access_times=0;
 				if (pnt_lower == NULL)
@@ -178,87 +176,115 @@ class cache
 					cache::lower_cache = pnt_lower;
 				
 				num_of_ways = pow(2, assoc_lvl);
-				uint32_t num_of_blocks_in_way = cache::cache_size / (cache::block_size * cache::num_of_ways); 
+				uint32_t num_of_blocks_in_way = cache_size / (block_size * num_of_ways); 
 				printf("num_of_blocks_in_way %d\n",num_of_blocks_in_way);	
-				for(unsigned i=0 ; i < cache::num_of_ways ; i++){
-					way w = way(num_of_blocks_in_way,cache::block_size, cache::num_of_ways);	
+				for(unsigned i=0 ; i < num_of_ways ; i++){
+					way w = way(num_of_blocks_in_way,block_size, num_of_ways);	
 					way_data.push_back(w);
 				}
 			print();
 		}
 		
 		int get_accesses_num() { return access_times ? access_times : -1 ;}
-		double get_missRate() { return (double) access_times ? misses/access_times : -1 ;}	
+		double get_missRate() { return (double) access_times ? (double)misses/access_times : -1 ;}	
 		
 		//search for data_address in current cache - doesn't check next lvl!
 		uint32_t cache_read(uint32_t data_address)
 		{
 			uint32_t delay = 0;	
-			access_times++;//only if cache excists or everytime??????????
-			/*
-			if(assoc_lvl==0){
-				if(lower_cache!=NULL)
-					return mem_cycles;
-				else
-					return cache_cycles + (*lower_cache).cache_read(data_address); // with delay of current cache???????????
-			}
-			else
-			*/
+			access_times++;
 			
-			bool data_found = false;
-			/// SEARCH FOR DATA IN RELVENT CACHE ////
-			//run through all way to read the data
-			for(unsigned i=0 ; i< num_of_ways ; i++){
-				if(way_data[i].access_data_from_way(data_address) == 2)//found data in some way
-					data_found = true ;
-			}
+			bool data_found = search_in_cache(data_address);
 			//if found update delay for current cache
 			if(data_found)
 				delay = delay + cache_cycles;
 				
 			//data not found - we search in lower lvls
 			if(!data_found ){
-				misses++;
+				misses++;9
 				//we are in L1, so we seach in L2	
 				if(lower_cache!=NULL){
 					printf("before recursion");
 					delay = cache_cycles + (*lower_cache).cache_read(data_address)   ; // if not found add delay to next level
 					printf("after recursion");
-
 				}
 				//we are in L2, so we search in mem
 				if(lower_cache==NULL)
 					delay = cache_cycles + mem_cycles;
 			}
 			//// ADD DATA TO RELEVENT CACHE ////////
-			bool got_added=false; // initialize to check if data got added
-			unsigned int updated_way;
 			//if not found add data to cache, go in at every cache
 			
 			if(!data_found ){
-				//run through all ways to find empty spot
+				add_new_block_to_cache(data_address);
+			}
+			return delay;
+		}
+
+		uint32_t cache_write(uint32_t data_address)
+		{
+			//IF HIT - already exists in lower levels, assume values are updated in background
+			if(search_in_cache(data_address) == true){
+				access_times++;
+				return cache_cycles;
+			}
+			//IF MISS
+			else{
+				//if write allocate, then execute read function
+				if(allocate){
+					return cache_read(data_address);
+				}	
+				//if write no allocate
+				else{
+					if(lower_cache!=NULL){//we are in L1, write in L2
+						access_times++;
+						return (*lower_cache).cache_write(data_address);
+					}
+					else//we are in L2, write to mem
+					{
+						misses++;
+						access_times++;
+						return mem_cycles;
+					}
+				}	
+			}
+		
+		}
+
+		bool search_in_cache(uint32_t data_address){
+			//run through all way to read the data
+			for(unsigned i=0 ; i< num_of_ways ; i++){
+				if(way_data[i].access_data_from_way(data_address) == 2)//found data in some way
+					return true ;
+			}
+			return false;
+		}
+
+		void add_new_block_to_cache(uint32_t data_address){
+			//run through all ways to find empty spot
+			bool got_added=false; // initialize to check if data got added 
+			unsigned int updated_way;
+			for(unsigned i=0 ; i< num_of_ways ; i++){
+				if(way_data[i].access_data_from_way(data_address) == 1)//found empty spot
+				{
+					way_data[i].add_new_data_to_way(data_address);
+					printf("block was added to way %d\n", i);
+					got_added=true;
+					updated_way = i;
+					break; // if wrote to one spot, break the loop(avoid copies)
+				}
+			}
+			//if no empty spot add to least recent spot
+			if(!got_added){
+				//run through all way to find LRU spot
 				for(unsigned i=0 ; i< num_of_ways ; i++){
-					if(way_data[i].access_data_from_way(data_address) == 1)//found empty spot
+					if(way_data[i].get_age_of_block(data_address) == 1)//found LRU
 					{
 						way_data[i].add_new_data_to_way(data_address);
-						printf("block was added to way %d\n", i);
 						got_added=true;
 						updated_way = i;
-						break; // if wrote to one spot, break the loop(avoid copies)
 					}
-				}
-				//if no empty spot add to least recent spot
-				if(!got_added){
-					//run through all way to find LRU spot
-					for(unsigned i=0 ; i< num_of_ways ; i++){
-						if(way_data[i].get_age_of_block(data_address) == 1)//found LRU
-						{
-							way_data[i].add_new_data_to_way(data_address);
-							got_added=true;
-							updated_way = i;
-						}
-					}	
-				}
+				}	
 			}
 			///UPDATE AGE OF WAYS///
 			for(unsigned i=0 ; i< num_of_ways ; i++){
@@ -266,17 +292,13 @@ class cache
 					way_data[i].update_age_of_not_accessed(data_address);
 			}	
 			
-			return delay;
 		}
 		
-		//NEED TO UPDATE!!!!!!!
-		uint32_t cache_write(uint32_t data_address){
-			return 0;
-		}
+		
 
 		void print(){
 			printf("Printing cache data\n");
-			printf("cache_size=%d, block_size=%d, allocate=%d, mem_cycles=%d, cache_cycles=%d, lower_cache(pointer)=%x, assoc_lvl=%d, num_of_ways=%d\n",cache_size,block_size, allocate,mem_cycles, cache_cycles,lower_cache,assoc_lvl,num_of_ways);
+			printf("cache_size=%d, block_size=%d, allocate=%d, mem_cycles=%d, cache_cycles=%d, lower_cache(pointer)=%x, num_of_ways=%d\n",cache_size,block_size, allocate,mem_cycles, cache_cycles,lower_cache,num_of_ways);
 			printf("misses=%d, access_times=%d\n", misses, access_times);
 			for(int i=0; i<num_of_ways; i++){
 				printf("Way #%d:\n", i);
