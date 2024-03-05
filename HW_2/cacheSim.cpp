@@ -31,22 +31,18 @@ class cache_block
 	void add_cache_block(uint32_t tag, uint32_t  ways_num)
 	{
 		_ways_num = ways_num;
-		if(!initialized) {
-			initialized = true;
-			cache_block::tag = tag;
-			cache_block::age = ways_num;	// it has the highest value
-		}
-		else // already contains data
-		{
-			cache_block::tag = tag;
-			cache_block::age = ways_num;	// it has the highest value
-		}
+		initialized = true;
+		cache_block::tag = tag;
+		cache_block::age = ways_num;	// it has the highest value
 	}
 	uint32_t get_tag(){return tag;}
 	bool is_initialized() {return initialized;}
 	uint32_t get_age() // will substract 1 from age of all.
 	{
-		return age;
+		if(!initialized)
+			return -1;
+		else
+			return age;
 	}
 	void update_age_of_not_accessed() // will substract 1 from age of all.
 	{
@@ -70,7 +66,7 @@ class way
 {
 	std::vector<cache_block> way_data;
 	uint32_t block_size;
-	uint32_t tag_size;
+	uint32_t tag_mask_bits;
 	uint32_t block_bits_size;
 	int ways_num;
 	int blocks_num; // number of lines in way
@@ -79,28 +75,24 @@ class way
 	way(uint32_t number_of_blocks, uint32_t block_size, int ways_num){
 		block_bits_size = log2(number_of_blocks);
 		way::ways_num = ways_num;
-		printf("in way init, block_bits_size: %dblock_bits_size , tag_size: %d, blocks_num: %d \n",block_bits_size,tag_size,blocks_num);
-		tag_size = ADDR_SIZE - 2 - block_bits_size;
 		blocks_num = number_of_blocks;
 		way_data.resize(number_of_blocks);
 		way::block_size = block_size;
+		tag_mask_bits = block_bits_size + log2(block_size);
+
 	}
 	
 	int access_data_from_way(uint32_t data_address) // returns 0 if block occipied by another, 1 if empty, 2 if block found
 	{
-		printf("access_data 1\n");
-		uint32_t way_idx= get_block_idx_from_addr(data_address);
-		printf("way idx: %d\n",way_idx);
-		cache_block b = way_data[way_idx];
-		printf("acces_data 2\n");
+		cache_block b = way_data[get_block_idx_from_addr(data_address)];
 
-		if (get_tag_from_addr(data_address) == b.get_tag())
+		
+		if (b.is_initialized())
 		{
-			return 2;
-		}
-		else if (b.is_initialized())
-		{
-			return 0;
+			if (get_tag_from_addr(data_address) == b.get_tag())
+				return 2;
+			else
+				return 0;
 		}
 		else{
 			return 1;
@@ -130,14 +122,15 @@ class way
 
 	uint32_t get_tag_from_addr(uint32_t data_address)
 	{
-		uint32_t tag_mask = (1u << tag_size) - 1  ;
-		uint32_t tag = (data_address >> (2 + block_bits_size)) & tag_mask;
+		uint32_t tag = data_address >> tag_mask_bits;
+		printf("tag=0b%d\n",tag);
 		return tag;
 	}
 	uint32_t get_block_idx_from_addr(uint32_t data_address)
 	{
-		uint32_t block_idx_mask = (1u << block_bits_size) - 1  ;
-		uint32_t block_idx = (data_address >> 2 )& block_idx_mask;
+		uint32_t block_idx = data_address >> block_bits_size;
+		block_idx = block_idx % (blocks_num);
+		printf("idx=0b%d\n",block_idx);
 		return block_idx;
 	}
 
@@ -159,7 +152,7 @@ class cache
 	private:
 		uint32_t cache_size;
 		std::vector<way> way_data;
-		uint32_t block_size;
+		uint32_t block_size_bytes;
 		bool allocate; 
 		uint32_t mem_cycles;
 		uint32_t cache_cycles;
@@ -170,13 +163,14 @@ class cache
 	public:
 
 		cache(unsigned cache_size_bits,unsigned block_bits,bool allocate,unsigned mem_cycles,
-			unsigned cache_cycles,uint32_t assoc_lvl,cache* pnt_lower){
+			unsigned cache_cycles,uint32_t assoc_lvl,cache* pnt_lower)
+		{
 				cache::cache_size = pow(2,cache_size_bits);
 				cache::cache_cycles = cache_cycles;
 				cache::mem_cycles = mem_cycles;
 				cache::allocate = allocate;
 				cache::lower_cache = lower_cache;
-				cache::block_size = pow(2,block_bits);
+				cache::block_size_bytes = pow(2,block_bits);
 				misses=0;
 				access_times=0;
 				if (pnt_lower == NULL)
@@ -185,9 +179,9 @@ class cache
 					cache::lower_cache = pnt_lower;
 				
 				num_of_ways = pow(2, assoc_lvl);
-				uint32_t num_of_blocks_in_way = cache_size / (block_size * num_of_ways); 
+				uint32_t num_of_blocks_in_way = cache_size / (block_size_bytes * num_of_ways); 
 				for(unsigned i=0 ; i < num_of_ways ; i++){
-					way w = way(num_of_blocks_in_way,block_size, num_of_ways);	
+					way w = way(num_of_blocks_in_way,block_size_bytes, num_of_ways);	
 					way_data.push_back(w);
 				}
 			print();
@@ -203,38 +197,39 @@ class cache
 			access_times++;
 			
 			int way_idx_of_data = search_in_cache(data_address);
-			//if found update delay for current cache
 			if(way_idx_of_data == -1) // not found in the cache
 			{
 				//data not found - we search in lower lvls
 				misses++;
 				//we are in L1, so we seach in L2	
-				if(lower_cache!=NULL){
+				if (lower_cache!=NULL){
 					delay = cache_cycles + (*lower_cache).cache_read(data_address); // if not found add delay to next level
 					printf("read lower cache\n");
 				}
-				//we are in L2, so we search in mem
-				if(lower_cache==NULL)
+				else 
+				{ //we are in L2, so we search in mem
 					delay = cache_cycles + mem_cycles;
+				}
 				way_idx_of_data = add_new_block_to_cache(data_address);
-				update_ages(data_address, way_idx_of_data);  
 			}
 			else
 			{ 
 				delay = delay + cache_cycles;
-				update_ages(data_address, way_idx_of_data);  
 			}
-			//// ADD DATA TO RELEVENT CACHE ////////
-			//if not found add data to cache, go in at every cache
-			
+
+			update_ages(data_address, way_idx_of_data);  
+			print();			
 			return delay;
 		}
 
 		uint32_t cache_write(uint32_t data_address)
 		{
 			//IF HIT - already exists in lower levels, assume values are updated in background
-			if(search_in_cache(data_address) == true){
+			int way_idx_of_data = search_in_cache(data_address);
+			if(way_idx_of_data != -1){
 				access_times++;
+				printf("Miss rate: %f\n",get_missRate());
+				update_ages(data_address, way_idx_of_data);
 				return cache_cycles;
 			}
 			//IF MISS
@@ -314,7 +309,7 @@ class cache
 
 		void print(){
 			printf("Printing cache data\n");
-			printf("cache_size=%d, block_size=%d, allocate=%d, mem_cycles=%d, cache_cycles=%d, lower_cache(pointer)=%x, num_of_ways=%d\n",cache_size,block_size, allocate,mem_cycles, cache_cycles,lower_cache,num_of_ways);
+			printf("cache_size=%d, block_size=%d, allocate=%d, mem_cycles=%d, cache_cycles=%d, lower_cache(pointer)=%x, num_of_ways=%d\n",cache_size,block_size_bytes, allocate,mem_cycles, cache_cycles,lower_cache,num_of_ways);
 			printf("misses=%d, access_times=%d\n", misses, access_times);
 			for(int i=0; i<num_of_ways; i++){
 				printf("Way #%d:\n", i);
