@@ -57,6 +57,12 @@ class cache_block
 		}
 	}
 
+	void remove_block()
+	{
+		initialized = 0;
+		tag = 0;
+	}
+
 	void print()
 	{
 		printf("	tag=%d, initialized=%d, age=%d, dirty=%d\n", tag, initialized, age, dirty);
@@ -134,6 +140,14 @@ class way
 		return block_idx;
 	}
 
+	void delete_block(uint32_t data_address)
+	{
+		int block_idx = get_block_idx_from_addr(data_address);
+		if (way_data[block_idx].is_initialized() && way_data[block_idx].get_tag() == get_tag_from_addr(data_address))
+			way_data[block_idx].remove_block();
+
+	}
+
 	void print()
 	{
 		printf("Way has %d blocks, each one %d bytes:\n", blocks_num, block_size);
@@ -157,6 +171,7 @@ class cache
 		uint32_t mem_cycles;
 		uint32_t cache_cycles;
 		cache * lower_cache;
+		cache * higher_cache;
 		uint32_t num_of_ways;
 		int misses, access_times;
 
@@ -165,6 +180,7 @@ class cache
 		cache(unsigned cache_size_bits,unsigned block_bits,bool allocate,unsigned mem_cycles,
 			unsigned cache_cycles,uint32_t assoc_lvl,cache* pnt_lower)
 		{
+				higher_cache = NULL; // default
 				cache::cache_size = pow(2,cache_size_bits);
 				cache::cache_cycles = cache_cycles;
 				cache::mem_cycles = mem_cycles;
@@ -189,7 +205,7 @@ class cache
 		
 		int get_accesses_num() { return access_times ? access_times : -1 ;}
 		double get_missRate() { return (double) access_times ? (double)misses/access_times : -1 ;}	
-		
+		void set_higher(cache* higher) {higher_cache = higher;}
 		//search for data_address in current cache - doesn't check next lvl!
 		uint32_t cache_read(uint32_t data_address)
 		{
@@ -287,13 +303,29 @@ class cache
 				for(unsigned i=0 ; i< num_of_ways ; i++){
 					if(way_data[i].get_age_of_block(data_address) == 1)//found LRU
 					{
+						// delete the evicted block from L1 to keep inclusive
+						if(higher_cache)
+						{
+							higher_cache->remove_if_exists(data_address);
+						}
+						// overwrite the block with the new one
 						way_data[i].add_new_data_to_way(data_address);
 						got_added=true;
 						updated_way = i;
 					}
 				}	
 			}	
+			
+
 			return updated_way;
+		}
+
+		void remove_if_exists(uint32_t data_address)
+		{
+			//run through all way to find the data
+			for(unsigned i=0 ; i< num_of_ways ; i++){
+				way_data[i].delete_block(data_address);
+			}
 		}
 
 		void update_ages(uint32_t data_address, int accesed_way_idx){
@@ -374,6 +406,7 @@ int main(int argc, char **argv) {
 	cache L2(L2Size,BSize,WrAlloc,MemCyc,L2Cyc,L2Assoc,NULL);
 	printf("~~~L1~~~\n");
 	cache L1(L1Size,BSize,WrAlloc,MemCyc,L1Cyc,L1Assoc,&L2);
+	L2.set_higher(&L1);
 
 	int total_delay = 0;
 	
