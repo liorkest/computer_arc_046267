@@ -134,7 +134,7 @@ class way
 	uint32_t get_block_idx_from_addr(uint32_t data_address)
 	{
 		uint32_t block_idx = data_address >> block_bits_size;
-		block_idx = block_idx % (blocks_num);
+		block_idx = block_idx % (int)(blocks_num);
 		return block_idx;
 	}
 
@@ -155,7 +155,6 @@ class way
 		int block_idx = get_block_idx_from_addr(data_address);
 		if (ways_list[block_idx].is_initialized() && ways_list[block_idx].get_tag() == get_tag_from_addr(data_address))
 		{
-			printf("fount the block that needs to be removed:\n");
 			ways_list[block_idx].print();
 			ways_list[block_idx].remove_block();
 		}
@@ -209,12 +208,11 @@ class cache
 					cache::lower_cache = pnt_lower;
 				
 				num_of_ways = pow(2, assoc_lvl);
-				uint32_t num_of_blocks_in_way = cache_size / (block_size_bytes * num_of_ways); 
+				int num_of_blocks_in_way = cache_size / (block_size_bytes * num_of_ways); 
 				for(unsigned i=0 ; i < num_of_ways ; i++){
 					way w = way(num_of_blocks_in_way,block_size_bytes, num_of_ways);	
 					ways_list.push_back(w);
 				}
-			print();
 		}
 		
 		int get_accesses_num() { return access_times ? access_times : -1 ;}
@@ -230,11 +228,11 @@ class cache
 			if(way_idx_of_data == -1) // not found in the cache
 			{
 				//data not found - we search in lower lvls
-				misses++; printf("MISS!\n");
+				misses++; 
 				//we are in L1, so we seach in L2	
 				if (lower_cache!=NULL){
+					//printf("read lower cache\n");
 					delay = cache_cycles + (*lower_cache).cache_read(data_address); // if not found add delay to next level
-					printf("read lower cache\n");
 				}
 				else 
 				{ //we are in L2, so we search in mem
@@ -244,7 +242,6 @@ class cache
 			}
 			else 
 			{ 
-				printf("HIT!\n");
 				delay = delay + cache_cycles;
 			}
 
@@ -258,15 +255,13 @@ class cache
 			//IF HIT - already exists in lower levels, assume values are updated in background
 			int way_idx_of_data = search_in_cache(data_address);
 			if(way_idx_of_data != -1){
-				printf("HIT!\n");
 				access_times++;
-				printf("Miss rate: %f\n",get_missRate());
+				//printf("Miss rate: %f\n",get_missRate());
 				update_ages(data_address, way_idx_of_data);
 				return cache_cycles;
 			}
 			//IF MISS
 			else{
-				printf("MISS!\n");
 				//if write allocate, then execute read function
 				if(allocate){
 					return cache_read(data_address);
@@ -275,7 +270,6 @@ class cache
 				else{
 					if(lower_cache!=NULL){//we are in L1, write in L2
 						access_times++;
-						printf("write lower cache\n");
 						return (*lower_cache).cache_write(data_address);
 					}
 					else//we are in L2, write to mem
@@ -308,7 +302,7 @@ class cache
 				if(ways_list[i].access_data_from_way(data_address) == 1)//found empty spot
 				{
 					ways_list[i].add_new_data_to_way(data_address);
-					printf("block was added to way %d\n", i);
+					//printf("block was added to way %d\n", i);
 					got_added=true;
 					updated_way = i;
 					break; // if wrote to one spot, break the loop(avoid copies)
@@ -323,7 +317,7 @@ class cache
 						// delete the evicted block from L1 to keep inclusive
 						if(higher_cache)
 						{
-							printf("eviction of block in upper cache!\n");
+							//printf("eviction of block in upper cache!\n");
 							higher_cache->remove_if_exists(ways_list[i].get_address_of_existing_block(data_address));
 						}
 						// overwrite the block with the new one
@@ -419,9 +413,7 @@ int main(int argc, char **argv) {
 
 
 
-	printf("~~~L2~~~\n");
 	cache L2(L2Size,BSize,WrAlloc,MemCyc,L2Cyc,L2Assoc,NULL);
-	printf("~~~L1~~~\n");
 	cache L1(L1Size,BSize,WrAlloc,MemCyc,L1Cyc,L1Assoc,&L2);
 	L2.set_higher(&L1);
 
@@ -439,18 +431,18 @@ int main(int argc, char **argv) {
 		}
 
 		// DEBUG - remove this line
-		cout << "operation: " << operation;
+		//cout << "operation: " << operation;
 
 		string cutAddress = address.substr(2); // Removing the "0x" part of the address
 
 		// DEBUG - remove this line
-		cout << ", address (hex)" << cutAddress;
+		//cout << ", address (hex)" << cutAddress;
 
 		unsigned long int num = 0;
 		num = strtoul(cutAddress.c_str(), NULL, 16);
 
 		// DEBUG - remove this line
-		cout << " (dec) " << num << endl;
+		//cout << " (dec) " << num << endl;
 		
 		if(operation == 'r')
 		{
@@ -462,18 +454,17 @@ int main(int argc, char **argv) {
 		}
 
 	}
-	printf("after initilazation of caches");
 
 	double L1MissRate = L1.get_missRate();
 	double L2MissRate = L2.get_missRate();
 	double avgAccTime = 0;
 
-	L1.print();
-	L2.print();
+	//L1.print();
+	//L2.print();
 
 
 	if (L1.get_accesses_num() != 0)
-		avgAccTime = total_delay / L1.get_accesses_num();
+		avgAccTime = (double)total_delay / L1.get_accesses_num();
 
 
 	printf("L1miss=%.03f ", L1MissRate);
