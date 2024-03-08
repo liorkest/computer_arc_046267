@@ -59,7 +59,7 @@ class cache_block
 
 	void remove_block()
 	{
-		initialized = 0;
+		initialized = false;
 		tag = 0;
 	}
 
@@ -70,7 +70,7 @@ class cache_block
 };
 class way
 {
-	std::vector<cache_block> way_data;
+	std::vector<cache_block> ways_list;
 	uint32_t block_size;
 	uint32_t tag_mask_bits;
 	uint32_t block_bits_size;
@@ -79,18 +79,18 @@ class way
 	/// <- more variables for tag&block_index calc
 	public:
 	way(uint32_t number_of_blocks, uint32_t block_size, int ways_num){
-		block_bits_size = log2(number_of_blocks);
+		block_bits_size = log2(block_size);
 		way::ways_num = ways_num;
 		blocks_num = number_of_blocks;
-		way_data.resize(number_of_blocks);
+		ways_list.resize(number_of_blocks);
 		way::block_size = block_size;
-		tag_mask_bits = block_bits_size + log2(block_size);
+		tag_mask_bits = block_bits_size + log2(number_of_blocks);
 
 	}
 	
 	int access_data_from_way(uint32_t data_address) // returns 0 if block occipied by another, 1 if empty, 2 if block found
 	{
-		cache_block b = way_data[get_block_idx_from_addr(data_address)];
+		cache_block b = ways_list[get_block_idx_from_addr(data_address)];
 
 		
 		if (b.is_initialized())
@@ -107,44 +107,58 @@ class way
 	
 	uint32_t get_age_of_block(uint32_t data_address) // will be called for all ways, if the data not found and need to understand who to evict
 	{
-		return way_data[get_block_idx_from_addr(data_address)].get_age();
+		return ways_list[get_block_idx_from_addr(data_address)].get_age();
 	}
 	
 	// sets the age of the new data to ways_num, and updates tag
 	void add_new_data_to_way(uint32_t data_address) // write/overwrite the bock in this way
 	{
-		way_data[get_block_idx_from_addr(data_address)].add_cache_block(get_tag_from_addr(data_address), ways_num);
+		ways_list[get_block_idx_from_addr(data_address)].add_cache_block(get_tag_from_addr(data_address), ways_num);
 	}
 
 	void update_age_of_not_accessed(uint32_t data_address) // will be called for all theways that weren't accessed to get the block
 	{
-		way_data[get_block_idx_from_addr(data_address)].update_age_of_not_accessed();
+		ways_list[get_block_idx_from_addr(data_address)].update_age_of_not_accessed();
 	}
 
 	void update_age_of_accessed(uint32_t data_address) // will be called for all theways that weren't accessed to get the block
 	{
-		way_data[get_block_idx_from_addr(data_address)].update_age_of_accessed();
+		ways_list[get_block_idx_from_addr(data_address)].update_age_of_accessed();
 	}
 
 	uint32_t get_tag_from_addr(uint32_t data_address)
 	{
 		uint32_t tag = data_address >> tag_mask_bits;
-		printf("tag=0b%d\n",tag);
 		return tag;
 	}
 	uint32_t get_block_idx_from_addr(uint32_t data_address)
 	{
 		uint32_t block_idx = data_address >> block_bits_size;
 		block_idx = block_idx % (blocks_num);
-		printf("idx=0b%d\n",block_idx);
 		return block_idx;
+	}
+
+	uint32_t get_address_of_existing_block(uint32_t given_address) {
+		// this function gets an address, goes to the block the address is mapped to, and
+		// returns the address of the block which already exists in cache. It can be different! (different tag)
+		unsigned block_idx = get_block_idx_from_addr(given_address);
+		if (ways_list[block_idx].is_initialized() )
+		{
+			return (ways_list[block_idx].get_tag() << tag_mask_bits) + (block_idx << block_bits_size);
+		}
+		else
+			return NULL;
 	}
 
 	void delete_block(uint32_t data_address)
 	{
 		int block_idx = get_block_idx_from_addr(data_address);
-		if (way_data[block_idx].is_initialized() && way_data[block_idx].get_tag() == get_tag_from_addr(data_address))
-			way_data[block_idx].remove_block();
+		if (ways_list[block_idx].is_initialized() && ways_list[block_idx].get_tag() == get_tag_from_addr(data_address))
+		{
+			printf("fount the block that needs to be removed:\n");
+			ways_list[block_idx].print();
+			ways_list[block_idx].remove_block();
+		}
 
 	}
 
@@ -154,7 +168,7 @@ class way
 		for(int i=0; i<blocks_num;i++)
 		{
 			printf("	block %d:\n", i);
-			way_data[i].print();
+			ways_list[i].print();
 		}
 	}
 };
@@ -165,7 +179,7 @@ class cache
 {
 	private:
 		uint32_t cache_size;
-		std::vector<way> way_data;
+		std::vector<way> ways_list;
 		uint32_t block_size_bytes;
 		bool allocate; 
 		uint32_t mem_cycles;
@@ -198,7 +212,7 @@ class cache
 				uint32_t num_of_blocks_in_way = cache_size / (block_size_bytes * num_of_ways); 
 				for(unsigned i=0 ; i < num_of_ways ; i++){
 					way w = way(num_of_blocks_in_way,block_size_bytes, num_of_ways);	
-					way_data.push_back(w);
+					ways_list.push_back(w);
 				}
 			print();
 		}
@@ -216,7 +230,7 @@ class cache
 			if(way_idx_of_data == -1) // not found in the cache
 			{
 				//data not found - we search in lower lvls
-				misses++;
+				misses++; printf("MISS!\n");
 				//we are in L1, so we seach in L2	
 				if (lower_cache!=NULL){
 					delay = cache_cycles + (*lower_cache).cache_read(data_address); // if not found add delay to next level
@@ -228,13 +242,14 @@ class cache
 				}
 				way_idx_of_data = add_new_block_to_cache(data_address);
 			}
-			else
+			else 
 			{ 
+				printf("HIT!\n");
 				delay = delay + cache_cycles;
 			}
 
 			update_ages(data_address, way_idx_of_data);  
-			print();			
+			//print();			
 			return delay;
 		}
 
@@ -243,6 +258,7 @@ class cache
 			//IF HIT - already exists in lower levels, assume values are updated in background
 			int way_idx_of_data = search_in_cache(data_address);
 			if(way_idx_of_data != -1){
+				printf("HIT!\n");
 				access_times++;
 				printf("Miss rate: %f\n",get_missRate());
 				update_ages(data_address, way_idx_of_data);
@@ -250,6 +266,7 @@ class cache
 			}
 			//IF MISS
 			else{
+				printf("MISS!\n");
 				//if write allocate, then execute read function
 				if(allocate){
 					return cache_read(data_address);
@@ -263,7 +280,7 @@ class cache
 					}
 					else//we are in L2, write to mem
 					{
-						misses++;
+						//misses++;
 						access_times++;
 						return mem_cycles;
 					}
@@ -276,7 +293,7 @@ class cache
 		{
 			//run through all way to read the data
 			for(unsigned i=0 ; i< num_of_ways ; i++){
-				if(way_data[i].access_data_from_way(data_address) == 2)//found data in some way
+				if(ways_list[i].access_data_from_way(data_address) == 2)//found data in one way
 					return i ;
 			}
 			return -1;
@@ -288,9 +305,9 @@ class cache
 			bool got_added=false; // initialize to check if data got added 
 			unsigned int updated_way;
 			for(unsigned i=0 ; i< num_of_ways ; i++){
-				if(way_data[i].access_data_from_way(data_address) == 1)//found empty spot
+				if(ways_list[i].access_data_from_way(data_address) == 1)//found empty spot
 				{
-					way_data[i].add_new_data_to_way(data_address);
+					ways_list[i].add_new_data_to_way(data_address);
 					printf("block was added to way %d\n", i);
 					got_added=true;
 					updated_way = i;
@@ -301,16 +318,16 @@ class cache
 			if(!got_added){
 				//run through all way to find LRU spot
 				for(unsigned i=0 ; i< num_of_ways ; i++){
-					if(way_data[i].get_age_of_block(data_address) == 1)//found LRU
+					if(ways_list[i].get_age_of_block(data_address) == 1)//found LRU
 					{
 						// delete the evicted block from L1 to keep inclusive
 						if(higher_cache)
 						{
-							higher_cache->remove_if_exists(data_address);
+							printf("eviction of block in upper cache!\n");
+							higher_cache->remove_if_exists(ways_list[i].get_address_of_existing_block(data_address));
 						}
 						// overwrite the block with the new one
-						way_data[i].add_new_data_to_way(data_address);
-						got_added=true;
+						ways_list[i].add_new_data_to_way(data_address);
 						updated_way = i;
 					}
 				}	
@@ -324,7 +341,7 @@ class cache
 		{
 			//run through all way to find the data
 			for(unsigned i=0 ; i< num_of_ways ; i++){
-				way_data[i].delete_block(data_address);
+				ways_list[i].delete_block(data_address);
 			}
 		}
 
@@ -332,9 +349,9 @@ class cache
 			///UPDATE AGE OF WAYS///
 			for(unsigned i=0 ; i< num_of_ways ; i++){
 				if(i != accesed_way_idx)//way needs to get updated
-					way_data[i].update_age_of_not_accessed(data_address);
+					ways_list[i].update_age_of_not_accessed(data_address);
 				else
-					way_data[i].update_age_of_accessed(data_address);
+					ways_list[i].update_age_of_accessed(data_address);
 			}	
 			
 		}
@@ -345,7 +362,7 @@ class cache
 			printf("misses=%d, access_times=%d\n", misses, access_times);
 			for(int i=0; i<num_of_ways; i++){
 				printf("Way #%d:\n", i);
-				way_data[i].print();
+				ways_list[i].print();
 			}
 		}
 	
