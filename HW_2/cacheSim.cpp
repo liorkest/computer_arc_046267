@@ -33,9 +33,11 @@ class cache_block
 	void add_cache_block(uint32_t tag, uint32_t  ways_num)
 	{
 		_ways_num = ways_num;
-		initialized = true;
+		if(!initialized){
+			initialized = true;
+		}
 		cache_block::tag = tag;
-		cache_block::age = ways_num;	// it has the highest value
+		
 	}
 	uint32_t get_tag(){return tag;}
 	bool is_initialized() {return initialized;}
@@ -228,6 +230,7 @@ class cache
 		}
 		
 		int get_accesses_num() { return access_times ? access_times : -1 ;}
+		int get_misses_num() { return misses ? misses : -1 ;}
 		double get_missRate() { return (double) access_times ? (double)misses/access_times : -1 ;}	
 		void set_higher(cache* higher) {higher_cache = higher;}
 		//search for data_address in current cache - doesn't check next lvl!
@@ -284,13 +287,14 @@ class cache
 				}	
 				//if write no allocate
 				else{
+					misses++;
 					if(lower_cache!=NULL){//we are in L1, write in L2
 						access_times++;
 						return (*lower_cache).cache_write(data_address);
 					}
 					else//we are in L2, write to mem
 					{
-						//misses++;
+						
 						access_times++;
 						return mem_cycles;
 					}
@@ -352,7 +356,7 @@ class cache
 							higher_cache->remove_if_exists(ways_list[i].get_address_of_existing_block(data_address));
 						}
 						// update the evicted block in lower cache if dirty
-						if(ways_list[i].is_dirty_block(data_address))
+						if(ways_list[i].is_dirty_block(data_address) && lower_cache != NULL)
 						{
 							lower_cache->add_new_block_to_cache(ways_list[i].get_address_of_existing_block(data_address)); 
 						}
@@ -374,12 +378,12 @@ class cache
 				ways_list[i].delete_block(data_address);
 			}
 		}
-		
+
 		void update_ages(uint32_t data_address, int accesed_way_idx){
             int updated_block_age = ways_list[accesed_way_idx].get_age_of_block(data_address);
             ways_list[accesed_way_idx].update_age_of_accessed(data_address);
             for(unsigned i=0 ; i< num_of_ways ; i++){
-                if(ways_list[i].get_age_of_block(data_address) > updated_block_age)//way needs to get updated
+                if(ways_list[i].get_age_of_block(data_address) >= updated_block_age && i != accesed_way_idx)//way needs to get updated
                     ways_list[i].update_age_of_not_accessed(data_address);
             }	
 		}
@@ -487,23 +491,30 @@ int main(int argc, char **argv) {
 			total_delay += L1.cache_write(num);
 		}
 
+		L1.print();
+		L2.print();
+
 	}
 
 	double L1MissRate = L1.get_missRate();
 	double L2MissRate = L2.get_missRate();
 	double avgAccTime = 0;
+	double avgAccTime2 = 0;
 
 	//L1.print();
 	//L2.print();
 
 
-	if (L1.get_accesses_num() != 0)
+	if (L1.get_accesses_num() != 0){
 		avgAccTime = (double)total_delay / L1.get_accesses_num();
+		avgAccTime2 = (double) (L1.get_accesses_num()*L1Cyc + L2.get_accesses_num()*L2Cyc) + L2.get_miss_num()*MemCyc / L1.get_accesses_num();
 
+	}
 
 	printf("L1miss=%.03f ", L1MissRate);
 	printf("L2miss=%.03f ", L2MissRate);
 	printf("AccTimeAvg=%.03f\n", avgAccTime);
-		
+	printf("AccTimeAvg2=%.03f\n", avgAccTime2);
+
 	return 0;
 }
