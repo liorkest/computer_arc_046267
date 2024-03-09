@@ -21,11 +21,13 @@ class cache_block
 	uint32_t tag;
 	bool initialized;
 	uint32_t age; // for eviction policy
-	bool dirty;   /////// <- PROBABLY NOT NEEDED!!!!
 	uint32_t  _ways_num;
 	public:
+	bool dirty;  
+	bool get_dirty_bit(){return dirty;}
 	cache_block()
 	{
+		dirty = false;
 		initialized = false;
 	}
 	void add_cache_block(uint32_t tag, uint32_t  ways_num)
@@ -68,6 +70,7 @@ class cache_block
 		printf("	tag=%d, initialized=%d, age=%d, dirty=%d\n", tag, initialized, age, dirty);
 	}
 };
+
 class way
 {
 	std::vector<cache_block> ways_list;
@@ -88,6 +91,11 @@ class way
 
 	}
 	
+	bool is_dirty_block(uint32_t data_address)
+	{
+		return( ways_list[get_block_idx_from_addr(data_address)].get_dirty_bit());
+	}
+
 	int access_data_from_way(uint32_t data_address) // returns 0 if block occipied by another, 1 if empty, 2 if block found
 	{
 		cache_block b = ways_list[get_block_idx_from_addr(data_address)];
@@ -103,6 +111,10 @@ class way
 		else{
 			return 1;
 		}
+	}
+
+	void set_dirty_bit(uint32_t addr, bool b){
+		ways_list[get_block_idx_from_addr(addr)].dirty = b;
 	}
 	
 	uint32_t get_age_of_block(uint32_t data_address) // will be called for all ways, if the data not found and need to understand who to evict
@@ -256,6 +268,7 @@ class cache
 			int way_idx_of_data = search_in_cache(data_address);
 			if(way_idx_of_data != -1){
 				access_times++;
+				ways_list[way_idx_of_data].set_dirty_bit(data_address, true);
 				//printf("Miss rate: %f\n",get_missRate());
 				update_ages(data_address, way_idx_of_data);
 				return cache_cycles;
@@ -264,7 +277,10 @@ class cache
 			else{
 				//if write allocate, then execute read function
 				if(allocate){
-					return cache_read(data_address);
+					int time = cache_read(data_address);
+					int way_idx_of_data = search_in_cache(data_address);
+					ways_list[way_idx_of_data].set_dirty_bit(data_address, true);
+					return time;
 				}	
 				//if write no allocate
 				else{
@@ -298,8 +314,9 @@ class cache
 			//run through all ways to find empty spot
 			bool got_added=false; // initialize to check if data got added 
 			unsigned int updated_way;
+			// if block exists - update it
 			for(unsigned i=0 ; i< num_of_ways ; i++){
-				if(ways_list[i].access_data_from_way(data_address) == 1)//found empty spot
+				if(ways_list[i].access_data_from_way(data_address) == 2) //found the block!
 				{
 					ways_list[i].add_new_data_to_way(data_address);
 					//printf("block was added to way %d\n", i);
@@ -307,9 +324,23 @@ class cache
 					updated_way = i;
 					break; // if wrote to one spot, break the loop(avoid copies)
 				}
+			}			
+			if(!got_added)
+			{
+				for(unsigned i=0 ; i< num_of_ways ; i++){
+					if(ways_list[i].access_data_from_way(data_address) == 1)//found empty spot
+					{
+						ways_list[i].add_new_data_to_way(data_address);
+						//printf("block was added to way %d\n", i);
+						got_added=true;
+						updated_way = i;
+						break; // if wrote to one spot, break the loop(avoid copies)
+					}
+				}
 			}
 			//if no empty spot add to least recent spot
-			if(!got_added){
+			if(!got_added)
+			{
 				//run through all way to find LRU spot
 				for(unsigned i=0 ; i< num_of_ways ; i++){
 					if(ways_list[i].get_age_of_block(data_address) == 1)//found LRU
@@ -319,6 +350,11 @@ class cache
 						{
 							//printf("eviction of block in upper cache!\n");
 							higher_cache->remove_if_exists(ways_list[i].get_address_of_existing_block(data_address));
+						}
+						// update the evicted block in lower cache if dirty
+						if(ways_list[i].is_dirty_block(data_address))
+						{
+							lower_cache->add_new_block_to_cache(ways_list[i].get_address_of_existing_block(data_address)); 
 						}
 						// overwrite the block with the new one
 						ways_list[i].add_new_data_to_way(data_address);
