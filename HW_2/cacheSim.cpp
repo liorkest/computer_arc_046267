@@ -230,6 +230,7 @@ class cache
 		}
 		
 		int get_accesses_num() { return access_times ? access_times : -1 ;}
+		int get_miss_num() { return misses ? misses : -1 ;}
 		int get_misses_num() { return misses ? misses : -1 ;}
 		double get_missRate() { return (double) access_times ? (double)misses/access_times : -1 ;}	
 		void set_higher(cache* higher) {higher_cache = higher;}
