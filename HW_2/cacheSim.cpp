@@ -374,16 +374,14 @@ class cache
 				ways_list[i].delete_block(data_address);
 			}
 		}
-
+		
 		void update_ages(uint32_t data_address, int accesed_way_idx){
-			///UPDATE AGE OF WAYS///
-			for(unsigned i=0 ; i< num_of_ways ; i++){
-				if(i != accesed_way_idx)//way needs to get updated
-					ways_list[i].update_age_of_not_accessed(data_address);
-				else
-					ways_list[i].update_age_of_accessed(data_address);
-			}	
-			
+            int updated_block_age = ways_list[accesed_way_idx].get_age_of_block(data_address);
+            ways_list[accesed_way_idx].update_age_of_accessed(data_address);
+            for(unsigned i=0 ; i< num_of_ways ; i++){
+                if(ways_list[i].get_age_of_block(data_address) > updated_block_age)//way needs to get updated
+                    ways_list[i].update_age_of_not_accessed(data_address);
+            }	
 		}
 
 		void print(){
