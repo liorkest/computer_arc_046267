@@ -37,7 +37,7 @@ class cache_block
 			initialized = true;
 		}
 		cache_block::tag = tag;
-		
+		dirty = false;
 	}
 	uint32_t get_tag(){return tag;}
 	bool is_initialized() {return initialized;}
@@ -65,6 +65,7 @@ class cache_block
 	{
 		initialized = false;
 		tag = 0;
+        dirty = false;
 	}
 
 	void print()
@@ -83,13 +84,13 @@ class way
 	int blocks_num; // number of lines in way
 	/// <- more variables for tag&block_index calc
 	public:
-	way(uint32_t number_of_blocks, uint32_t block_size, int ways_num){
+	way(uint32_t number_of_blocks_in_way, uint32_t block_size, int ways_num){
 		block_bits_size = log2(block_size);
 		way::ways_num = ways_num;
-		blocks_num = number_of_blocks;
-		ways_list.resize(number_of_blocks);
+		blocks_num = number_of_blocks_in_way;
+		ways_list.resize(number_of_blocks_in_way);
 		way::block_size = block_size;
-		tag_mask_bits = block_bits_size + log2(number_of_blocks);
+		tag_mask_bits = log2(number_of_blocks_in_way) + block_bits_size;
 
 	}
 	
@@ -101,8 +102,6 @@ class way
 	int access_data_from_way(uint32_t data_address) // returns 0 if block occipied by another, 1 if empty, 2 if block found
 	{
 		cache_block b = ways_list[get_block_idx_from_addr(data_address)];
-
-		
 		if (b.is_initialized())
 		{
 			if (get_tag_from_addr(data_address) == b.get_tag())
@@ -161,7 +160,7 @@ class way
 			return (ways_list[block_idx].get_tag() << tag_mask_bits) + (block_idx << block_bits_size);
 		}
 		else
-			return NULL;
+			return 0xFFFFFFFF;
 	}
 
 	void delete_block(uint32_t data_address)
@@ -169,7 +168,7 @@ class way
 		int block_idx = get_block_idx_from_addr(data_address);
 		if (ways_list[block_idx].is_initialized() && ways_list[block_idx].get_tag() == get_tag_from_addr(data_address))
 		{
-			ways_list[block_idx].print();
+			//ways_list[block_idx].print();
 			ways_list[block_idx].remove_block();
 		}
 
@@ -239,7 +238,6 @@ class cache
 		{
 			uint32_t delay = 0;	
 			access_times++;
-			
 			int way_idx_of_data = search_in_cache(data_address);
 			if(way_idx_of_data == -1) // not found in the cache
 			{
@@ -258,14 +256,15 @@ class cache
 			}
 			else 
 			{ 
-				delay = delay + cache_cycles;
+				delay = cache_cycles;
 			}
-
-			update_ages(data_address, way_idx_of_data);  
+			if(way_idx_of_data != -1)
+				update_ages(data_address, way_idx_of_data);  
 			//print();			
 			return delay;
 		}
-
+		
+		
 		uint32_t cache_write(uint32_t data_address)
 		{
 			//IF HIT - already exists in lower levels, assume values are updated in background
@@ -274,7 +273,13 @@ class cache
 				access_times++;
 				ways_list[way_idx_of_data].set_dirty_bit(data_address, true);
 				//printf("Miss rate: %f\n",get_missRate());
+				//update ages in L1 
 				update_ages(data_address, way_idx_of_data);
+				//update ages in L2 (if command accessed from L1)
+				if(lower_cache!=NULL){
+					int way_idx_of_data_lower = (*lower_cache).search_in_cache(data_address);
+					(*lower_cache).update_ages(data_address,way_idx_of_data_lower);
+				}
 				return cache_cycles;
 			}
 			//IF MISS
@@ -354,20 +359,23 @@ class cache
 						if(higher_cache)
 						{
 							//printf("eviction of block in upper cache!\n");
-							higher_cache->remove_if_exists(ways_list[i].get_address_of_existing_block(data_address));
+							uint32_t adress= ways_list[i].get_address_of_existing_block(data_address);
+							if(adress!=0xFFFFFFFF)
+								higher_cache->remove_if_exists(adress);
 						}
 						// update the evicted block in lower cache if dirty
 						if(ways_list[i].is_dirty_block(data_address) && lower_cache != NULL)
 						{
-							lower_cache->add_new_block_to_cache(ways_list[i].get_address_of_existing_block(data_address)); 
+							uint32_t adress= ways_list[i].get_address_of_existing_block(data_address);
+							if(adress!=0xFFFFFFFF)
+								lower_cache->add_new_block_to_cache(adress); 
 						}
 						// overwrite the block with the new one
 						ways_list[i].add_new_data_to_way(data_address);
 						updated_way = i;
 					}
 				}	
-			}	
-			
+			}		
 
 			return updated_way;
 		}
@@ -391,7 +399,7 @@ class cache
 
 		void print(){
 			printf("Printing cache data\n");
-			printf("cache_size=%d, block_size=%d, allocate=%d, mem_cycles=%d, cache_cycles=%d, lower_cache(pointer)=%x, num_of_ways=%d\n",cache_size,block_size_bytes, allocate,mem_cycles, cache_cycles,lower_cache,num_of_ways);
+			printf("cache_size=%d, block_size=%d, allocate=%d, mem_cycles=%d, cache_cycles=%d, lower_cache(pointer)=%p, num_of_ways=%d\n",cache_size,block_size_bytes, allocate,mem_cycles, cache_cycles,lower_cache,num_of_ways);
 			printf("misses=%d, access_times=%d\n", misses, access_times);
 			for(int i=0; i<num_of_ways; i++){
 				printf("Way #%d:\n", i);
@@ -492,30 +500,31 @@ int main(int argc, char **argv) {
 			total_delay += L1.cache_write(num);
 		}
 
-		L1.print();
-		L2.print();
+		//L1.print();
+		//L2.print();
 
 	}
 
 	double L1MissRate = L1.get_missRate();
 	double L2MissRate = L2.get_missRate();
 	double avgAccTime = 0;
-	double avgAccTime2 = 0;
+	long double avgAccTime2 = 0;
 
 	//L1.print();
 	//L2.print();
 
 
 	if (L1.get_accesses_num() != 0){
-		avgAccTime = (double)total_delay / L1.get_accesses_num();
-		avgAccTime2 = (double) (L1.get_accesses_num()*L1Cyc + L2.get_accesses_num()*L2Cyc) + L2.get_miss_num()*MemCyc / L1.get_accesses_num();
-
+		avgAccTime = (double) total_delay / L1.get_accesses_num();
+		avgAccTime2 = (long double) (L1.get_accesses_num()*L1Cyc + L2.get_accesses_num()*L2Cyc + L2.get_miss_num()*MemCyc ) / L1.get_accesses_num();
 	}
+
+	double finalAvgAccTime2 = (double)((int)(avgAccTime2 * 1000 + 0.5)) / 1000.0;
 
 	printf("L1miss=%.03f ", L1MissRate);
 	printf("L2miss=%.03f ", L2MissRate);
-	printf("AccTimeAvg=%.03f\n", avgAccTime);
-	printf("AccTimeAvg2=%.03f\n", avgAccTime2);
+	//printf("AccTimeAvg=%.03f\n", avgAccTime);
+	printf("AccTimeAvg=%.03f\n", finalAvgAccTime2);
 
 	return 0;
 }
