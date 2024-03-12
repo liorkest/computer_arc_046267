@@ -299,9 +299,10 @@ public:
 				int way_idx_of_data = search_in_cache(data_address);
 				ways_list[way_idx_of_data].set_dirty_bit(data_address, true);
 				if (lower_cache != NULL)
-				{ //////////// ?????? not sure 12.03
+				{
 					int way_idx_of_data_lower = (*lower_cache).search_in_cache(data_address);
-					(*lower_cache).ways_list[way_idx_of_data].set_dirty_bit(data_address, true);
+					(*lower_cache).ways_list[way_idx_of_data_lower].set_dirty_bit(data_address, true); //////////// ?????? not sure 12.03
+					(*lower_cache).update_ages(data_address, way_idx_of_data_lower);
 				}
 				return time;
 			}
