@@ -31,7 +31,7 @@ public:
 		dirty = false;
 		initialized = false;
 	}
-	void add_cache_block(uint32_t tag, uint32_t ways_num)
+	void add_cache_block(uint32_t tag, uint32_t ways_num, bool dirty)
 	{
 		_ways_num = ways_num;
 		if (!initialized)
@@ -39,7 +39,7 @@ public:
 			initialized = true;
 		}
 		cache_block::tag = tag;
-		dirty = false;
+		cache_block::dirty = dirty;
 	}
 	uint32_t get_tag() { return tag; }
 	bool is_initialized() { return initialized; }
@@ -130,9 +130,9 @@ public:
 	}
 
 	// sets the age of the new data to ways_num, and updates tag
-	void add_new_data_to_way(uint32_t data_address) // write/overwrite the bock in this way
+	void add_new_data_to_way(uint32_t data_address, bool dirty) // write/overwrite the bock in this way
 	{
-		ways_list[get_block_idx_from_addr(data_address)].add_cache_block(get_tag_from_addr(data_address), ways_num);
+		ways_list[get_block_idx_from_addr(data_address)].add_cache_block(get_tag_from_addr(data_address), ways_num, dirty);
 	}
 
 	void update_age_of_not_accessed(uint32_t data_address) // will be called for all theways that weren't accessed to get the block
@@ -258,7 +258,6 @@ public:
 				delay = cache_cycles + mem_cycles;
 			}
 			way_idx_of_data = add_new_block_to_cache(data_address);
-			//update_ages(data_address, way_idx_of_data);
 		}
 		else
 		{
@@ -274,9 +273,9 @@ public:
 	{
 		// IF HIT - already exists in lower levels, assume values are updated in background
 		int way_idx_of_data = search_in_cache(data_address);
+		access_times++;
 		if (way_idx_of_data != -1)
 		{
-			access_times++;
 			ways_list[way_idx_of_data].set_dirty_bit(data_address, true);
 			// update ages in L1
 			update_ages(data_address, way_idx_of_data);
@@ -292,32 +291,35 @@ public:
 		// IF MISS
 		else
 		{
+			misses++;
 			// if write allocate, then execute read function
 			if (allocate)
 			{
-				int time = cache_read(data_address);
-				int way_idx_of_data = search_in_cache(data_address);
-				ways_list[way_idx_of_data].set_dirty_bit(data_address, true);
+				int delay;
 				if (lower_cache != NULL)
-				{
-					int way_idx_of_data_lower = (*lower_cache).search_in_cache(data_address);
-					(*lower_cache).ways_list[way_idx_of_data_lower].set_dirty_bit(data_address, true); //////////// ?????? not sure 12.03
-					(*lower_cache).update_ages(data_address, way_idx_of_data_lower);
+				{	
+					// printf("read lower cache\n");
+					delay = cache_cycles + (*lower_cache).cache_write(data_address); // if not found add delay to next level
 				}
-				return time;
+				else
+				{ // we are in L2, so we search in mem
+					delay = cache_cycles + mem_cycles;
+				}
+				way_idx_of_data = add_new_block_to_cache(data_address, true);
+
+				return delay;
 			}
 			// if write no allocate
 			else
 			{
-				misses++;
-				access_times++;
+				
 				if (lower_cache != NULL)
 				{ // we are in L1, write in L2
-					return (*lower_cache).cache_write(data_address);
+					return cache_cycles + (*lower_cache).cache_write(data_address);
 				}
 				else // we are in L2, write to mem
 				{
-					return mem_cycles;
+					return cache_cycles + mem_cycles;
 				}
 			}
 		}
@@ -334,7 +336,7 @@ public:
 		return -1;
 	}
 
-	int add_new_block_to_cache(uint32_t data_address) // returns the index of way that the data was added to
+	int add_new_block_to_cache(uint32_t data_address, bool dirty=false) // returns the index of way that the data was added to
 	{
 		// run through all ways to find empty spot
 		bool got_added = false; // initialize to check if data got added
@@ -344,7 +346,7 @@ public:
 		{
 			if (ways_list[i].access_data_from_way(data_address) == 2) // found the block!
 			{
-				ways_list[i].add_new_data_to_way(data_address);
+				ways_list[i].add_new_data_to_way(data_address, dirty);
 				// printf("block was added to way %d\n", i);
 				got_added = true;
 				updated_way = i;
@@ -357,7 +359,7 @@ public:
 			{
 				if (ways_list[i].access_data_from_way(data_address) == 1) // found empty spot
 				{
-					ways_list[i].add_new_data_to_way(data_address);
+					ways_list[i].add_new_data_to_way(data_address, dirty);
 					// printf("block was added to way %d\n", i);
 					got_added = true;
 					updated_way = i;
@@ -373,6 +375,13 @@ public:
 			{
 				if (ways_list[i].get_age_of_block(data_address) == 1) // found LRU
 				{
+					// update the evicted block in lower cache if dirty
+					if (ways_list[i].is_dirty_block(data_address) && lower_cache != NULL)
+					{
+						uint32_t adress = ways_list[i].get_address_of_existing_block(data_address);
+						if (adress != 0xFFFFFFFF)
+							lower_cache->add_new_block_to_cache(adress, true);
+					}
 					// delete the evicted block from L1 to keep inclusive
 					if (higher_cache)
 					{
@@ -381,16 +390,11 @@ public:
 						if (adress != 0xFFFFFFFF)
 							higher_cache->remove_if_exists(adress);
 					}
-					// update the evicted block in lower cache if dirty
-					if (ways_list[i].is_dirty_block(data_address) && lower_cache != NULL)
-					{
-						uint32_t adress = ways_list[i].get_address_of_existing_block(data_address);
-						if (adress != 0xFFFFFFFF)
-							lower_cache->add_new_block_to_cache(adress);
-					}
+
 					// overwrite the block with the new one
-					ways_list[i].add_new_data_to_way(data_address);
+					ways_list[i].add_new_data_to_way(data_address, dirty);
 					updated_way = i;
+					break;
 				}
 			}
 		}
