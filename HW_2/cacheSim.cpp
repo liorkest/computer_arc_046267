@@ -566,12 +566,12 @@ int main(int argc, char **argv)
 		avgAccTime2 = (long double)(L1.get_accesses_num() * L1Cyc + L2.get_accesses_num() * L2Cyc + L2.get_miss_num() * MemCyc) / L1.get_accesses_num();
 	}
 
-	double finalAvgAccTime2 = (double)((int)(avgAccTime2 * 1000 + 0.5)) / 1000.0;
+	//double finalAvgAccTime2 = (double)((int)(avgAccTime2 * 1000 + 0.5)) / 1000.0;
 
 	printf("L1miss=%.03f ", L1MissRate);
 	printf("L2miss=%.03f ", L2MissRate);
-	// printf("AccTimeAvg=%.03f\n", avgAccTime);
-	printf("AccTimeAvg=%.03f\n", finalAvgAccTime2);
+	printf("AccTimeAvg=%.03f\n", avgAccTime2);
+	//printf("AccTimeAvg=%.03f\n", finalAvgAccTime2);
 
 	return 0;
 }
