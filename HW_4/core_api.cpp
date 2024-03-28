@@ -31,9 +31,8 @@ public:
 		return thread_timer > 0;
 	}
 
-	int execute_next_cmd(){
+	void execute_next_cmd(){
 		int delay = 0;
-
 		Instruction curr_inst;
 		SIM_MemInstRead(inst_line_number, &curr_inst, tid);
 		switch (curr_inst.opcode)
@@ -90,6 +89,7 @@ public:
 			halted = true;
 			break;	
 		}
+
 	}
 	void copy_context(tcontext* context)
 	{
@@ -111,6 +111,7 @@ class core {
 		}
 	}
 	void clock_tick(){
+		cycles++;
 		for(auto t : threads){
 			t.clk_cycle_passed();
 		}
@@ -121,14 +122,29 @@ class core {
 	{
 		bool finished = false;
 		int curr_tid = 0;
+		int next_tid;
 		while(!finished)
 		{
-			cycles += SIM_GetSwitchCycles();
-			cycles += threads[curr_tid].execute_next_cmd();
-			curr_tid = get_next_thread(curr_tid);
-			if (curr_tid == -1)
+			next_tid = get_next_thread(curr_tid);
+			if (curr_tid == -1) // all finisheds
+			{
 				finished = true;
+			} else if (curr_tid == -2) // all are waiting
+			{
+ 				printf("All threads are stalled\n");
+			} 
+			else if (curr_tid == next_tid)
+			{
+				threads[curr_tid].execute_next_cmd();
+			}
+			else //switch to another
+			{
+				cycles += SIM_GetSwitchCycles();
+				threads[next_tid].execute_next_cmd();
+			}
+			
 			clock_tick();
+			curr_tid = next_tid;
 		}
 		
 	}
@@ -160,6 +176,8 @@ class core {
 		}
 		if (!active_thread_exists)
 			return -1; // all threads finished!
+		else
+			return -2; // no free thread, need to stall
 	
 	}
 	int get_cycles(){return cycles;}
