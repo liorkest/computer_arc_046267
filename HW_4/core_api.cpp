@@ -5,6 +5,7 @@
 
 #include <stdio.h>
 #include <vector>
+#include <cstring>
 
 class thread{
 	int tid;
@@ -30,7 +31,7 @@ public:
 	bool is_paused(){
 		return thread_timer > 0;
 	}
-
+	int get_tid(){return tid;}
 	void execute_next_cmd(){
 		int delay = 0;
 		Instruction curr_inst;
@@ -93,7 +94,9 @@ public:
 	}
 	void copy_context(tcontext* context)
 	{
-		std::memcpy(context, &register_file, sizeof(tcontext)); 
+		//printf("tid of thread: %d\n", tid);
+		context[1].reg[0] = 1;
+
 	}
 };
 
@@ -102,12 +105,17 @@ class core {
 	
 	std::vector<thread> threads;
 	int cycles, instructions;
-	core() {
+	public:
+	core() {}
+	void init_core(){
 		cycles = 0;
 		instructions = 0;
 		threads_num = SIM_GetThreadsNum();
-		for (int i=0; i<threads.size(); i++) {
-			threads[i].init_thread(i);
+		for (int i=0; i<threads_num; i++) {
+			thread t;
+			t.init_thread(i);
+			threads.push_back(t);
+			printf("%d\n", threads[i].get_tid());
 		}
 	}
 	void clock_tick(){
@@ -117,7 +125,7 @@ class core {
 		}
 	}
 	
-	public:
+
 	void CORE_BlockedMT()
 	{
 		bool finished = false;
@@ -126,10 +134,11 @@ class core {
 		while(!finished)
 		{
 			next_tid = get_next_thread(curr_tid);
-			if (curr_tid == -1) // all finisheds
+			printf("Next tid: %d", next_tid);
+			if (next_tid == -1) // all finisheds
 			{
 				finished = true;
-			} else if (curr_tid == -2) // all are waiting
+			} else if (next_tid == -2) // all are waiting
 			{
  				printf("All threads are stalled\n");
 			} 
@@ -141,10 +150,11 @@ class core {
 			{
 				cycles += SIM_GetSwitchCycles();
 				threads[next_tid].execute_next_cmd();
+				curr_tid = next_tid;
 			}
 			
 			clock_tick();
-			curr_tid = next_tid;
+			
 		}
 		
 	}
@@ -164,6 +174,7 @@ class core {
 		for (int i=0; i<threads.size(); i++)
 		{
 			int next_tid=(curr_tid+i)%threads.size();
+			printf("%d\n", next_tid);
 			if (!threads[next_tid].is_halted())
 			{ // it needs to be executed next!
 				active_thread_exists = true;
@@ -190,6 +201,7 @@ class core {
 core core_inst;
 
 void CORE_BlockedMT() {
+	core_inst.init_core();
 	core_inst.CORE_BlockedMT();
 }
 
