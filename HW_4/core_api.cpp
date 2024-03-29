@@ -12,7 +12,7 @@ class thread{
 	tcontext register_file;
 	int inst_line_number;
 	bool halted;
-	int thread_timer = 0;
+	int thread_timer ;
 public:
 	void init_thread(int tid)
 	{
@@ -20,22 +20,27 @@ public:
 		thread::tid = tid;
 		for (int i=0; i<REGS_COUNT; i++){register_file.reg[i]=0;}
 		inst_line_number = 0;
+		thread_timer = 0;
 	}
 	bool is_halted() {return halted;}
 
 	void clk_cycle_passed()
 	{
-		if(thread_timer!=0)
+		if(thread_timer > 0)
 			thread_timer--;	
 	}
 	bool is_paused(){
 		return thread_timer > 0;
 	}
 	int get_tid(){return tid;}
+
 	void execute_next_cmd(){
 		int delay = 0;
 		Instruction curr_inst;
 		SIM_MemInstRead(inst_line_number, &curr_inst, tid);
+
+		printf("thread %d, instruction line: %d\n",tid,inst_line_number);
+
 		switch (curr_inst.opcode)
 		{
 		case CMD_NOP:
@@ -90,19 +95,26 @@ public:
 			halted = true;
 			break;	
 		}
-
+		inst_line_number++;
 	}
+
 	void copy_context(tcontext* context)
 	{
-		//printf("tid of thread: %d\n", tid);
-		context[1].reg[0] = 1;
+		for(int i=0;i<REGS_COUNT;i++){
+			context[tid].reg[i] = register_file.reg[i];
+		}
 
 	}
+
+	void print_thread_status(){
+		printf("thread id: %d, thread instruction count: %d,thread timer: %d, is halted: %d, is paused: %d\n",tid,inst_line_number,thread_timer,halted, is_paused());
+	}
+
 };
+
 
 class core {
 	int threads_num;
-	
 	std::vector<thread> threads;
 	int cycles, instructions;
 	public:
@@ -120,47 +132,99 @@ class core {
 	}
 	void clock_tick(){
 		cycles++;
-		for(auto t : threads){
-			t.clk_cycle_passed();
+		for(int i = 0; i< threads_num; i++){
+			threads[i].clk_cycle_passed();
 		}
 	}
-	
-
 	void CORE_BlockedMT()
 	{
+		/****** BLOCKED *********/
 		bool finished = false;
 		int curr_tid = 0;
 		int next_tid;
+		int count = 20;
 		while(!finished)
 		{
-			next_tid = get_next_thread(curr_tid);
-			printf("Next tid: %d", next_tid);
+			clock_tick();
+			
+			next_tid = get_next_thread_Blocked(curr_tid);
+			printf("Next tid: %d\n", next_tid);
+			print_all_threads();
 			if (next_tid == -1) // all finisheds
 			{
 				finished = true;
-			} else if (next_tid == -2) // all are waiting
+			} 
+			else if (next_tid == -2) // all are waiting
 			{
  				printf("All threads are stalled\n");
+
 			} 
 			else if (curr_tid == next_tid)
 			{
 				threads[curr_tid].execute_next_cmd();
+				instructions++;
 			}
 			else //switch to another
 			{
 				cycles += SIM_GetSwitchCycles();
 				threads[next_tid].execute_next_cmd();
+				instructions++;
 				curr_tid = next_tid;
 			}
-			
-			clock_tick();
-			
+
+						
 		}
+		/****** ^ BLOCKED ^*********/
+
 		
 	}
 	void CORE_FinegrainedMT()
 	{
-		
+		/******V FINEGRAINED V*********/
+		bool finished = false;
+		int curr_tid = 0;
+		int next_tid;
+		int count = 20;
+		bool first_cycle = true;
+		while(!finished)
+		{
+			clock_tick();
+			if (first_cycle) {
+				next_tid = 0;
+				first_cycle = false;
+			} else {
+				next_tid = get_next_thread_Finegrained(curr_tid);
+			}
+
+			printf("Next tid: %d\n", next_tid);
+			//print_all_threads();
+			if (next_tid == -1) // all finisheds
+			{
+				finished = true;
+			} 
+			else if (next_tid == -2) // all are waiting
+			{
+ 				printf("All threads are stalled\n");
+
+			} 
+			else if (curr_tid == next_tid)
+			{
+				threads[curr_tid].execute_next_cmd();
+				instructions++;
+			}
+			else //switch to another
+			{
+				threads[next_tid].execute_next_cmd();
+				instructions++;
+				curr_tid = next_tid;
+			}
+			count--;
+			if (count==0)
+				break;
+
+			/****** FINEGRAINED *********/
+			
+		}
 	}
 	
 	void copy_context(tcontext* context, int threadid)
@@ -168,19 +232,23 @@ class core {
 		threads[threadid].copy_context(context);
 	}
 
-	int get_next_thread(int curr_tid)
+	int get_next_thread_Blocked(int curr_tid)
 	{
+		/****** BLOCKED *********/
+
 		bool active_thread_exists = false;
 		for (int i=0; i<threads.size(); i++)
 		{
 			int next_tid=(curr_tid+i)%threads.size();
-			printf("%d\n", next_tid);
+			printf("next_tid:%d\n",next_tid);
 			if (!threads[next_tid].is_halted())
 			{ // it needs to be executed next!
 				active_thread_exists = true;
 			} 
-			if (!threads[next_tid].is_paused())
+
+			if (!threads[next_tid].is_halted() && !threads[next_tid].is_paused())
 			{ // it needs to be executed next!
+				printf("entered unpaused thread %d",next_tid);
 				active_thread_exists = true;
 				return next_tid;
 			} 
@@ -189,38 +257,77 @@ class core {
 			return -1; // all threads finished!
 		else
 			return -2; // no free thread, need to stall
-	
+				/****** BLOCKED *********/
+
 	}
+
+	int get_next_thread_Finegrained(int curr_tid)
+	{
+		/****** FINEGRAINED *********/
+		bool active_thread_exists = false;
+		for (int i=1; i<=threads.size(); i++)
+		{
+			int next_tid=(curr_tid+i)%threads.size();
+			printf("next_tid:%d\n",next_tid);
+			if (!threads[next_tid].is_halted())
+			{ // it needs to be executed next!
+				active_thread_exists = true;
+			} 
+
+			if (!threads[next_tid].is_halted() && !threads[next_tid].is_paused())
+			{ // it needs to be executed next!
+				printf("entered unpaused thread %d",next_tid);
+				active_thread_exists = true;
+				return next_tid;
+			} 
+		}
+		if (!active_thread_exists)
+			return -1; // all threads finished!
+		else
+			return -2; // no free thread, need to stall
+			/****** FINEGRAINED *********/
+
+	}
+
 	int get_cycles(){return cycles;}
 	int get_instructions(){return instructions;}
+
+	void print_all_threads()
+	{
+		for(int i=0; i< threads.size();i++){
+			printf("cycle num:%d\n , instruction count:%d",cycles,instructions);
+			threads[i].print_thread_status();
+		}
+	}
 
 };
 
 
 // instantiation of the class
-core core_inst;
-
+core core_inst_BK;
+core core_inst_FG;
 void CORE_BlockedMT() {
-	core_inst.init_core();
-	core_inst.CORE_BlockedMT();
+	core_inst_BK.init_core();
+	core_inst_BK.CORE_BlockedMT();
 }
 
 void CORE_FinegrainedMT() {
-	core_inst.CORE_FinegrainedMT();
+	core_inst_FG.init_core();
+	core_inst_FG.CORE_FinegrainedMT();
 }
 
 double CORE_BlockedMT_CPI(){
-	return (double)core_inst.get_cycles()/core_inst.get_instructions();
+	return (double)core_inst_BK.get_cycles()/core_inst_BK.get_instructions();
 }
 
 double CORE_FinegrainedMT_CPI(){
-	return (double)core_inst.get_cycles()/core_inst.get_instructions();
+	return (double)core_inst_FG.get_cycles()/core_inst_FG.get_instructions();
 }
 
 void CORE_BlockedMT_CTX(tcontext* context, int threadid) {
-	core_inst.copy_context(context, threadid);
+	core_inst_BK.copy_context(context, threadid);
 }
 
 void CORE_FinegrainedMT_CTX(tcontext* context, int threadid) {
-	core_inst.copy_context(context, threadid);
+	core_inst_FG.copy_context(context, threadid);
 }

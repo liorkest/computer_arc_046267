@@ -1,0 +1,14 @@
+{
+    "makefile.makefilePath": "makefile",
+    "files.associations": {
+        "vector": "cpp"
+    },
+    "makefile.configurations": [
+
+    ],
+    "makefile.additionalCompilerNames": [
+        "C:\\msys64\\ucrt64\\bin"
+    ],
+    "makefile.makePath": "C:\\ProgramData\\chocolatey\\choco.exe",
+    "C_Cpp.default.configurationProvider": "ms-vscode.makefile-tools"
+}
