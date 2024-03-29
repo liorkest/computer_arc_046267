@@ -39,7 +39,7 @@ public:
 		Instruction curr_inst;
 		SIM_MemInstRead(inst_line_number, &curr_inst, tid);
 
-		printf("thread %d, instruction number: %d\n",tid,inst_line_number);
+		//printf("thread %d, instruction number: %d\n",tid,inst_line_number);
 
 		switch (curr_inst.opcode)
 		{
@@ -127,7 +127,7 @@ class core {
 			thread t;
 			t.init_thread(i);
 			threads.push_back(t);
-			printf("%d\n", threads[i].get_tid());
+			//printf("%d\n", threads[i].get_tid());
 		}
 	}
 	void clock_tick(int cycles_elapsed=1){
@@ -145,9 +145,9 @@ class core {
 		int count = 20;
 		while(!finished)
 		{
-			printf("cycle: %d\n", cycles);
+			//printf("cycle: %d\n", cycles);
 			next_tid = get_next_thread_Blocked(curr_tid);
-			printf("Next tid: %d\n", next_tid);
+			//printf("Next tid: %d\n", next_tid);
 			//print_all_threads();
 			if (next_tid == -1) // all finisheds
 			{
@@ -155,7 +155,7 @@ class core {
 			} 
 			else if (next_tid == -2) // all are waiting
 			{
- 				printf("All threads are stalled\n");
+ 				//printf("All threads are stalled\n");
 				clock_tick();
 
 			} 
@@ -167,7 +167,7 @@ class core {
 			}
 			else //switch to another
 			{
-				printf("switching from %d to %d\n", curr_tid, next_tid);
+				//printf("switching from %d to %d\n", curr_tid, next_tid);
 				clock_tick(SIM_GetSwitchCycles());
 				threads[next_tid].execute_next_cmd();
 				clock_tick();
@@ -198,7 +198,7 @@ class core {
 			} else {
 				next_tid = get_next_thread_Finegrained(curr_tid);
 			}
-			printf("cycle: %d\n", cycles);
+			//printf("cycle: %d\n", cycles);
 			//print_all_threads();
 			if (next_tid == -1) // all finished
 			{
@@ -206,7 +206,7 @@ class core {
 			} 
 			else if (next_tid == -2) // all are waiting
 			{
- 				printf("All threads are stalled\n");
+ 				//printf("All threads are stalled\n");
 				clock_tick();
 
 			} 
@@ -293,7 +293,7 @@ class core {
 	void print_all_threads()
 	{
 		for(int i=0; i< int(threads.size());i++){
-			printf("cycle num:%d\n , instruction count:%d",cycles,instructions);
+			//printf("cycle num:%d\n , instruction count:%d",cycles,instructions);
 			threads[i].print_thread_status();
 		}
 	}
