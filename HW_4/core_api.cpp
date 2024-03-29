@@ -24,10 +24,10 @@ public:
 	}
 	bool is_halted() {return halted;}
 
-	void clk_cycle_passed()
+	void clk_cycle_passed(int cycles_elapsed=1)
 	{
 		if(thread_timer > 0)
-			thread_timer--;	
+			thread_timer-=cycles_elapsed;	
 	}
 	bool is_paused(){
 		return thread_timer > 0;
@@ -39,7 +39,7 @@ public:
 		Instruction curr_inst;
 		SIM_MemInstRead(inst_line_number, &curr_inst, tid);
 
-		printf("thread %d, instruction line: %d\n",tid,inst_line_number);
+		printf("thread %d, instruction number: %d\n",tid,inst_line_number);
 
 		switch (curr_inst.opcode)
 		{
@@ -63,8 +63,8 @@ public:
 			register_file.reg[curr_inst.dst_index] = register_file.reg[curr_inst.src1_index] - curr_inst.src2_index_imm;
 			break;
 		case CMD_LOAD:
-			thread_timer = SIM_GetLoadLat();
-			delay = delay + SIM_GetLoadLat() ; // DELAY MIGHT BE LOWER FOR THREAD SWITCHING!!
+			thread_timer =  1 +  SIM_GetLoadLat();
+			delay =  SIM_GetLoadLat() ; // DELAY MIGHT BE LOWER FOR THREAD SWITCHING!!
 			uint32_t load_addr;
 			//if Imm command
 			if(curr_inst.isSrc2Imm){
@@ -79,8 +79,8 @@ public:
 			register_file.reg[curr_inst.dst_index] = data;
 			break;
 		case CMD_STORE:
-			thread_timer = SIM_GetStoreLat();
-			delay = delay + SIM_GetStoreLat() ; // DELAY MIGHT BE LOWER FOR THREAD SWITCHING!!
+			thread_timer = 1 + SIM_GetStoreLat();
+			delay = SIM_GetStoreLat() ; // DELAY MIGHT BE LOWER FOR THREAD SWITCHING!!
 			uint32_t store_addr;
 			if(curr_inst.isSrc2Imm){
 				store_addr =(uint32_t) register_file.reg[curr_inst.src1_index] + curr_inst.src2_index_imm;
@@ -130,10 +130,10 @@ class core {
 			printf("%d\n", threads[i].get_tid());
 		}
 	}
-	void clock_tick(){
-		cycles++;
+	void clock_tick(int cycles_elapsed=1){
+		cycles+=cycles_elapsed;
 		for(int i = 0; i< threads_num; i++){
-			threads[i].clk_cycle_passed();
+			threads[i].clk_cycle_passed(cycles_elapsed);
 		}
 	}
 	void CORE_BlockedMT()
@@ -145,11 +145,10 @@ class core {
 		int count = 20;
 		while(!finished)
 		{
-			clock_tick();
-			
+			printf("cycle: %d\n", cycles);
 			next_tid = get_next_thread_Blocked(curr_tid);
 			printf("Next tid: %d\n", next_tid);
-			print_all_threads();
+			//print_all_threads();
 			if (next_tid == -1) // all finisheds
 			{
 				finished = true;
@@ -157,20 +156,25 @@ class core {
 			else if (next_tid == -2) // all are waiting
 			{
  				printf("All threads are stalled\n");
+				clock_tick();
 
 			} 
-			else if (curr_tid == next_tid)
+			else if (curr_tid == next_tid) 
 			{
 				threads[curr_tid].execute_next_cmd();
+				clock_tick();
 				instructions++;
 			}
 			else //switch to another
 			{
-				cycles += SIM_GetSwitchCycles();
+				printf("switching from %d to %d\n", curr_tid, next_tid);
+				clock_tick(SIM_GetSwitchCycles());
 				threads[next_tid].execute_next_cmd();
+				clock_tick();
 				instructions++;
 				curr_tid = next_tid;
 			}
+
 
 						
 		}
@@ -184,44 +188,42 @@ class core {
 		bool finished = false;
 		int curr_tid = 0;
 		int next_tid;
-		int count = 20;
 		bool first_cycle = true;
 		while(!finished)
 		{
-			clock_tick();
+
 			if (first_cycle) {
 				next_tid = 0;
 				first_cycle = false;
 			} else {
 				next_tid = get_next_thread_Finegrained(curr_tid);
 			}
-
-			printf("Next tid: %d\n", next_tid);
+			printf("cycle: %d\n", cycles);
 			//print_all_threads();
-			if (next_tid == -1) // all finisheds
+			if (next_tid == -1) // all finished
 			{
 				finished = true;
 			} 
 			else if (next_tid == -2) // all are waiting
 			{
  				printf("All threads are stalled\n");
+				clock_tick();
 
 			} 
 			else if (curr_tid == next_tid)
 			{
 				threads[curr_tid].execute_next_cmd();
 				instructions++;
+				clock_tick();
 			}
 			else //switch to another
 			{
 				threads[next_tid].execute_next_cmd();
 				instructions++;
 				curr_tid = next_tid;
+				clock_tick();
 			}
-			count--;
-			if (count==0)
-				break;
-
+			
 			/****** FINEGRAINED *********/
 			
 		}
@@ -237,10 +239,9 @@ class core {
 		/****** BLOCKED *********/
 
 		bool active_thread_exists = false;
-		for (int i=0; i<threads.size(); i++)
+		for (int i=0; i<int(threads.size()); i++)
 		{
 			int next_tid=(curr_tid+i)%threads.size();
-			printf("next_tid:%d\n",next_tid);
 			if (!threads[next_tid].is_halted())
 			{ // it needs to be executed next!
 				active_thread_exists = true;
@@ -248,7 +249,6 @@ class core {
 
 			if (!threads[next_tid].is_halted() && !threads[next_tid].is_paused())
 			{ // it needs to be executed next!
-				printf("entered unpaused thread %d",next_tid);
 				active_thread_exists = true;
 				return next_tid;
 			} 
@@ -265,10 +265,9 @@ class core {
 	{
 		/****** FINEGRAINED *********/
 		bool active_thread_exists = false;
-		for (int i=1; i<=threads.size(); i++)
+		for (int i=1; i<=int(threads.size()); i++)
 		{
 			int next_tid=(curr_tid+i)%threads.size();
-			printf("next_tid:%d\n",next_tid);
 			if (!threads[next_tid].is_halted())
 			{ // it needs to be executed next!
 				active_thread_exists = true;
@@ -276,7 +275,6 @@ class core {
 
 			if (!threads[next_tid].is_halted() && !threads[next_tid].is_paused())
 			{ // it needs to be executed next!
-				printf("entered unpaused thread %d",next_tid);
 				active_thread_exists = true;
 				return next_tid;
 			} 
@@ -294,7 +292,7 @@ class core {
 
 	void print_all_threads()
 	{
-		for(int i=0; i< threads.size();i++){
+		for(int i=0; i< int(threads.size());i++){
 			printf("cycle num:%d\n , instruction count:%d",cycles,instructions);
 			threads[i].print_thread_status();
 		}

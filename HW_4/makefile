@@ -26,7 +26,7 @@ OBJ = $(OBJ_GIVEN) $(OBJ_CORE)
 #$(info OBJ=$(OBJ))
 
 ifeq ($(SRC_CORE),core_api.c)
-sim_main: $(OBJ)
+sim_main.exe: $(OBJ)
 	gcc -o $@ $(OBJ)
 
 sim_core.o: sim_core.c
@@ -34,7 +34,7 @@ sim_core.o: sim_core.c
 
 else
 sim_main: $(OBJ)
-	g++ -o $@ $(OBJ)
+	g++ -o $@ $(OBJ) 
 
 sim_core.o: sim_core.cpp
 	g++ -c $(CXXFLAGS) -o $@ $<

@@ -18,6 +18,11 @@
             "cwd": "c:\\Users\\gandalf\\Desktop\\computer_arc_046267\\HW_4",
             "binaryPath": "c:\\Users\\gandalf\\Desktop\\computer_arc_046267\\HW_4\\sim_main",
             "binaryArgs": []
+        },
+        {
+            "cwd": "c:\\Users\\gandalf\\Desktop\\computer_arc_046267\\HW_4",
+            "binaryPath": "c:\\Users\\gandalf\\Desktop\\computer_arc_046267\\HW_4\\sim_main.exe",
+            "binaryArgs": []
         }
     ]
 }
