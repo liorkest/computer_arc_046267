@@ -5,10 +5,19 @@
     },
     "makefile.configurations": [
 
+
     ],
     "makefile.additionalCompilerNames": [
         "C:\\msys64\\ucrt64\\bin"
     ],
-    "makefile.makePath": "C:\\ProgramData\\chocolatey\\choco.exe",
-    "C_Cpp.default.configurationProvider": "ms-vscode.makefile-tools"
+    "makefile.makePath": "C:\\msys64\\usr\\bin\\make.exe",
+    "C_Cpp.default.configurationProvider": "ms-vscode.makefile-tools",
+    "C_Cpp.default.compilerPath": "C:\\msys64\\ucrt64\\bin\\g++.exe",
+    "makefile.launchConfigurations": [
+        {
+            "cwd": "c:\\Users\\gandalf\\Desktop\\computer_arc_046267\\HW_4",
+            "binaryPath": "c:\\Users\\gandalf\\Desktop\\computer_arc_046267\\HW_4\\sim_main",
+            "binaryArgs": []
+        }
+    ]
 }
