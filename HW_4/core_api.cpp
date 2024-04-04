@@ -1,4 +1,4 @@
-/* 046267 Computer Architecture - HW #4 */
+/* 046267 Computer Architecture - HW #4 LIOR and LEV */
 
 #include "core_api.h"
 #include "sim_api.h"
@@ -26,8 +26,10 @@ public:
 
 	void clk_cycle_passed(int cycles_elapsed=1)
 	{
-		if(thread_timer > 0)
+		if (thread_timer > cycles_elapsed)
 			thread_timer-=cycles_elapsed;	
+		else
+			thread_timer=0;
 	}
 	bool is_paused(){
 		return thread_timer > 0;
@@ -38,8 +40,9 @@ public:
 		int delay = 0;
 		Instruction curr_inst;
 		SIM_MemInstRead(inst_line_number, &curr_inst, tid);
-
-		//printf("thread %d, instruction number: %d\n",tid,inst_line_number);
+		if (tid == 2){
+			print_thread_status();
+		}
 
 		switch (curr_inst.opcode)
 		{
@@ -73,21 +76,28 @@ public:
 			else{
 				load_addr =(uint32_t) register_file.reg[curr_inst.src1_index] +  register_file.reg[curr_inst.src2_index_imm];
 			}
+			load_addr = load_addr>>2; // align to reading frame
+            load_addr = load_addr<<2;
 			//load addr after calc
 			int32_t data;
-			SIM_MemDataRead(load_addr,&data);
+			SIM_MemDataRead(load_addr, &data);
+			printf("LOAD tid %d: reg[%d]=%d\n", tid, curr_inst.dst_index, data);
 			register_file.reg[curr_inst.dst_index] = data;
 			break;
-		case CMD_STORE:
+
+		case CMD_STORE: // Mem[dst + src2] <- src1  (src2 may be an immediate)
 			thread_timer = 1 + SIM_GetStoreLat();
 			delay = SIM_GetStoreLat() ; // DELAY MIGHT BE LOWER FOR THREAD SWITCHING!!
 			uint32_t store_addr;
 			if(curr_inst.isSrc2Imm){
-				store_addr =(uint32_t) register_file.reg[curr_inst.src1_index] + curr_inst.src2_index_imm;
+				store_addr = (uint32_t) register_file.reg[curr_inst.src1_index] + curr_inst.src2_index_imm;
 			}
 			else{
-				store_addr =(uint32_t) register_file.reg[curr_inst.src1_index] +  register_file.reg[curr_inst.src2_index_imm];
+				store_addr = (uint32_t) register_file.reg[curr_inst.src1_index] +  register_file.reg[curr_inst.src2_index_imm];
 			}
+			store_addr = store_addr>>2; // align to reading frame
+            store_addr = store_addr<<2;
+			printf("STORE tid %d: MEM[%d]=%d\n", tid, store_addr, register_file.reg[curr_inst.src1_index]);
 			SIM_MemDataWrite(store_addr,register_file.reg[curr_inst.src1_index]);
 			break;	
 		case CMD_HALT:
@@ -96,6 +106,10 @@ public:
 			break;	
 		}
 		inst_line_number++;
+		if (tid == 2){
+			print_thread_status();
+		}
+
 	}
 
 	void copy_context(tcontext* context)
@@ -108,6 +122,10 @@ public:
 
 	void print_thread_status(){
 		printf("thread id: %d, thread instruction count: %d,thread timer: %d, is halted: %d, is paused: %d\n",tid,inst_line_number,thread_timer,halted, is_paused());
+		for (int i=0;i<REGS_COUNT;i++) {
+			printf("%d: %d;",register_file.reg[i]);
+		}
+		printf("\n");
 	}
 
 };
@@ -198,7 +216,7 @@ class Blocked_core: public core
 			}
 
 
-						
+			//threads[curr_tid].print_thread_status();		
 		}
 		
 	}
@@ -260,6 +278,7 @@ class Finegrained_core: public core
 			else if (curr_tid == next_tid)
 			{
 				threads[curr_tid].execute_next_cmd();
+
 				instructions++;
 				clock_tick();
 			}
