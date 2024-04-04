@@ -114,10 +114,11 @@ public:
 
 
 class core {
+protected:
 	int threads_num;
 	std::vector<thread> threads;
 	int cycles, instructions;
-	public:
+public:
 	core() {}
 	void init_core(){
 		cycles = 0;
@@ -136,9 +137,30 @@ class core {
 			threads[i].clk_cycle_passed(cycles_elapsed);
 		}
 	}
-	void CORE_BlockedMT()
+
+	void copy_context(tcontext* context, int threadid)
 	{
-		/****** BLOCKED *********/
+		threads[threadid].copy_context(context);
+	}
+
+	int get_cycles(){return cycles;}
+	int get_instructions(){return instructions;}
+
+	void print_all_threads()
+	{
+		for(int i=0; i< int(threads.size());i++){
+			//printf("cycle num:%d\n , instruction count:%d",cycles,instructions);
+			threads[i].print_thread_status();
+		}
+	}
+
+};
+
+class Blocked_core: public core
+{
+	public:
+	void run_benchmark()
+	{
 		bool finished = false;
 		int curr_tid = 0;
 		int next_tid;
@@ -146,7 +168,7 @@ class core {
 		while(!finished)
 		{
 			//printf("cycle: %d\n", cycles);
-			next_tid = get_next_thread_Blocked(curr_tid);
+			next_tid = get_next_thread(curr_tid);
 			//printf("Next tid: %d\n", next_tid);
 			//print_all_threads();
 			if (next_tid == -1) // all finisheds
@@ -178,13 +200,38 @@ class core {
 
 						
 		}
-		/****** ^ BLOCKED ^*********/
-
 		
 	}
-	void CORE_FinegrainedMT()
+	int get_next_thread(int curr_tid)
 	{
-		/******V FINEGRAINED V*********/
+		bool active_thread_exists = false;
+		for (int i=0; i<int(threads.size()); i++)
+		{
+			int next_tid=(curr_tid+i)%threads.size();
+			if (!threads[next_tid].is_halted())
+			{ // it needs to be executed next!
+				active_thread_exists = true;
+			} 
+
+			if (!threads[next_tid].is_halted() && !threads[next_tid].is_paused())
+			{ // it needs to be executed next!
+				active_thread_exists = true;
+				return next_tid;
+			} 
+		}
+		if (!active_thread_exists)
+			return -1; // all threads finished!
+		else
+			return -2; // no free thread, need to stall
+
+	}
+};
+
+class Finegrained_core: public core
+{
+	public:
+	void run_benchmark()
+	{
 		bool finished = false;
 		int curr_tid = 0;
 		int next_tid;
@@ -196,7 +243,7 @@ class core {
 				next_tid = 0;
 				first_cycle = false;
 			} else {
-				next_tid = get_next_thread_Finegrained(curr_tid);
+				next_tid = get_next_thread(curr_tid);
 			}
 			//printf("cycle: %d\n", cycles);
 			//print_all_threads();
@@ -222,48 +269,13 @@ class core {
 				instructions++;
 				curr_tid = next_tid;
 				clock_tick();
-			}
-			
-			/****** FINEGRAINED *********/
-			
+			}			
 		}
 	}
 	
-	void copy_context(tcontext* context, int threadid)
+
+	int get_next_thread(int curr_tid)
 	{
-		threads[threadid].copy_context(context);
-	}
-
-	int get_next_thread_Blocked(int curr_tid)
-	{
-		/****** BLOCKED *********/
-
-		bool active_thread_exists = false;
-		for (int i=0; i<int(threads.size()); i++)
-		{
-			int next_tid=(curr_tid+i)%threads.size();
-			if (!threads[next_tid].is_halted())
-			{ // it needs to be executed next!
-				active_thread_exists = true;
-			} 
-
-			if (!threads[next_tid].is_halted() && !threads[next_tid].is_paused())
-			{ // it needs to be executed next!
-				active_thread_exists = true;
-				return next_tid;
-			} 
-		}
-		if (!active_thread_exists)
-			return -1; // all threads finished!
-		else
-			return -2; // no free thread, need to stall
-				/****** BLOCKED *********/
-
-	}
-
-	int get_next_thread_Finegrained(int curr_tid)
-	{
-		/****** FINEGRAINED *********/
 		bool active_thread_exists = false;
 		for (int i=1; i<=int(threads.size()); i++)
 		{
@@ -283,35 +295,22 @@ class core {
 			return -1; // all threads finished!
 		else
 			return -2; // no free thread, need to stall
-			/****** FINEGRAINED *********/
 
 	}
-
-	int get_cycles(){return cycles;}
-	int get_instructions(){return instructions;}
-
-	void print_all_threads()
-	{
-		for(int i=0; i< int(threads.size());i++){
-			//printf("cycle num:%d\n , instruction count:%d",cycles,instructions);
-			threads[i].print_thread_status();
-		}
-	}
-
 };
 
 
 // instantiation of the class
-core core_inst_BK;
-core core_inst_FG;
+Blocked_core core_inst_BK;
+Finegrained_core core_inst_FG;
 void CORE_BlockedMT() {
 	core_inst_BK.init_core();
-	core_inst_BK.CORE_BlockedMT();
+	core_inst_BK.run_benchmark();
 }
 
 void CORE_FinegrainedMT() {
 	core_inst_FG.init_core();
-	core_inst_FG.CORE_FinegrainedMT();
+	core_inst_FG.run_benchmark();
 }
 
 double CORE_BlockedMT_CPI(){
