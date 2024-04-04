@@ -40,9 +40,7 @@ public:
 		int delay = 0;
 		Instruction curr_inst;
 		SIM_MemInstRead(inst_line_number, &curr_inst, tid);
-		if (tid == 2){
-			print_thread_status();
-		}
+
 
 		switch (curr_inst.opcode)
 		{
@@ -65,7 +63,7 @@ public:
 			delay++;
 			register_file.reg[curr_inst.dst_index] = register_file.reg[curr_inst.src1_index] - curr_inst.src2_index_imm;
 			break;
-		case CMD_LOAD:
+		case CMD_LOAD: // dst <- Mem[src1 + src2]  (src2 may be an immediate)
 			thread_timer =  1 +  SIM_GetLoadLat();
 			delay =  SIM_GetLoadLat() ; // DELAY MIGHT BE LOWER FOR THREAD SWITCHING!!
 			uint32_t load_addr;
@@ -76,12 +74,11 @@ public:
 			else{
 				load_addr =(uint32_t) register_file.reg[curr_inst.src1_index] +  register_file.reg[curr_inst.src2_index_imm];
 			}
-			load_addr = load_addr>>2; // align to reading frame
-            load_addr = load_addr<<2;
+
 			//load addr after calc
 			int32_t data;
 			SIM_MemDataRead(load_addr, &data);
-			printf("LOAD tid %d: reg[%d]=%d\n", tid, curr_inst.dst_index, data);
+			//printf("LOAD tid %d: reg[%d]=Mem[%d]=%d\n", tid, curr_inst.dst_index,load_addr, data);
 			register_file.reg[curr_inst.dst_index] = data;
 			break;
 
@@ -90,14 +87,13 @@ public:
 			delay = SIM_GetStoreLat() ; // DELAY MIGHT BE LOWER FOR THREAD SWITCHING!!
 			uint32_t store_addr;
 			if(curr_inst.isSrc2Imm){
-				store_addr = (uint32_t) register_file.reg[curr_inst.src1_index] + curr_inst.src2_index_imm;
+				store_addr = (uint32_t) register_file.reg[curr_inst.dst_index] + curr_inst.src2_index_imm;
 			}
 			else{
-				store_addr = (uint32_t) register_file.reg[curr_inst.src1_index] +  register_file.reg[curr_inst.src2_index_imm];
+				store_addr = (uint32_t) register_file.reg[curr_inst.dst_index] +  register_file.reg[curr_inst.src2_index_imm];
 			}
-			store_addr = store_addr>>2; // align to reading frame
-            store_addr = store_addr<<2;
-			printf("STORE tid %d: MEM[%d]=%d\n", tid, store_addr, register_file.reg[curr_inst.src1_index]);
+
+			//printf("STORE tid %d: MEM[%d]=%d\n", tid, store_addr, register_file.reg[curr_inst.src1_index]);
 			SIM_MemDataWrite(store_addr,register_file.reg[curr_inst.src1_index]);
 			break;	
 		case CMD_HALT:
@@ -106,9 +102,7 @@ public:
 			break;	
 		}
 		inst_line_number++;
-		if (tid == 2){
-			print_thread_status();
-		}
+
 
 	}
 
